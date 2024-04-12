@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using ProjectManagerBackend.Repo.Data;
 using ProjectManagerBackend.Repo.Interfaces;
+using ProjectManagerBackend.Repo.Models;
 using ProjectManagerBackend.Repo.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,7 +18,6 @@ builder.Services.AddDbContext<DataContext>(options =>
 
 // DI
 
-builder.Services.AddScoped<ICrudInterface, ProjectRepository>();
 
 
 
