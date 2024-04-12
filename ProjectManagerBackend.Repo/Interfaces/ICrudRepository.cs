@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace ProjectManagerBackend.Repo.Interfaces
 {
-    public interface ICrudInterface
+    public interface ICrudInterface<TEntity> where TEntity : class
     {
+        public Task<ICollection<TEntity>> GetAll();
+        public Task<TEntity> Create(TEntity entity);
+
     }
 }
