@@ -23,7 +23,7 @@
  - Flowchart.
 
  ### Backend:
-  - E/R diagram.![Entity Relationship Diagram](https://github.com/BitBenders-Union/H3ProjectManagerBackend/blob/main/OOAD/Backend/ProjectManager.jpg)
+  - E/R diagram.![Entity Relationship Diagram](https://github.com/BitBenders-Union/H3ProjectManagerBackend/blob/master/OOAD/Backend/ProjectManager.jpg)
   - Class diagram.
   - Use case.
   - Flowchart.
