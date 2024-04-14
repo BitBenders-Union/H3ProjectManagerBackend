@@ -18,7 +18,12 @@ builder.Services.AddDbContext<DataContext>(options =>
 
 // DI
 
+<<<<<<< Updated upstream
 
+=======
+builder.Services.AddScoped<ICrudInterface, ProjectRepository>();
+builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+>>>>>>> Stashed changes
 
 
 
