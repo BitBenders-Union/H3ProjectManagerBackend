@@ -10,8 +10,5 @@ namespace ProjectManagerBackend.Repo.DTOs
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public List<LocationDTO>? Locations { get; set; }
-        public List<UserDetailDTO>? UserDetails { get; set; }
-        public List<ProjectDTO>? Projects { get; set; }
     }
 }

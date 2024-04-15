@@ -12,6 +12,6 @@ namespace ProjectManagerBackend.Repo.Models
         public string Title { get; set; }
         public string Description { get; set; }
         public UserDetail UserDetail { get; set; }
-        public List<ProjectTask> ProjectTask { get; set; }
+        public ProjectTask ProjectTask { get; set; }
     }
 }

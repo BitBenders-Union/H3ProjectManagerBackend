@@ -11,6 +11,5 @@ namespace ProjectManagerBackend.Repo.DTOs
         public int Id { get; set; }
         public string Name { get; set; }
         public string Address { get; set; }
-        public List<DepartmentDTO>? Departments { get; set; }
     }
 }

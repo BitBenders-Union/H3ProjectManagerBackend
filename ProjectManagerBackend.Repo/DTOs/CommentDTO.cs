@@ -11,8 +11,8 @@ namespace ProjectManagerBackend.Repo.DTOs
         public int Id { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
-        public UserDetailDTO? UserDetail { get; set; }
-        public List<ProjectTaskDTO>? ProjectTasks { get; set; }
+        public int UserDetailId { get; set; }
+        public int ProjectTaskId { get; set; }
 
     }
 }
