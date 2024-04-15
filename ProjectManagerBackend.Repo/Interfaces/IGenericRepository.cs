@@ -8,6 +8,12 @@ namespace ProjectManagerBackend.Repo.Interfaces
 {
     public interface IGenericRepository<T> where T : class
     {
-        public Task<IEnumerable<T>> GetAll();
+        public Task<bool> CreateAsync(T entity);
+        public Task<ICollection<T>> GetAllAsync();
+        public Task<T> GetByIdAsync(int id);
+        public Task<bool> DeleteAsync(int id);
+        public Task<bool> UpdateAsync(T entity);
+
+
     }
 }

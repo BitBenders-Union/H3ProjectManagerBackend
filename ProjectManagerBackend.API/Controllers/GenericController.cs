@@ -18,7 +18,7 @@ namespace ProjectManagerBackend.API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<TEntity>>> GetAll()
         {
-            var items = await _repository.GetAll();
+            var items = await _repository.GetAllAsync();
             if (items == null)
             {
                 return NotFound();
