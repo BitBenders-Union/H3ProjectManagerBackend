@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ProjectManagerBackend.Repo.Services
 {
-    internal class HashingService : IHashingService
+    public class HashingService : IHashingService
     {
         public byte[] GenerateSalt()
         {
