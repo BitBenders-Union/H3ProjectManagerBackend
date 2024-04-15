@@ -20,11 +20,13 @@ namespace ProjectManagerBackend.Repo.Repositories
         }
 
         // Create
-        public async Task<bool> CreateAsync(T entity)
+        public async Task<T> CreateAsync(T entity)
         {
             await _context.Set<T>().AddAsync(entity);
-            return await _context.SaveChangesAsync() > 0;
+            if (await _context.SaveChangesAsync() > 0)
+                return entity;
 
+            throw new Exception("Could not Create Entity");
         }
 
         // Read
