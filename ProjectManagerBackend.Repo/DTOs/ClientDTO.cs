@@ -6,11 +6,14 @@ using System.Threading.Tasks;
 
 namespace ProjectManagerBackend.Repo.DTOs
 {
-    public class ProjectDTO
+    public class ClientDTO
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public DateOnly StartDate { get; set; }
-        public DateOnly EndDate { get; set; }
+        public string Description { get; set; }
+        public string Adress { get; set; }
+        public string Email { get; set; }
+        public List<ProjectDTO>? Projects { get; set; }
+
     }
 }

@@ -6,11 +6,9 @@ using System.Threading.Tasks;
 
 namespace ProjectManagerBackend.Repo.DTOs
 {
-    public class ProjectDTO
+    public class ProjectTaskStatusDTO
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public DateOnly StartDate { get; set; }
-        public DateOnly EndDate { get; set; }
     }
 }
