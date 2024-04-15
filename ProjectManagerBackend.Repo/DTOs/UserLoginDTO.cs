@@ -4,18 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ProjectManagerBackend.Repo.Models
+namespace ProjectManagerBackend.Repo.DTOs
 {
-    public class UserLogin
+    public class UserLoginDTO
     {
         public int Id { get; set; }
         public string Username { get; set; }
         public byte[] PasswordHash { get; set; }
         public byte[] PasswordSalt { get; set; }
-        public bool IsActive { get; set; }
-        public UserDetail UserDetail { get; set; }
-
-        // TODO:
-        // Add tokens
+        //public bool IsActive { get; set; }
+        //public UserDetailDTO UserDetail { get; set; }
     }
 }

@@ -1,12 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using ProjectManagerBackend.Repo.DTOs;
+using ProjectManagerBackend.Repo.Interfaces;
+using ProjectManagerBackend.Repo.Models;
+
 
 namespace ProjectManagerBackend.Repo
 {
-    internal class MappingService
+    public class MappingService : IMappingService
     {
+        public UserLogin UserLoginToDTO(UserLoginDTO userLogin)
+        {
+
+            UserLogin user = new()
+            {
+                Username = userLogin.Username,
+                PasswordHash = userLogin.PasswordHash,
+                PasswordSalt = userLogin.PasswordSalt,
+                IsActive = true,
+                UserDetail = new UserDetail()
+            };
+
+            return user;
+        }
     }
 }
