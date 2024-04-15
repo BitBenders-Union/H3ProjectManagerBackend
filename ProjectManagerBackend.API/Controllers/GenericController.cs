@@ -8,7 +8,7 @@ namespace ProjectManagerBackend.API.Controllers
     [ApiController]
     public class GenericController<TEntity> : ControllerBase where TEntity : class
     {
-        private readonly IGenericRepository<TEntity> _repository;
+        public readonly IGenericRepository<TEntity> _repository;
 
         public GenericController(IGenericRepository<TEntity> repository)
         {

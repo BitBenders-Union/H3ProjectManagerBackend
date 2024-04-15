@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace ProjectManagerBackend.Repo.Interfaces
 {
-    public interface IUserLoginRepository
+    public interface IUserRepository
     {
-        //Task<UserLogin> GetUser
+        public Task<bool> CheckUser(string username);
     }
 }

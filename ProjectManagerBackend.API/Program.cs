@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using ProjectManagerBackend.Repo;
 using ProjectManagerBackend.Repo.Data;
 using ProjectManagerBackend.Repo.Interfaces;
 using ProjectManagerBackend.Repo.Models;
@@ -20,7 +21,8 @@ builder.Services.AddDbContext<DataContext>(options =>
 
 builder.Services.AddScoped<IGenericRepository<Project>, GenericRepository<Project>>();
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-
+builder.Services.AddScoped<IGenericRepository<UserDetail>, GenericRepository<UserDetail>>();
+//builder.Services.AddScoped<IMappingService, IMappingService>();
 
 
 builder.Services.AddControllers();

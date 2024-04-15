@@ -13,19 +13,25 @@ namespace ProjectManagerBackend.Repo
         {
             this.hashingService = hashingService;
         }
-        public UserLogin UserLoginToDTO(UserLoginDTO userLoginDTO)
+        public UserLogin AddUser(UserDetailDTO userDetailDTO)
         {
             byte[] salt = hashingService.GenerateSalt();
-            byte[] hash = hashingService.PasswordHashing(userLoginDTO.Password, salt);
+            byte[] hash = hashingService.PasswordHashing(userDetailDTO.Password, salt);
 
-            UserLogin user = new()
+            UserLogin userLogin = new()
             {
-                Username = userLoginDTO.Username,
+                Username = userDetailDTO.UserName,
                 PasswordHash = hash,
-                PasswordSalt = salt
+                PasswordSalt = salt,
+                IsActive = true,
+                UserDetail = new()
+                {
+                    FirstName = userDetailDTO.FirstName,
+                    LastName = userDetailDTO.LastName,
+                }
             };
 
-            return user;
+            return userLogin;
         }
     }
 }
