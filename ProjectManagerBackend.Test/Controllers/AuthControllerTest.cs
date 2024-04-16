@@ -18,7 +18,7 @@ namespace ProjectManagerBackend.Test.Controllers
     public class AuthControllerTest : IClassFixture<AuthControllerTest>
     {
         [Fact]
-        public void CreateUserTest()
+        public async Task CreateUserTest()
         {
             var mockRepo = new Mock<IGenericRepository<UserDetail>>();
             var mockMapping = new Mock<IMappingService>();
@@ -34,10 +34,17 @@ namespace ProjectManagerBackend.Test.Controllers
                 LastName = "Test Last"
             };
 
-            var result = controller.Create(userDetail);
-            var okResult = Assert.IsType<OkObjectResult>((OkObjectResult)result.Result);
-            //var stats = (IStatusCodeActionResult)result;
-            //var okResult = result as OkObjectResult;
+            var expectResponse = new UserDetailDTOResponse
+            {
+                Username = userDetail.Username,
+                FirstName = userDetail.FirstName,
+                LastName = userDetail.LastName,
+            };
+
+            var result = await controller.Create(userDetail);
+            var okResult = Assert.IsType<OkObjectResult>(result.Result);
+
+            //NOTE IF TESTING ASYNC SHIT MAKE TEST ASYNC
 
             Assert.Equal(200, okResult.StatusCode);
         }
