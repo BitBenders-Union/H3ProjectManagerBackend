@@ -16,7 +16,7 @@ namespace ProjectManagerBackend.API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<TEntity>> Create(TEntity entity)
+        public async override Task<ActionResult<TEntity>> Create(TEntity entity)
         {
             try
             {

@@ -10,7 +10,9 @@ namespace ProjectManagerBackend.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+
     public class AuthController : GenericController<UserLogin>
+
     {
         private readonly IMappingService mappingService;
         private readonly IUserRepository userRepository;
@@ -19,7 +21,9 @@ namespace ProjectManagerBackend.API.Controllers
 
 
         public AuthController(
+
             IGenericRepository<UserLogin> genericRepo,
+
             IMappingService mappingService,
             IUserRepository userRepository,
             IHashingService hashingService) : base(genericRepo)
@@ -49,7 +53,9 @@ namespace ProjectManagerBackend.API.Controllers
             byte[] salt = hashingService.GenerateSalt();
             byte[] hash = hashingService.PasswordHashing(userDTO.Password, salt);
 
+
             UserLogin newUser = new()
+
             {
                 Username = userDTO.UserName,
                 PasswordHash = hash,
@@ -60,6 +66,7 @@ namespace ProjectManagerBackend.API.Controllers
                     FirstName = userDTO.FirstName,
                     LastName = userDTO.LastName
                 }
+
             };
 
             return Ok(await _repository.CreateAsync(newUser));
