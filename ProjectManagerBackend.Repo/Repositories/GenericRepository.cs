@@ -10,7 +10,8 @@ using System.Threading.Tasks;
 
 namespace ProjectManagerBackend.Repo.Repositories
 {
-    public class GenericRepository<T> : IGenericRepository<T> where T : class
+    public class GenericRepository<T> : IGenericRepository<T> 
+        where T : class
     {
         private readonly DataContext _context;
 

@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace ProjectManagerBackend.Repo.Interfaces
 {
-    public interface IGenericRepository<T> where T : class
+    public interface IGenericRepository<T> 
+        where T : class
     {
         public Task<T> CreateAsync(T entity);
         public Task<ICollection<T>> GetAllAsync();

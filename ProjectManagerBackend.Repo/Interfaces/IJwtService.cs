@@ -9,7 +9,7 @@ namespace ProjectManagerBackend.Repo.Interfaces
 {
     public interface IJwtService
     {
-        public string CreateToken(UserLogin userLogin);
+        public string CreateToken(UserDetail userLogin);
         public string CreateRefreshToken(string token);
     }
 }

@@ -11,65 +11,46 @@ namespace ProjectManagerBackend.API.Controllers
     [Route("api/[controller]")]
     [ApiController]
 
-    public class AuthController : GenericController<UserLogin>
+    public class AuthController : GenericController<UserDetail, UserDetailDTO>
 
     {
-        private readonly IMappingService mappingService;
+        private readonly IMappingService<UserDetail, UserDetailDTO> mappingService;
         private readonly IUserRepository userRepository;
-        private readonly IHashingService hashingService;
-
 
 
         public AuthController(
 
-            IGenericRepository<UserLogin> genericRepo,
+            IGenericRepository<UserDetail> genericRepo,
 
-            IMappingService mappingService,
-            IUserRepository userRepository,
-            IHashingService hashingService) : base(genericRepo)
+            IMappingService<UserDetailDTO, UserDetail> mapping,
+            IUserRepository userRepository
+            ) : base(genericRepo, mapping)
         {
             this.mappingService = mappingService;
             this.userRepository = userRepository;
-            this.hashingService = hashingService;
         }
 
 
-        [HttpPost("register")]
-        public async Task<ActionResult<UserLogin>> RegisterUser([FromBody] UserDetailDTO userDTO)
+        [HttpPost]
+        public async override Task<ActionResult<UserDetail>> Create([FromBody] UserDetailDTO userDTO)
         {
             if (userDTO.UserName.IsNullOrEmpty() || userDTO.Password.IsNullOrEmpty())
             {
                 return BadRequest();
             }
 
-            var userExist = await userRepository.CheckUser(userDTO.UserName);
-
-            if (userExist)
+            if (await userRepository.CheckUser(userDTO.UserName))
             {
                 ModelState.AddModelError("", "User already exist");
                 return StatusCode(442, ModelState);
             }
 
-            byte[] salt = hashingService.GenerateSalt();
-            byte[] hash = hashingService.PasswordHashing(userDTO.Password, salt);
 
-
-            UserLogin newUser = new()
-
-            {
-                Username = userDTO.UserName,
-                PasswordHash = hash,
-                PasswordSalt = salt,
-                IsActive = true,
-                UserDetail = new()
-                {
-                    FirstName = userDTO.FirstName,
-                    LastName = userDTO.LastName
-                }
-
-            };
-
-            return Ok(await _repository.CreateAsync(newUser));
+            return Ok(
+                await _repository.CreateAsync(
+                    mappingService.AddUser(userDTO)
+                    )
+                );
         }
     }
 }
