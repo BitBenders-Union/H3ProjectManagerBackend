@@ -22,7 +22,7 @@ namespace ProjectManagerBackend.Repo.Services
             Argon2id argon2 = new (Encoding.UTF8.GetBytes(password))
             {
                 Salt = salt,
-                DegreeOfParallelism = 4,
+                DegreeOfParallelism = 2,
                 Iterations = 2,
                 MemorySize = 1024
             };
