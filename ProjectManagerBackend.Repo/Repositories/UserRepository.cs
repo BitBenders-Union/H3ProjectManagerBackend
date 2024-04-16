@@ -21,7 +21,7 @@ namespace ProjectManagerBackend.Repo.Repositories
 
         public async Task<bool> CheckUser(string username)
         {
-            return await dataContext.UserLogins.AnyAsync(x => x.Username.Trim().ToLower() == username.Trim().ToLower());
+            return await dataContext.UserDetails.AnyAsync(x => x.Username.Trim().ToLower() == username.Trim().ToLower());
         }
     }
 }

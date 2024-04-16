@@ -6,17 +6,24 @@ namespace ProjectManagerBackend.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class GenericController<TEntity> : ControllerBase where TEntity : class
+    public class GenericController<TEntity, TEntityDTO> : ControllerBase 
+        where TEntity : class
+        where TEntityDTO : class
     {
         public readonly IGenericRepository<TEntity> _repository;
+        public readonly IMappingService<TEntityDTO, TEntity> _mapping;
 
-        public GenericController(IGenericRepository<TEntity> repository)
+        public GenericController(
+            IGenericRepository<TEntity> repository,
+            IMappingService<TEntityDTO, TEntity> mapping
+            )
         {
             _repository = repository;
+            _mapping = mapping;
         }
 
         [HttpPost]
-        public async override Task<ActionResult<TEntity>> Create(TEntity entity)
+        public async virtual Task<ActionResult<TEntity>> Create(TEntityDTO entity)
         {
             try
             {
@@ -27,7 +34,7 @@ namespace ProjectManagerBackend.API.Controllers
                     return BadRequest("Modelstate is Invalid");
 
 
-                return Ok(await _repository.CreateAsync(entity));
+                return Ok(await _repository.CreateAsync(_mapping.Map(entity)));
             }
             catch (Exception ex)
             {

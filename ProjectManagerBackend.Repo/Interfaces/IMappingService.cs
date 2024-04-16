@@ -8,8 +8,9 @@ using System.Threading.Tasks;
 
 namespace ProjectManagerBackend.Repo.Interfaces
 {
-    public interface IMappingService
+    public interface IMappingService<TSource, TDestination>
     {
-        public UserLogin AddUser (UserDetailDTO userDetailDTO);
+        public UserDetail AddUser (UserDetailDTO userDetailDTO);
+        TDestination Map(TSource source);
     }
 }

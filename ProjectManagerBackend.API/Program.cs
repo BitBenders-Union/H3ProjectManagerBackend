@@ -24,7 +24,8 @@ builder.Services.AddDbContext<DataContext>(options =>
 builder.Services.AddScoped<IGenericRepository<Project>, GenericRepository<Project>>();
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<IGenericRepository<UserDetail>, GenericRepository<UserDetail>>();
-builder.Services.AddScoped<IMappingService, MappingService>();
+//builder.Services.AddScoped<IMappingService, MappingService>();
+builder.Services.AddScoped(typeof(IMappingService<,>), typeof(MappingService<,>));
 builder.Services.AddScoped<IHashingService, HashingService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 
