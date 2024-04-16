@@ -7,19 +7,31 @@ namespace ProjectManagerBackend.Repo
 {
     public class MappingService : IMappingService
     {
-        public UserLogin UserLoginToDTO(UserLoginDTO userLogin)
-        {
+        private readonly IHashingService hashingService;
 
-            UserLogin user = new()
+        public MappingService(IHashingService hashingService)
+        {
+            this.hashingService = hashingService;
+        }
+        public UserLogin AddUser(UserDetailDTO userDetailDTO)
+        {
+            byte[] salt = hashingService.GenerateSalt();
+            byte[] hash = hashingService.PasswordHashing(userDetailDTO.Password, salt);
+
+            UserLogin userLogin = new()
             {
-                Username = userLogin.Username,
-                PasswordHash = userLogin.PasswordHash,
-                PasswordSalt = userLogin.PasswordSalt,
+                Username = userDetailDTO.UserName,
+                PasswordHash = hash,
+                PasswordSalt = salt,
                 IsActive = true,
-                UserDetail = new UserDetail()
+                UserDetail = new()
+                {
+                    FirstName = userDetailDTO.FirstName,
+                    LastName = userDetailDTO.LastName,
+                }
             };
 
-            return user;
+            return userLogin;
         }
     }
 }

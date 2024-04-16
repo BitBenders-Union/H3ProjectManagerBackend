@@ -10,7 +10,9 @@ namespace ProjectManagerBackend.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AuthController : GenericController<UserDetail>
+
+    public class AuthController : GenericController<UserLogin>
+
     {
         private readonly IMappingService mappingService;
         private readonly IUserRepository userRepository;
@@ -19,7 +21,9 @@ namespace ProjectManagerBackend.API.Controllers
 
 
         public AuthController(
-            IGenericRepository<UserDetail> genericRepo,
+
+            IGenericRepository<UserLogin> genericRepo,
+
             IMappingService mappingService,
             IUserRepository userRepository,
             IHashingService hashingService) : base(genericRepo)
@@ -31,7 +35,7 @@ namespace ProjectManagerBackend.API.Controllers
 
 
         [HttpPost("register")]
-        public async Task<ActionResult<UserDetail>> RegisterUser([FromBody] UserDetailDTO userDTO)
+        public async Task<ActionResult<UserLogin>> RegisterUser([FromBody] UserDetailDTO userDTO)
         {
             if (userDTO.UserName.IsNullOrEmpty() || userDTO.Password.IsNullOrEmpty())
             {
@@ -49,14 +53,20 @@ namespace ProjectManagerBackend.API.Controllers
             byte[] salt = hashingService.GenerateSalt();
             byte[] hash = hashingService.PasswordHashing(userDTO.Password, salt);
 
-            UserDetail newUser = new()
+
+            UserLogin newUser = new()
+
             {
                 Username = userDTO.UserName,
                 PasswordHash = hash,
                 PasswordSalt = salt,
                 IsActive = true,
+                UserDetail = new()
+                {
                     FirstName = userDTO.FirstName,
                     LastName = userDTO.LastName
+                }
+
             };
 
             return Ok(await _repository.CreateAsync(newUser));

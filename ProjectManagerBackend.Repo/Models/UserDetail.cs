@@ -16,8 +16,8 @@ namespace ProjectManagerBackend.Repo.Models
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public DateTime CreatedDate { get; set; }
-        public Department Department { get; set; }
-        public Role Role { get; set; }
-        public List<ProjectTask> ProjectTasks { get; set; }
+        public Department? Department { get; set; }
+        public Role? Role { get; set; }
+        public List<ProjectTask>? ProjectTasks { get; set; }
     }
 }

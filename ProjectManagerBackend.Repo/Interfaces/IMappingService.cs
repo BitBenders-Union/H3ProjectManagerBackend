@@ -10,6 +10,6 @@ namespace ProjectManagerBackend.Repo.Interfaces
 {
     public interface IMappingService
     {
-        public UserLogin UserLoginToDTO(UserLoginDTO userLogin);
+        public UserLogin AddUser (UserDetailDTO userDetailDTO);
     }
 }
