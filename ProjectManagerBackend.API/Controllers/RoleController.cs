@@ -5,11 +5,11 @@ namespace ProjectManagerBackend.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class RoleController : GenericController<Role, RoleDTO>
+    public class RoleController : GenericController<Role, RoleDTO, RoleDTO>
     {
         public RoleController(
             IGenericRepository<Role> repository,
-            IMappingService<RoleDTO, Role> mapping
+            IMappingService mapping
             ) : base(repository, mapping)
         {
         }

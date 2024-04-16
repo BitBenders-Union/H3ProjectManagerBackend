@@ -5,11 +5,11 @@ namespace ProjectManagerBackend.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class LocationController : GenericController<Location, LocationDTO>
+    public class LocationController : GenericController<Location, LocationDTO, LocationDTO>
     {
         public LocationController(
             IGenericRepository<Location> repository,
-            IMappingService<LocationDTO, Location> mapping            
+            IMappingService mapping            
             ) : base(repository, mapping)
         {
         }

@@ -11,45 +11,45 @@ namespace ProjectManagerBackend.API.Controllers
     [Route("api/[controller]")]
     [ApiController]
 
-    public class AuthController : GenericController<UserDetail, UserDetailDTO>
+    public class AuthController : GenericController<UserDetail, UserDetailDTO, UserDetailDTOResponse>
 
     {
-        private readonly IMappingService<UserDetail, UserDetailDTO> mappingService;
-        private readonly IUserRepository userRepository;
+        private readonly IMappingService _mappingService;
+        private readonly IUserRepository _userRepository;
 
 
         public AuthController(
 
             IGenericRepository<UserDetail> genericRepo,
 
-            IMappingService<UserDetailDTO, UserDetail> mapping,
+            IMappingService mapping,
             IUserRepository userRepository
             ) : base(genericRepo, mapping)
         {
-            this.mappingService = mappingService;
-            this.userRepository = userRepository;
+            _userRepository = userRepository;
         }
 
 
         [HttpPost]
-        public async override Task<ActionResult<UserDetail>> Create([FromBody] UserDetailDTO userDTO)
+        public async override Task<ActionResult<UserDetailDTOResponse>> Create([FromBody] UserDetailDTO userDTO)
         {
             if (userDTO.UserName.IsNullOrEmpty() || userDTO.Password.IsNullOrEmpty())
             {
                 return BadRequest();
             }
 
-            if (await userRepository.CheckUser(userDTO.UserName))
+            if (await _userRepository.CheckUser(userDTO.UserName))
             {
                 ModelState.AddModelError("", "User already exist");
                 return StatusCode(442, ModelState);
             }
 
+            var result = await _repository.CreateAsync(
+                    _mappingService.AddUser(userDTO)
+                    );
 
             return Ok(
-                await _repository.CreateAsync(
-                    mappingService.AddUser(userDTO)
-                    )
+                _mappingService.Map<UserDetail, UserDetailDTOResponse>(result)
                 );
         }
     }

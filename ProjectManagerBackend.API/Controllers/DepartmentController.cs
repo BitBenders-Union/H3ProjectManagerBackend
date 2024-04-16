@@ -5,11 +5,11 @@ namespace ProjectManagerBackend.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class DepartmentController : GenericController<Department, DepartmentDTO>
+    public class DepartmentController : GenericController<Department, DepartmentDTO, DepartmentDTO>
     {
         public DepartmentController(
             IGenericRepository<Department> repository,
-            IMappingService<DepartmentDTO, Department> mapping
+            IMappingService mapping
             ) : base(repository, mapping)
         {
         }
