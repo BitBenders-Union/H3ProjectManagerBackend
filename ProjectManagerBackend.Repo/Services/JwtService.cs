@@ -16,7 +16,7 @@ namespace ProjectManagerBackend.Repo.Services
             throw new NotImplementedException();
         }
 
-        public string CreateToken(UserLogin userLogin)
+        public string CreateToken(UserDetail userLogin)
         {
             throw new NotImplementedException();
         }

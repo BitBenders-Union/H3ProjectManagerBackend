@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ProjectManagerBackend.Repo.DTOs
 {
-    public class ProjectTaskCategory
+    public class ProjectTaskCategoryDTO
     {
         public int Id { get; set; }
         public string Name { get; set; }
