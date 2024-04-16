@@ -26,6 +26,7 @@ namespace ProjectManagerBackend.API.Controllers
             IUserRepository userRepository
             ) : base(genericRepo, mapping)
         {
+            _mappingService = mapping;
             _userRepository = userRepository;
         }
 
@@ -33,20 +34,20 @@ namespace ProjectManagerBackend.API.Controllers
         [HttpPost]
         public async override Task<ActionResult<UserDetailDTOResponse>> Create([FromBody] UserDetailDTO userDTO)
         {
-            if (userDTO.UserName.IsNullOrEmpty() || userDTO.Password.IsNullOrEmpty())
+            if (userDTO.Username.IsNullOrEmpty() || userDTO.Password.IsNullOrEmpty())
             {
                 return BadRequest();
             }
 
-            if (await _userRepository.CheckUser(userDTO.UserName))
+            if (await _userRepository.CheckUser(userDTO.Username))
             {
                 ModelState.AddModelError("", "User already exist");
                 return StatusCode(442, ModelState);
             }
 
-            var result = await _repository.CreateAsync(
-                    _mappingService.AddUser(userDTO)
-                    );
+            var mappingTing = _mappingService.AddUser(userDTO);
+
+            var result = await _userRepository.CreateUserAsync(mappingTing);
 
             return Ok(
                 _mappingService.Map<UserDetail, UserDetailDTOResponse>(result)
