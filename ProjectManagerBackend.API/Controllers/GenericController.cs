@@ -44,7 +44,7 @@ namespace ProjectManagerBackend.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<TEntity>>> GetAll()
+        public async virtual Task<ActionResult<IEnumerable<TEntity>>> GetAll()
         {
             var items = await _repository.GetAllAsync();
             if (items == null)
@@ -55,7 +55,7 @@ namespace ProjectManagerBackend.API.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<TEntity>> GetById(int id)
+        public async virtual Task<ActionResult<TEntity>> GetById(int id)
         {
             var item = await _repository.GetByIdAsync(id);
             if (item == null)
@@ -64,7 +64,7 @@ namespace ProjectManagerBackend.API.Controllers
         }
 
         [HttpDelete]
-        public async Task<IActionResult> Delete(int id)
+        public async virtual Task<IActionResult> Delete(int id)
         {
             try
             {
