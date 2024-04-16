@@ -6,16 +6,17 @@ namespace ProjectManagerBackend.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class GenericController<TEntity, TEntityDTO> : ControllerBase 
+    public class GenericController<TEntity, TEntityDTO, TEntityDTOResponse> : ControllerBase 
         where TEntity : class
         where TEntityDTO : class
+        where TEntityDTOResponse : class
     {
         public readonly IGenericRepository<TEntity> _repository;
-        public readonly IMappingService<TEntityDTO, TEntity> _mapping;
+        public readonly IMappingService _mapping;
 
         public GenericController(
             IGenericRepository<TEntity> repository,
-            IMappingService<TEntityDTO, TEntity> mapping
+            IMappingService mapping
             )
         {
             _repository = repository;
@@ -23,7 +24,7 @@ namespace ProjectManagerBackend.API.Controllers
         }
 
         [HttpPost]
-        public async virtual Task<ActionResult<TEntity>> Create(TEntityDTO entity)
+        public async virtual Task<ActionResult<TEntityDTOResponse>> Create(TEntityDTO entity)
         {
             try
             {
@@ -33,8 +34,9 @@ namespace ProjectManagerBackend.API.Controllers
                 if (!ModelState.IsValid)
                     return BadRequest("Modelstate is Invalid");
 
+                var result = await _repository.CreateAsync(_mapping.Map<TEntityDTO, TEntity>(entity));
 
-                return Ok(await _repository.CreateAsync(_mapping.Map(entity)));
+                return Ok(_mapping.Map<TEntity, TEntityDTOResponse>(result));
             }
             catch (Exception ex)
             {
@@ -44,7 +46,7 @@ namespace ProjectManagerBackend.API.Controllers
         }
 
         [HttpGet]
-        public async virtual Task<ActionResult<IEnumerable<TEntity>>> GetAll()
+        public async virtual Task<ActionResult<IEnumerable<TEntityDTOResponse>>> GetAll()
         {
             var items = await _repository.GetAllAsync();
             if (items == null)
@@ -55,7 +57,7 @@ namespace ProjectManagerBackend.API.Controllers
         }
 
         [HttpGet("{id}")]
-        public async virtual Task<ActionResult<TEntity>> GetById(int id)
+        public async virtual Task<ActionResult<TEntityDTOResponse>> GetById(int id)
         {
             var item = await _repository.GetByIdAsync(id);
             if (item == null)

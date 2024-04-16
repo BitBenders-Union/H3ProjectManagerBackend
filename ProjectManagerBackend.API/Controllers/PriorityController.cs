@@ -5,10 +5,10 @@ namespace ProjectManagerBackend.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PriorityController : GenericController<Priority, PriorityDTO>
+    public class PriorityController : GenericController<Priority, PriorityDTO, PriorityDTO>
     {
         public PriorityController(IGenericRepository<Priority> repository,
-            IMappingService<PriorityDTO, Priority> mapping) : base(repository, mapping)
+            IMappingService mapping) : base(repository, mapping)
         {
         }
     }

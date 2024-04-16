@@ -8,11 +8,11 @@ namespace ProjectManagerBackend.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ProjectTaskController : GenericController<ProjectTask, ProjectTaskDTO>
+    public class ProjectTaskController : GenericController<ProjectTask, ProjectTaskDTO, ProjectTaskDTO>
     {
         public ProjectTaskController(
             IGenericRepository<ProjectTask> repository,
-            IMappingService<ProjectTaskDTO, ProjectTask> mapping
+            IMappingService mapping
             ) : base(repository, mapping)
         {
         }

@@ -5,9 +5,7 @@ using ProjectManagerBackend.Repo.Models;
 
 namespace ProjectManagerBackend.Repo
 {
-    public class MappingService<TSource, TDestination> : IMappingService<TSource, TDestination>
-        where TSource : class
-        where TDestination : class
+    public class MappingService : IMappingService
     {
         private readonly IHashingService hashingService;
 
@@ -34,16 +32,14 @@ namespace ProjectManagerBackend.Repo
             return userDetail;
         }
 
-        public TDestination Map(TSource source)
+        public TMapped Map<T, TMapped>(T source)
         {
             if (source == null)
-            {
-                return default(TDestination);
-            }
+                return default(TMapped);
 
-            var destination = Activator.CreateInstance<TDestination>();
-            var sourceProperties = typeof(TSource).GetProperties();
-            var destinationProperties = typeof(TDestination).GetProperties();
+            var destination = Activator.CreateInstance<TMapped>();
+            var sourceProperties = typeof(T).GetProperties();
+            var destinationProperties = typeof(TMapped).GetProperties();
 
             foreach (var sourceProperty in sourceProperties)
             {
@@ -56,6 +52,9 @@ namespace ProjectManagerBackend.Repo
             }
 
             return destination;
+
+
         }
+
     }
 }
