@@ -1,4 +1,5 @@
-﻿using ProjectManagerBackend.Repo.Models;
+﻿using ProjectManagerBackend.Repo.DTOs;
+using ProjectManagerBackend.Repo.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,7 @@ namespace ProjectManagerBackend.Repo.Interfaces
     public interface IJwtService
     {
         public string CreateToken(UserDetail userDetail);
-        public string CreateRefreshToken(string token);
-        ClaimsPrincipal GetClaimsPrincipal(string token);
+        public Task<string> CreateRefreshToken();
+        public ClaimsPrincipal GetClaimsPrincipal(string token);
     }
 }
