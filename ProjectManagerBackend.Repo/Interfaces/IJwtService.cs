@@ -10,7 +10,7 @@ namespace ProjectManagerBackend.Repo.Interfaces
 {
     public interface IJwtService
     {
-        public string CreateToken(UserDetail userLogin);
+        public string CreateToken(UserDetail userDetail);
         public string CreateRefreshToken(string token);
         ClaimsPrincipal GetClaimsPrincipal(string token);
     }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ProjectManagerBackend.Repo.Data;
+using ProjectManagerBackend.Repo.DTOs;
 using ProjectManagerBackend.Repo.Interfaces;
 using ProjectManagerBackend.Repo.Models;
 using System;
@@ -28,6 +29,13 @@ namespace ProjectManagerBackend.Repo.Repositories
         {
             _context.UserDetails.Update(user);
             return await _context.SaveChangesAsync() > 0;
+        }
+
+        public async Task<UserDetail> CreateUserAsync(UserDetail userDetail)
+        {
+            await dataContext.AddAsync(userDetail);
+            await dataContext.SaveChangesAsync();
+            return userDetail;
         }
     }
 }

@@ -20,7 +20,7 @@ namespace ProjectManagerBackend.Repo
 
             UserDetail userDetail = new()
             {
-                Username = userDetailDTO.UserName,
+                Username = userDetailDTO.Username,
                 PasswordHash = hash,
                 PasswordSalt = salt,
                 IsActive = true,

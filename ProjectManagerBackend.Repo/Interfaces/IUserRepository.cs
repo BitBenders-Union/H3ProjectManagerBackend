@@ -1,4 +1,5 @@
-﻿using ProjectManagerBackend.Repo.Models;
+﻿using ProjectManagerBackend.Repo.DTOs;
+using ProjectManagerBackend.Repo.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,8 @@ namespace ProjectManagerBackend.Repo.Interfaces
     public interface IUserRepository
     {
         public Task<bool> CheckUser(string username);
+
         public Task<bool> UpdateUser(UserDetail user);
+
     }
 }
