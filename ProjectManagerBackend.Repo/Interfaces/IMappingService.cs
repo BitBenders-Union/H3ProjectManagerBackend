@@ -14,6 +14,7 @@ namespace ProjectManagerBackend.Repo.Interfaces
         public UserDetail AddUser (UserDetailDTO userDetailDTO);
         //TDestination Map(TSource source);
         public UserDetail UserToken(TokenDTO tokenDTO);
-        public TMapped Map<T, TMapped>(T source);
+
+        public TMapped? Map<T, TMapped>(T source);
     }
 }

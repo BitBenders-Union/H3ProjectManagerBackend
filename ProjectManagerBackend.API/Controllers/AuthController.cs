@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using ProjectManagerBackend.Repo.DTOs;
@@ -50,13 +50,35 @@ namespace ProjectManagerBackend.API.Controllers
                 return StatusCode(442, ModelState);
             }
 
-            var mappingTing = _mappingService.AddUser(userDTO);
+            var result = await _repository.CreateAsync(_mappingService.AddUser(userDTO));
 
-            var result = await _userRepository.CreateUserAsync(mappingTing);
+            return Ok(_mappingService.Map<UserDetail, UserDetailDTOResponse>(result));
+        }
 
-            return Ok(
-                _mappingService.Map<UserDetail, UserDetailDTOResponse>(result)
-                );
+        [HttpPut]
+        public async Task<IActionResult> Update([FromBody] UserDetailDTO userDto)
+        {
+            try
+            {
+                if (userDto == null || userDto.Id == 0)
+                    return BadRequest("Invalid User or Id");
+
+                if (!ModelState.IsValid)
+                    return StatusCode(500, ModelState);
+
+                var userEntity = _mapping.AddUser(userDto);
+
+                if (await _userRepository.CheckUser(userEntity.Username))
+                    return NotFound("User not found");
+
+                return await _userRepository.UpdateUser(userEntity) ? Ok() : BadRequest("Could not update");
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
         }
 
         [HttpPost("/login")]
@@ -94,5 +116,6 @@ namespace ProjectManagerBackend.API.Controllers
                 RefreshToken = newRefreshToken
             });
         }
+
     }
 }

@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using ProjectManagerBackend.Repo.Interfaces;
-using ProjectManagerBackend.Repo.Models;
-
+﻿
 namespace ProjectManagerBackend.API.Controllers;
 
 [ApiController]
@@ -18,24 +15,34 @@ public class ProjectCategoryController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Create(ProjectCategory projectCategory)
     {
-        if (projectCategory == null)
+        try
         {
-            return BadRequest("Category cannot be null");
+            if (projectCategory == null)
+            {
+                return BadRequest("Category cannot be null");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Invalid model state");
+            }
+
+            var createdCategory = await _projectCategory.CreateCategory(projectCategory);
+
+            if (createdCategory == null)
+            {
+                return BadRequest("Category could not be created");
+            }
+
+            return Ok(projectCategory);
+        }
+        catch (Exception ex)
+        {
+
+            return BadRequest(ex.Message);
         }
 
-        if (!ModelState.IsValid)
-        {
-            return BadRequest("Invalid model state");
-        }
 
-        var createdCategory = await _projectCategory.CreateCategory(projectCategory);
-
-        if (createdCategory == null)
-        {
-            return BadRequest("Category could not be created");
-        }
-
-        return Ok(projectCategory);        
     }
 
     [HttpGet]
@@ -96,20 +103,28 @@ public class ProjectCategoryController : ControllerBase
     [HttpDelete]
     public async Task<IActionResult> Delete(ProjectCategory projectCategory)
     {
-        if (projectCategory == null)
+        try
         {
-            return BadRequest("Category cannot be null");
-        }
-        if (!ModelState.IsValid)
-        {
-            return BadRequest("Invalid model state");
-        }
-        if (!await _projectCategory.DoesExist(projectCategory.Id))
-        {
-            return NotFound("Category not found");
-        }
+            if (projectCategory == null)
+            {
+                return BadRequest("Category cannot be null");
+            }
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Invalid model state");
+            }
+            if (!await _projectCategory.DoesExist(projectCategory.Id))
+            {
+                return NotFound("Category not found");
+            }
 
-        return Ok(await _projectCategory.DeleteCategory(projectCategory));
+            return Ok(await _projectCategory.DeleteCategory(projectCategory));
+        }
+        catch (Exception ex)
+        {
+
+            return BadRequest(ex.Message);
+        }
     }
 
 }
