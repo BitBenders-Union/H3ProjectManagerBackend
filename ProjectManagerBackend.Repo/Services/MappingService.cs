@@ -32,6 +32,17 @@ namespace ProjectManagerBackend.Repo
             return userDetail;
         }
 
+        public UserDetail UserToken(TokenDTO tokenDTO)
+        {
+            UserDetail userToken = new()
+            {
+                Token = tokenDTO.AccessToken,
+                RefreshToken = tokenDTO.RefreshToken
+            };
+
+            return userToken;
+        }
+
         public TMapped Map<T, TMapped>(T source)
         {
             if (source == null)

@@ -12,5 +12,8 @@ namespace ProjectManagerBackend.Repo.Interfaces
     {
         public Task<bool> CheckUser(string username);
         public Task<UserDetail> CreateUserAsync(UserDetail userDetail);
+        public Task<bool> AccountExist(string username, byte[] passwordhash);
+        public Task<UserDetail> GetUserDetail(string userName);
+        public Task<bool> Save();
     }
 }
