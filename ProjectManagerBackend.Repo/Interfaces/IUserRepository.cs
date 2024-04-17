@@ -11,6 +11,8 @@ namespace ProjectManagerBackend.Repo.Interfaces
     public interface IUserRepository
     {
         public Task<bool> CheckUser(string username);
-        public Task<UserDetail> CreateUserAsync(UserDetail userDetail);
+
+        public Task<bool> UpdateUser(UserDetail user);
+
     }
 }

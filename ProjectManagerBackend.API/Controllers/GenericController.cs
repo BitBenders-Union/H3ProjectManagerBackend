@@ -48,12 +48,29 @@ namespace ProjectManagerBackend.API.Controllers
         [HttpGet]
         public async virtual Task<ActionResult<IEnumerable<TEntityDTOResponse>>> GetAll()
         {
-            var items = await _repository.GetAllAsync();
-            if (items == null)
+            try
             {
-                return NotFound();
+
+                var items = await _repository.GetAllAsync();
+                if (items == null)
+                {
+                    return NotFound();
+                }
+
+                var result = new List<TEntityDTOResponse>();
+                
+                foreach ( var item in items )
+                {
+                    result.Add(_mapping.Map<TEntity, TEntityDTOResponse>(item));
+                }
+
+                return Ok(result);
             }
-            return Ok(items);
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
         }
 
         [HttpGet("{id}")]
@@ -62,7 +79,7 @@ namespace ProjectManagerBackend.API.Controllers
             var item = await _repository.GetByIdAsync(id);
             if (item == null)
                 return NotFound();
-            return Ok(item);
+            return Ok(_mapping.Map<TEntity, TEntityDTOResponse>(item));
         }
 
         [HttpDelete]
@@ -83,6 +100,8 @@ namespace ProjectManagerBackend.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+
 
     }
 }
