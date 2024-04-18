@@ -48,9 +48,9 @@ namespace ProjectManagerBackend.Repo.Repositories
             return true;
         }
 
-        public UserDetail GetUserDetail(string userName)
+        public async Task<UserDetail> GetUserDetail(string userName)
         {
-            return _context.UserDetails.FirstOrDefault(x => x.Username == userName);
+            return await _context.UserDetails.FirstOrDefaultAsync(x => x.Username == userName);
         }
 
         public async Task<bool> Save()

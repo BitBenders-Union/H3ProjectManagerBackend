@@ -94,7 +94,7 @@ namespace ProjectManagerBackend.API.Controllers
                 return NotFound();
             }
 
-            var getUserDetail =  _userRepository.GetUserDetail(request.Username);
+            var getUserDetail =  await _userRepository.GetUserDetail(request.Username);
             byte[] hashRequestPassword = _hashingService.PasswordHashing(request.Password, getUserDetail.PasswordSalt);
 
             if (!await _userRepository.AccountExist(request.Username, hashRequestPassword))
