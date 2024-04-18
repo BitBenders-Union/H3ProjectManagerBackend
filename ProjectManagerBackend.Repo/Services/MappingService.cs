@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ProjectManagerBackend.Repo
 {
-    internal class MappingService
+    public class MappingService
     {
     }
 }
