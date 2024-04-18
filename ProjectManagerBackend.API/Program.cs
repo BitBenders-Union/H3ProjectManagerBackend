@@ -27,6 +27,7 @@ builder.Services.AddScoped<IGenericRepository<UserDetail>, GenericRepository<Use
 builder.Services.AddScoped<IMappingService, MappingService>();
 builder.Services.AddScoped<IHashingService, HashingService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IJwtService, JwtService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

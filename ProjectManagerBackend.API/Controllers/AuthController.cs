@@ -82,7 +82,7 @@ namespace ProjectManagerBackend.API.Controllers
         }
 
         [HttpPost("/login")]
-        public async Task<IActionResult> Login(UserDetailDTO request)
+        public async Task<IActionResult> Login(LoginDTO request)
         {
             if (request == null)
             {
@@ -94,7 +94,7 @@ namespace ProjectManagerBackend.API.Controllers
                 return NotFound();
             }
 
-            var getUserDetail = await _userRepository.GetUserDetail(request.Username);
+            var getUserDetail =  _userRepository.GetUserDetail(request.Username);
             byte[] hashRequestPassword = _hashingService.PasswordHashing(request.Password, getUserDetail.PasswordSalt);
 
             if (!await _userRepository.AccountExist(request.Username, hashRequestPassword))

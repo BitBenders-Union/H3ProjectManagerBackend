@@ -80,5 +80,13 @@ namespace ProjectManagerBackend.Repo
 
         }
 
+        public UserDetail UserLogin(LoginDTO loginDTO)
+        {
+            UserDetail userDetail = new()
+            {
+                Username = loginDTO.Username,
+            };
+            return userDetail;
+        }
     }
 }
