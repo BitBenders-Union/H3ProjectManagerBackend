@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using ProjectManagerBackend.Repo.DTOs;
@@ -16,18 +16,23 @@ namespace ProjectManagerBackend.API.Controllers
     {
         private readonly IMappingService _mappingService;
         private readonly IUserRepository _userRepository;
+        private readonly IHashingService _hashingService;
+        private readonly IJwtService _jwtService;
 
 
         public AuthController(
 
             IGenericRepository<UserDetail> genericRepo,
-
+            IHashingService hashingService,
             IMappingService mapping,
-            IUserRepository userRepository
+            IUserRepository userRepository,
+            IJwtService jwtService
             ) : base(genericRepo, mapping)
         {
             _mappingService = mapping;
             _userRepository = userRepository;
+            _hashingService = hashingService;
+            _jwtService = jwtService;
         }
 
 
@@ -74,6 +79,42 @@ namespace ProjectManagerBackend.API.Controllers
                 return BadRequest(ex.Message);
             }
 
+        }
+
+        [HttpPost("/login")]
+        public async Task<IActionResult> Login(UserDetailDTO request)
+        {
+            if (request == null)
+            {
+                return NotFound();
+            }
+
+            if (!await _userRepository.CheckUser(request.Username))
+            {
+                return NotFound();
+            }
+
+            var getUserDetail = await _userRepository.GetUserDetail(request.Username);
+            byte[] hashRequestPassword = _hashingService.PasswordHashing(request.Password, getUserDetail.PasswordSalt);
+
+            if (!await _userRepository.AccountExist(request.Username, hashRequestPassword))
+            {
+                ModelState.AddModelError("", "Something went wrong with the server");
+                return StatusCode(500, ModelState);
+            }
+
+            getUserDetail.Token = _jwtService.CreateToken(getUserDetail);
+            var newRefreshToken = await _jwtService.CreateRefreshToken();
+            var newToken = getUserDetail.Token;
+            getUserDetail.RefreshToken = newRefreshToken;
+            getUserDetail.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(1);
+            await _userRepository.Save();
+            
+            return Ok(new TokenDTO()
+            {
+                AccessToken = newToken,
+                RefreshToken = newRefreshToken
+            });
         }
 
     }

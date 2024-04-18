@@ -15,6 +15,9 @@ namespace ProjectManagerBackend.Repo.Models
         public bool IsActive { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        public string Token { get; set; }
+        public string? RefreshToken { get; set; }
+        public DateTime? RefreshTokenExpiryTime { get; set; }
         public DateTime CreatedDate { get; set; }
         public Department? Department { get; set; }
         public Role? Role { get; set; }
