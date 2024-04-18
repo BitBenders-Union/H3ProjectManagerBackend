@@ -6,12 +6,14 @@ using System.Threading.Tasks;
 
 namespace ProjectManagerBackend.Repo.Models
 {
-    public class Comment
+    public class Client
     {
         public int Id { get; set; }
-        public string Title { get; set; }
+        public string Name { get; set; }
         public string Description { get; set; }
-        public UserDetail UserDetail { get; set; }
-        public ProjectTask ProjectTask { get; set; }
+        public string Adress { get; set; }
+        public string Email { get; set; }
+        public List<Project> Projects { get; set; }
+
     }
 }

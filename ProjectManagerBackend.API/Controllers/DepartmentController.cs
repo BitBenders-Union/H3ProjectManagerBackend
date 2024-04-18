@@ -1,13 +1,15 @@
-﻿
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+
 namespace ProjectManagerBackend.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ProjectTaskController : GenericController<ProjectTask, ProjectTaskDTO, ProjectTaskDTO>
+    public class DepartmentController : GenericController<Department, DepartmentDTO, DepartmentDTO>
     {
         private readonly IMappingService _mappingService;
-        public ProjectTaskController(
-            IGenericRepository<ProjectTask> repository,
+        public DepartmentController(
+            IGenericRepository<Department> repository,
             IMappingService mapping
             ) : base(repository, mapping)
         {
@@ -15,22 +17,19 @@ namespace ProjectManagerBackend.API.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> Update(ProjectTaskDTO projectTaskDTO)
+        public async Task<IActionResult> Update(DepartmentDTO department)
         {
             try
             {
-                if (projectTaskDTO == null)
+                if (department == null)
                 {
-                    return BadRequest("Role cannot be null");
+                    return BadRequest("Department cannot be null");
                 }
-
-                if(!ModelState.IsValid)
+                if (!ModelState.IsValid)
                 {
                     return BadRequest("Invalid model state");
                 }
-
-                return Ok(await _repository.UpdateAsync(_mapping
-                    .Map<ProjectTaskDTO, ProjectTask>(projectTaskDTO)));
+                return Ok(await _repository.UpdateAsync(_mapping.Map<DepartmentDTO, Department>(department)));
             }
             catch (Exception ex)
             {

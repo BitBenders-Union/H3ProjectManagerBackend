@@ -4,10 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ProjectManagerBackend.Repo.Interfaces
+namespace ProjectManagerBackend.Repo.DTOs
 {
-    public interface IBase<T> where T : class
+    public class LocationDTO
     {
         public int Id { get; set; }
+        public string Name { get; set; }
+        public string Address { get; set; }
     }
 }

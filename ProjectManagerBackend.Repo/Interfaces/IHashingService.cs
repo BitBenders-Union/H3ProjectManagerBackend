@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace ProjectManagerBackend.Repo.Interfaces
 {
-    public interface IBase<T> where T : class
+    public interface IHashingService
     {
-        public int Id { get; set; }
+        public byte[] PasswordHashing(string password, byte[] salt);
+        public byte[] GenerateSalt();
     }
 }

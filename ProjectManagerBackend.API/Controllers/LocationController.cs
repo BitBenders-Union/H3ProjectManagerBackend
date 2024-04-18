@@ -3,34 +3,31 @@ namespace ProjectManagerBackend.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ProjectTaskController : GenericController<ProjectTask, ProjectTaskDTO, ProjectTaskDTO>
+    public class LocationController : GenericController<Location, LocationDTO, LocationDTO>
     {
         private readonly IMappingService _mappingService;
-        public ProjectTaskController(
-            IGenericRepository<ProjectTask> repository,
-            IMappingService mapping
+        public LocationController(
+            IGenericRepository<Location> repository,
+            IMappingService mapping            
             ) : base(repository, mapping)
         {
             _mappingService = mapping;
         }
 
         [HttpPut]
-        public async Task<IActionResult> Update(ProjectTaskDTO projectTaskDTO)
+        public async Task<IActionResult> Update(LocationDTO location)
         {
             try
             {
-                if (projectTaskDTO == null)
+                if (location == null)
                 {
-                    return BadRequest("Role cannot be null");
+                    return BadRequest("Location cannot be null");
                 }
-
-                if(!ModelState.IsValid)
+                if (!ModelState.IsValid)
                 {
                     return BadRequest("Invalid model state");
                 }
-
-                return Ok(await _repository.UpdateAsync(_mapping
-                    .Map<ProjectTaskDTO, ProjectTask>(projectTaskDTO)));
+                return Ok(await _repository.UpdateAsync(_mapping.Map<LocationDTO, Location>(location)));
             }
             catch (Exception ex)
             {

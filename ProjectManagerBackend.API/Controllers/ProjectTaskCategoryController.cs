@@ -3,11 +3,11 @@ namespace ProjectManagerBackend.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ProjectTaskController : GenericController<ProjectTask, ProjectTaskDTO, ProjectTaskDTO>
+    public class ProjectTaskCategoryController : GenericController<ProjectTaskCategory, ProjectTaskCategoryDTO, ProjectTaskCategoryDTO>
     {
         private readonly IMappingService _mappingService;
-        public ProjectTaskController(
-            IGenericRepository<ProjectTask> repository,
+        public ProjectTaskCategoryController(
+            IGenericRepository<ProjectTaskCategory> repository,
             IMappingService mapping
             ) : base(repository, mapping)
         {
@@ -15,25 +15,27 @@ namespace ProjectManagerBackend.API.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> Update(ProjectTaskDTO projectTaskDTO)
+        public async Task<IActionResult> Update(ProjectTaskCategoryDTO projectTaskCategory)
         {
             try
             {
-                if (projectTaskDTO == null)
+                if (projectTaskCategory == null)
                 {
-                    return BadRequest("Role cannot be null");
+                    return BadRequest("Project Task Category cannot be null");
                 }
 
-                if(!ModelState.IsValid)
+                if (!ModelState.IsValid)
                 {
                     return BadRequest("Invalid model state");
                 }
 
                 return Ok(await _repository.UpdateAsync(_mapping
-                    .Map<ProjectTaskDTO, ProjectTask>(projectTaskDTO)));
+                    .Map<ProjectTaskCategoryDTO, ProjectTaskCategory>(projectTaskCategory)));
+
             }
             catch (Exception ex)
             {
+
                 return BadRequest(ex.Message);
             }
         }
