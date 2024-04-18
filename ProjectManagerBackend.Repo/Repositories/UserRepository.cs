@@ -33,8 +33,8 @@ namespace ProjectManagerBackend.Repo.Repositories
 
         public async Task<UserDetail> CreateUserAsync(UserDetail userDetail)
         {
-            await dataContext.AddAsync(userDetail);
-            await dataContext.SaveChangesAsync();
+            await _context.AddAsync(userDetail);
+            await _context.SaveChangesAsync();
             return userDetail;
         }
 
