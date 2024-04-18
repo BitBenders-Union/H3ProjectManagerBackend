@@ -31,7 +31,7 @@ namespace ProjectManagerBackend.Repo.Services
         public string CreateToken(UserDetail userDetail)
         {
             List<Claim> claims = new List<Claim> {
-                new Claim(JwtRegisteredClaimNames.Jti, userDetail.Id.ToString()),
+                new Claim(JwtRegisteredClaimNames.NameId, userDetail.Id.ToString()),
                 new Claim("username", userDetail.Username),
                 new Claim("firstname", userDetail.FirstName),
                 new Claim("lastname", userDetail.LastName),

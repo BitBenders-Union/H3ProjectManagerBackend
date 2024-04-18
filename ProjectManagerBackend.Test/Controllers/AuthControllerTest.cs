@@ -23,8 +23,10 @@ namespace ProjectManagerBackend.Test.Controllers
             var mockRepo = new Mock<IGenericRepository<UserDetail>>();
             var mockMapping = new Mock<IMappingService>();
             var mockUserRepo = new Mock<IUserRepository>();
+            var mockJwtService = new Mock<IJwtService>();
+            var mockHashingService = new Mock<IHashingService>();
 
-            var controller = new AuthController(mockRepo.Object, mockMapping.Object, mockUserRepo.Object);
+            var controller = new AuthController(mockRepo.Object, mockHashingService.Object, mockMapping.Object, mockUserRepo.Object, mockJwtService.Object);
 
             var userDetail = new UserDetailDTO
             {
