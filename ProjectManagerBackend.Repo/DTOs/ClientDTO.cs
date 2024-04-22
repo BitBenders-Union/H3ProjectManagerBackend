@@ -4,14 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ProjectManagerBackend.Repo.Models
+namespace ProjectManagerBackend.Repo.DTOs
 {
-    public class Comment
+    public class ClientDTO
     {
         public int Id { get; set; }
-        public string Title { get; set; }
+        public string Name { get; set; }
         public string Description { get; set; }
-        public UserDetail UserDetail { get; set; }
-        public ProjectTask ProjectTask { get; set; }
+        public string Adress { get; set; }
+        public string Email { get; set; }
+
     }
 }

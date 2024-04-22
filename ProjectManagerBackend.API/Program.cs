@@ -1,7 +1,11 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using ProjectManagerBackend.Repo;
 using ProjectManagerBackend.Repo.Data;
 using ProjectManagerBackend.Repo.Interfaces;
+using ProjectManagerBackend.Repo.Models;
 using ProjectManagerBackend.Repo.Repositories;
+using ProjectManagerBackend.Repo.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,15 +21,19 @@ builder.Services.AddDbContext<DataContext>(options =>
 
 // DI
 
-builder.Services.AddScoped<ICrudInterface, ProjectRepository>();
-
-
-
+builder.Services.AddScoped<IGenericRepository<Project>, GenericRepository<Project>>();
+builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+builder.Services.AddScoped<IGenericRepository<UserDetail>, GenericRepository<UserDetail>>();
+builder.Services.AddScoped<IMappingService, MappingService>();
+builder.Services.AddScoped<IHashingService, HashingService>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IJwtService, JwtService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddAuthentication().AddJwtBearer();
 
 var app = builder.Build();
 
