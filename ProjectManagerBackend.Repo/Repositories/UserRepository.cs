@@ -40,8 +40,8 @@ namespace ProjectManagerBackend.Repo.Repositories
 
         public async Task<bool> AccountExist(string username, byte[] passwordhash)
         {
-            bool user = await dataContext.UserDetails.AnyAsync(x => x.Username.ToLower() == username.Trim().ToLower());
-            bool pwd = await dataContext.UserDetails.AnyAsync(x => x.PasswordHash == passwordhash);
+            bool user = await _context.UserDetails.AnyAsync(x => x.Username.ToLower() == username.Trim().ToLower());
+            bool pwd = await _context.UserDetails.AnyAsync(x => x.PasswordHash == passwordhash);
 
             if (!user || !pwd)
                 return false;
@@ -50,12 +50,12 @@ namespace ProjectManagerBackend.Repo.Repositories
 
         public async Task<UserDetail> GetUserDetail(string userName)
         {
-            return dataContext.UserDetails.FirstOrDefault(x => x.Username == userName);
+            return await _context.UserDetails.FirstOrDefaultAsync(x => x.Username == userName);
         }
 
         public async Task<bool> Save()
         {
-           var saved = await dataContext.SaveChangesAsync();
+           var saved = await _context.SaveChangesAsync();
             return saved > 0;
         }
     }
