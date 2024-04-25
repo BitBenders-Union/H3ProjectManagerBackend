@@ -23,11 +23,14 @@ builder.Services.AddDbContext<DataContext>(options =>
 
 builder.Services.AddCors(options =>
 {
+    var allowedOrigins = "*";
+
     options.AddDefaultPolicy(policy =>
     {
-        policy.AllowAnyOrigin()
-              .AllowAnyHeader()
-              .AllowAnyMethod();
+
+        policy.WithOrigins(allowedOrigins)
+              .WithHeaders("Content-Type", "Authorization", "Access-Control-Allow-Headers", "Access-Control-Allow-Origin")
+              .WithMethods("GET", "POST", "PUT", "DELETE", "PATCH");
     });
 });
 
@@ -49,16 +52,6 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddAuthentication().AddJwtBearer();
 
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("shit", policy =>
-    {
-        policy.AllowAnyOrigin()
-        .AllowAnyHeader()
-        .AllowAnyMethod();
-    });
-
-});
 
 var app = builder.Build();
 
@@ -68,7 +61,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-app.UseCors("shit");
 
 app.UseHttpsRedirection();
 

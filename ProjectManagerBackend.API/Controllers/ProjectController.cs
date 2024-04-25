@@ -45,6 +45,24 @@ namespace ProjectManagerBackend.API.Controllers
         [HttpGet("getAll/{userid}")]
         public async Task<ActionResult<ProjectDashboardDTO>> GetAllSpecial(int userid)
         {
+
+            var category = new ProjectCategoryDTO()
+            {
+                Id = 1,
+                Name = "test"
+            };
+
+            var result2 = new ProjectDashboardDTO()
+            {
+                Id = 1,
+                Name = "Project - Title",
+                Category = category.Name,
+                Owner = "test - Owner"
+            };
+
+            List<ProjectDashboardDTO> pjl = new List<ProjectDashboardDTO>();
+            pjl.Add(result2);
+            return Ok(pjl);
             try
             {
                 var result = await _projectRepository.GetAllProjectDashboards(userid);
