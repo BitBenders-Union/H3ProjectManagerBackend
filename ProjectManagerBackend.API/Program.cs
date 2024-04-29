@@ -19,11 +19,28 @@ builder.Services.AddDbContext<DataContext>(options =>
 });
 
 
+// cors
+
+builder.Services.AddCors(options =>
+{
+    var allowedOrigins = "*";
+
+    options.AddDefaultPolicy(policy =>
+    {
+
+        policy.WithOrigins(allowedOrigins)
+              .WithHeaders("Content-Type", "Authorization", "Access-Control-Allow-Headers", "Access-Control-Allow-Origin")
+              .WithMethods("GET", "POST", "PUT", "DELETE", "PATCH");
+    });
+});
+
+
 // DI
 
 builder.Services.AddScoped<IGenericRepository<Project>, GenericRepository<Project>>();
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<IGenericRepository<UserDetail>, GenericRepository<UserDetail>>();
+builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
 builder.Services.AddScoped<IMappingService, MappingService>();
 builder.Services.AddScoped<IHashingService, HashingService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
@@ -35,6 +52,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddAuthentication().AddJwtBearer();
 
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -45,6 +63,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors();
 
 app.UseAuthorization();
 
