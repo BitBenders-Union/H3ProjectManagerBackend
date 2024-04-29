@@ -117,5 +117,27 @@ namespace ProjectManagerBackend.API.Controllers
             });
         }
 
+        [HttpPost("RefreshToken")]
+        public async Task<IActionResult> Refresh([FromBody] TokenDTO token)
+        {
+            if (token is null)
+                return NotFound();
+            string accessToken = token.AccessToken;
+            string refreshToken = token.RefreshToken;
+            var principle = _jwtService.GetClaimsPrincipal(accessToken);
+            var username = principle.Identity.Name;
+            var user = await _userRepository.GetUserDetail(username);
+            if (user is null || user.RefreshToken != refreshToken || user.RefreshTokenExpiryTime <= DateTime.UtcNow)
+                return BadRequest();
+            var newAccessToken = _jwtService.CreateToken(user);
+            var newRefreshToken = await _jwtService.CreateRefreshToken();
+            await _userRepository.Save();
+
+            return Ok(new TokenDTO()
+            {
+                AccessToken = newAccessToken,
+                RefreshToken = newRefreshToken
+            });
+        }
     }
 }
