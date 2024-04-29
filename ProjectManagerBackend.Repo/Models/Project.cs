@@ -19,5 +19,7 @@ namespace ProjectManagerBackend.Repo.Models
         public Priority? Priority { get; set; }
         public Client? Client { get; set; }
         public List<Department>? Departments { get; set; }
+        public List<UserDetail> Users { get; set; }
+        public int OwnerId { get; set; }
     }
 }
