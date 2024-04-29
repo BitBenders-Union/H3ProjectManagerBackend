@@ -81,7 +81,7 @@ namespace ProjectManagerBackend.API.Controllers
 
         }
 
-        [HttpPost("/login")]
+        [HttpPost("Login")]
         public async Task<IActionResult> Login(LoginDTO request)
         {
             if (request == null)
