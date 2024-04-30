@@ -37,7 +37,7 @@ namespace ProjectManagerBackend.API.Controllers
                 if (!ModelState.IsValid)
                     return BadRequest("Modelstate is Invalid");
 
-                if (_validationService.WhiteSpaceValidation(entity))
+                if (!_validationService.WhiteSpaceValidation(entity))
                     return BadRequest("Invalid Model, Must not contain empty whitespace!");
 
 
@@ -90,7 +90,7 @@ namespace ProjectManagerBackend.API.Controllers
             return Ok(_mapping.Map<TEntity, TEntityDTOResponse>(item));
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public async virtual Task<IActionResult> Delete(int id)
         {
             try
