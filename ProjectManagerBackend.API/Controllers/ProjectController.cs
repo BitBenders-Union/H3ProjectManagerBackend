@@ -11,8 +11,9 @@ namespace ProjectManagerBackend.API.Controllers
         public ProjectController(
             IGenericRepository<Project> repository,
             IMappingService mapping,
-            IProjectRepository pRepo
-            ) : base(repository, mapping)
+            IProjectRepository pRepo,
+            IValidationService validationService
+            ) : base(repository, mapping, validationService)
         {
             _projectRepository = pRepo;
         }

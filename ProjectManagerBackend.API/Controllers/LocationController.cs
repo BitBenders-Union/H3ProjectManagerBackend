@@ -5,13 +5,14 @@ namespace ProjectManagerBackend.API.Controllers
     [ApiController]
     public class LocationController : GenericController<Location, LocationDTO, LocationDTO>
     {
-        private readonly IMappingService _mappingService;
+
         public LocationController(
             IGenericRepository<Location> repository,
-            IMappingService mapping            
-            ) : base(repository, mapping)
+            IMappingService mapping,
+            IValidationService validationService
+            ) : base(repository, mapping, validationService)
         {
-            _mappingService = mapping;
+
         }
 
         [HttpPut]

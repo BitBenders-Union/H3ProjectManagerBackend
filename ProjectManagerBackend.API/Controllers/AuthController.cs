@@ -23,11 +23,12 @@ namespace ProjectManagerBackend.API.Controllers
         public AuthController(
 
             IGenericRepository<UserDetail> genericRepo,
-            IHashingService hashingService,
             IMappingService mapping,
+            IValidationService validationService,
+            IHashingService hashingService,
             IUserRepository userRepository,
             IJwtService jwtService
-            ) : base(genericRepo, mapping)
+            ) : base(genericRepo, mapping, validationService)
         {
             _mappingService = mapping;
             _userRepository = userRepository;

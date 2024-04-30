@@ -5,13 +5,14 @@ namespace ProjectManagerBackend.API.Controllers
     [ApiController]
     public class CommentController : GenericController<Comment, CommentDTO, CommentDTO>
     {
-        private readonly IMappingService _mapping;
+
         public CommentController(
             IGenericRepository<Comment> repository,
-            IMappingService mapping
-            ) : base(repository, mapping)
+            IMappingService mapping,
+            IValidationService validationService
+            ) : base(repository, mapping, validationService)
         {
-            _mapping = mapping;
+
         }
 
         [HttpPut]
