@@ -5,13 +5,12 @@
     [ApiController]
     public class ProjectStatusController : GenericController<ProjectStatus, ProjectStatusDTO, ProjectStatusDTO>
     {
-        private readonly IMappingService _mappingService;
 
         public ProjectStatusController(
             IGenericRepository<ProjectStatus> repository,
-            IMappingService mapping) : base(repository, mapping)
+            IMappingService mapping,
+            IValidationService validationService) : base(repository, mapping, validationService)
         {
-            _mappingService = mapping;
         }
 
         [HttpPut]
@@ -26,6 +25,10 @@
                 if (!ModelState.IsValid)
                 {
                     return BadRequest("Invalid model state");
+                }
+                if(!_validationService.WhiteSpaceValidation(projectStatusDTO))
+                {
+                    return BadRequest("Project Status cannot be empty");
                 }
 
                 return Ok(await _repository.UpdateAsync(_mapping.Map< ProjectStatusDTO, ProjectStatus>(projectStatusDTO)));
