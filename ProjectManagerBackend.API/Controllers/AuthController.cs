@@ -51,6 +51,9 @@ namespace ProjectManagerBackend.API.Controllers
                 return StatusCode(442, ModelState);
             }
 
+            if (!_validationService.WhiteSpaceValidation(userDTO))
+                return BadRequest("No WhiteSpace allowed!");
+
             var result = await _repository.CreateAsync(_mappingService.AddUser(userDTO));
 
             return Ok(_mappingService.Map<UserDetail, UserDetailDTOResponse>(result));

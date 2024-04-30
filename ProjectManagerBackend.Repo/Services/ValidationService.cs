@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ProjectManagerBackend.Repo.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ProjectManagerBackend.Repo.Services
 {
-    public class ValidationService
+    public class ValidationService : IValidationService
     {
 
         public bool WhiteSpaceValidation<TValidation>(TValidation model)
@@ -24,7 +25,7 @@ namespace ProjectManagerBackend.Repo.Services
                 {
                     var value = (string)prop.GetValue(model); // should always be string but cast anyway
                     
-                    if(value.Any(char.IsWhiteSpace))
+                    if(value.StartsWith(" ") || value.EndsWith(" ") || value.All(char.IsWhiteSpace))
                     {
                         return false;
                     }
