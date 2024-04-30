@@ -32,7 +32,7 @@ namespace ProjectManagerBackend.Repo.Services
         {
             List<Claim> claims = new List<Claim> {
                 new Claim(JwtRegisteredClaimNames.NameId, userDetail.Id.ToString()),
-                new Claim("username", userDetail.Username),
+                new Claim(JwtRegisteredClaimNames.Name, userDetail.Username),
                 new Claim("firstname", userDetail.FirstName),
                 new Claim("lastname", userDetail.LastName),
             };

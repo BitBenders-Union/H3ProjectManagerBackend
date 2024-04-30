@@ -7,9 +7,11 @@ namespace ProjectManagerBackend.API.Controllers
     public class ClientController : GenericController<Client, ClientDTO, ClientDTO>
     {
         private readonly IMappingService _mapping;
-        public ClientController(IGenericRepository<Client> repository,
-                                IMappingService mapping
-                                ) : base(repository, mapping)
+        public ClientController(
+            IGenericRepository<Client> repository, 
+            IMappingService mapping,
+            IValidationService validationService
+            ): base(repository, mapping, validationService)
         {
             _mapping = mapping;
         }

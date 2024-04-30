@@ -5,11 +5,14 @@ namespace ProjectManagerBackend.API.Controllers
     [ApiController]
     public class PriorityController : GenericController<Priority, PriorityDTO, PriorityDTO>
     {
-        private readonly IMappingService _mapping;
-        public PriorityController(IGenericRepository<Priority> repository,
-            IMappingService mapping) : base(repository, mapping)
+
+        public PriorityController(
+            IGenericRepository<Priority> repository,
+            IMappingService mapping,
+            IValidationService validationService
+            ) : base(repository, mapping, validationService)
         {
-            _mapping = mapping;
+
         }
 
         [HttpPut]

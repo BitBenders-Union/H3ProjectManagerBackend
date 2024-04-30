@@ -7,13 +7,12 @@ namespace ProjectManagerBackend.API.Controllers
     [ApiController]
     public class RoleController : GenericController<Role, RoleDTO, RoleDTO>
     {
-        private readonly IMappingService _mappingService;
         public RoleController(
             IGenericRepository<Role> repository,
-            IMappingService mapping
-            ) : base(repository, mapping)
+            IMappingService mapping,
+            IValidationService validationService
+            ) : base(repository, mapping , validationService)
         {
-            _mappingService = mapping;
         }
 
         [HttpPut]
