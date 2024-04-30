@@ -6,14 +6,17 @@ namespace ProjectManagerBackend.API.Controllers;
 public class ProjectCategoryController : ControllerBase
 {
     private readonly IProjectCategory _projectCategory;
+    private readonly IMappingService _mappingService;
 
-    public ProjectCategoryController(IProjectCategory projectCategory)
+    public ProjectCategoryController(IProjectCategory projectCategory, IMappingService mappingService)
     {
         _projectCategory = projectCategory;
+        _mappingService = mappingService;
+
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create(ProjectCategory projectCategory)
+    public async Task<IActionResult> Create(ProjectCategoryDTO projectCategory)
     {
         try
         {
@@ -27,7 +30,7 @@ public class ProjectCategoryController : ControllerBase
                 return BadRequest("Invalid model state");
             }
 
-            var createdCategory = await _projectCategory.CreateCategory(projectCategory);
+            var createdCategory = await _projectCategory.CreateCategory(_mappingService.Map<ProjectCategoryDTO, ProjectCategory>(projectCategory));
 
             if (createdCategory == null)
             {

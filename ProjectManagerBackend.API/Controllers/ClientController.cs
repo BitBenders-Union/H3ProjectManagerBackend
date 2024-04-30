@@ -7,7 +7,7 @@ namespace ProjectManagerBackend.API.Controllers
     public class ClientController : GenericController<Client, ClientDTO, ClientDTO>
     {
         private readonly IMappingService _mapping;
-        public ClientController(IGenericRepository<Client> repository, 
+        public ClientController(IGenericRepository<Client> repository,
                                 IMappingService mapping
                                 ) : base(repository, mapping)
         {
@@ -27,7 +27,7 @@ namespace ProjectManagerBackend.API.Controllers
                 {
                     return BadRequest("Invalid model state");
                 }
-                                
+
                 return Ok(await _repository.UpdateAsync(_mapping.Map<ClientDTO, Client>(client)));
             }
             catch (Exception ex)
