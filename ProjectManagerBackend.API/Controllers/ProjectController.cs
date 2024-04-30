@@ -43,31 +43,13 @@ namespace ProjectManagerBackend.API.Controllers
         }
 
 
-        [HttpGet("getAll/{userid}")]
-        public async Task<ActionResult<ProjectDashboardDTO>> GetAllSpecial(int userid)
+        [HttpGet("GetAll/{userid}")]
+        public async Task<ActionResult<ProjectDashboardDTO>> GetForUser(int userid)
         {
-
-            var category = new ProjectCategoryDTO()
-            {
-                Id = 1,
-                Name = "test"
-            };
-
-            var result2 = new ProjectDashboardDTO()
-            {
-                Id = 1,
-                Name = "Project - Title",
-                Category = category.Name,
-                Owner = "test - Owner"
-            };
-
-            List<ProjectDashboardDTO> pjl = new List<ProjectDashboardDTO>();
-            pjl.Add(result2);
-            return Ok(pjl);
             try
             {
                 var result = await _projectRepository.GetAllProjectDashboards(userid);
-                List<ProjectDashboardDTO> pjDTO = new();
+                List<ProjectDashboardDTO> pdDTO = new();
 
                     foreach ( var project in result.Projects)
                     {
@@ -79,9 +61,9 @@ namespace ProjectManagerBackend.API.Controllers
                             Owner = await _projectRepository.GetOwnerName(project.OwnerId)
 
                         }; 
-                        pjDTO.Add(entity);
+                        pdDTO.Add(entity);
                     }
-                return Ok(pjDTO);
+                return Ok(pdDTO);
             }
             catch (Exception ex)
             {
