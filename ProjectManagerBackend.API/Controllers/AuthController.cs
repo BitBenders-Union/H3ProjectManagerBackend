@@ -23,11 +23,12 @@ namespace ProjectManagerBackend.API.Controllers
         public AuthController(
 
             IGenericRepository<UserDetail> genericRepo,
-            IHashingService hashingService,
             IMappingService mapping,
+            IValidationService validationService,
+            IHashingService hashingService,
             IUserRepository userRepository,
             IJwtService jwtService
-            ) : base(genericRepo, mapping)
+            ) : base(genericRepo, mapping, validationService)
         {
             _mappingService = mapping;
             _userRepository = userRepository;
@@ -49,6 +50,9 @@ namespace ProjectManagerBackend.API.Controllers
                 ModelState.AddModelError("", "User already exist");
                 return StatusCode(442, ModelState);
             }
+
+            if (!_validationService.WhiteSpaceValidation(userDTO))
+                return BadRequest("No WhiteSpace allowed!");
 
             var result = await _repository.CreateAsync(_mappingService.AddUser(userDTO));
 
@@ -117,5 +121,27 @@ namespace ProjectManagerBackend.API.Controllers
             });
         }
 
+        [HttpPost("RefreshToken")]
+        public async Task<IActionResult> Refresh([FromBody] TokenDTO token)
+        {
+            if (token is null)
+                return NotFound();
+            string accessToken = token.AccessToken;
+            string refreshToken = token.RefreshToken;
+            var principle = _jwtService.GetClaimsPrincipal(accessToken);
+            var username = principle.Identity.Name;
+            var user = await _userRepository.GetUserDetail(username);
+            if (user is null || user.RefreshToken != refreshToken || user.RefreshTokenExpiryTime <= DateTime.UtcNow)
+                return BadRequest();
+            var newAccessToken = _jwtService.CreateToken(user);
+            var newRefreshToken = await _jwtService.CreateRefreshToken();
+            await _userRepository.Save();
+
+            return Ok(new TokenDTO()
+            {
+                AccessToken = newAccessToken,
+                RefreshToken = newRefreshToken
+            });
+        }
     }
 }

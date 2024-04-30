@@ -5,11 +5,14 @@ namespace ProjectManagerBackend.API.Controllers
     [ApiController]
     public class PriorityController : GenericController<Priority, PriorityDTO, PriorityDTO>
     {
-        private readonly IMappingService _mapping;
-        public PriorityController(IGenericRepository<Priority> repository,
-            IMappingService mapping) : base(repository, mapping)
+
+        public PriorityController(
+            IGenericRepository<Priority> repository,
+            IMappingService mapping,
+            IValidationService validationService
+            ) : base(repository, mapping, validationService)
         {
-            _mapping = mapping;
+
         }
 
         [HttpPut]
@@ -26,6 +29,9 @@ namespace ProjectManagerBackend.API.Controllers
                 {
                     return BadRequest("Invalid model state");
                 }
+
+                if (!_validationService.WhiteSpaceValidation(priorityDTO))
+                    return BadRequest("Cannot contain whitespace");
 
                 return Ok(await _repository.UpdateAsync(_mapping.Map<PriorityDTO, Priority>(priorityDTO)));
 
