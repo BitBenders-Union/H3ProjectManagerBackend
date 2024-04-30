@@ -30,6 +30,9 @@ namespace ProjectManagerBackend.API.Controllers
                     return BadRequest("Invalid model state");
                 }
 
+                if (!_validationService.WhiteSpaceValidation(priorityDTO))
+                    return BadRequest("Cannot contain whitespace");
+
                 return Ok(await _repository.UpdateAsync(_mapping.Map<PriorityDTO, Priority>(priorityDTO)));
 
             }
