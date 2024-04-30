@@ -5,13 +5,13 @@ namespace ProjectManagerBackend.API.Controllers
     [ApiController]
     public class ProjectTaskController : GenericController<ProjectTask, ProjectTaskDTO, ProjectTaskDTO>
     {
-        private readonly IMappingService _mappingService;
         public ProjectTaskController(
             IGenericRepository<ProjectTask> repository,
-            IMappingService mapping
-            ) : base(repository, mapping)
+            IMappingService mapping,
+            IValidationService validationService
+            ) : base(repository, mapping, validationService)
         {
-            _mappingService = mapping;
+
         }
 
         [HttpPut]

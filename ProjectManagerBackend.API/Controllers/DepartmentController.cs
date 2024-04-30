@@ -7,13 +7,14 @@ namespace ProjectManagerBackend.API.Controllers
     [ApiController]
     public class DepartmentController : GenericController<Department, DepartmentDTO, DepartmentDTO>
     {
-        private readonly IMappingService _mappingService;
+
         public DepartmentController(
             IGenericRepository<Department> repository,
-            IMappingService mapping
-            ) : base(repository, mapping)
+            IMappingService mapping,
+            IValidationService validationService
+            ) : base(repository, mapping, validationService)
         {
-            _mappingService = mapping;
+
         }
 
         [HttpPut]
