@@ -83,7 +83,7 @@ public class ProjectCategoryController : ControllerBase
     }
 
     [HttpPut]
-    public async Task<IActionResult> Update(ProjectCategory projectCategory)
+    public async Task<IActionResult> Update(ProjectCategoryDTO projectCategory)
     {
         if (projectCategory == null)
         {
@@ -100,15 +100,16 @@ public class ProjectCategoryController : ControllerBase
             return NotFound("Category not found");
         }
 
-        return Ok(await _projectCategory.UpdateCategory(projectCategory));
+        return Ok(await _projectCategory.UpdateCategory(
+            _mappingService.Map<ProjectCategoryDTO, ProjectCategory>(projectCategory)));
     }
 
-    [HttpDelete]
-    public async Task<IActionResult> Delete(ProjectCategory projectCategory)
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(int id)
     {
         try
         {
-            if (projectCategory == null)
+            if (id == null)
             {
                 return BadRequest("Category cannot be null");
             }
@@ -116,12 +117,12 @@ public class ProjectCategoryController : ControllerBase
             {
                 return BadRequest("Invalid model state");
             }
-            if (!await _projectCategory.DoesExist(projectCategory.Id))
+            if (!await _projectCategory.DoesExist(id))
             {
                 return NotFound("Category not found");
             }
 
-            return Ok(await _projectCategory.DeleteCategory(projectCategory));
+            return Ok(await _projectCategory.DeleteCategory(id));
         }
         catch (Exception ex)
         {
