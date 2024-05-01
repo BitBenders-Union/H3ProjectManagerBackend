@@ -58,7 +58,7 @@ namespace ProjectManagerBackend.API.Controllers
                             Id = project.Id,
                             Name = project.Name,
                             Category = project.ProjectCategory.Name,
-                            Owner = await _projectRepository.GetOwnerName(project.OwnerId)
+                            Owner = project.Owner
 
                         }; 
                         pdDTO.Add(entity);

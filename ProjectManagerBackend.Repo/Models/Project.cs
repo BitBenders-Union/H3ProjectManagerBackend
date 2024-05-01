@@ -20,6 +20,6 @@ namespace ProjectManagerBackend.Repo.Models
         public Client? Client { get; set; }
         public List<Department>? Departments { get; set; }
         public List<UserDetail> Users { get; set; }
-        public int OwnerId { get; set; }
+        public string Owner { get; set; }
     }
 }
