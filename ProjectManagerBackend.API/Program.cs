@@ -37,6 +37,7 @@ builder.Services.AddCors(options =>
 
 // DI
 
+builder.Services.AddScoped<IProjectCategory, ProjectCategoryRepository>();
 builder.Services.AddScoped<IGenericRepository<Project>, GenericRepository<Project>>();
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<IGenericRepository<UserDetail>, GenericRepository<UserDetail>>();

@@ -39,9 +39,10 @@ public class ProjectCategoryRepository : IProjectCategory
         await _context.SaveChangesAsync();
         return projectCategory;
     }
-    public async Task<bool> DeleteCategory(ProjectCategory projectCategory)
+    public async Task<bool> DeleteCategory(int id)
     {
-        _context.Remove(projectCategory);
+        var category = await _context.ProjectCategories.FindAsync(id);
+        _context.Remove(category);
         int saved = await _context.SaveChangesAsync();
         return saved > 0;
     }

@@ -8,6 +8,6 @@ public interface IProjectCategory
     public Task<ICollection<ProjectCategory>> GetAllCategories();
     public Task<ProjectCategory> GetCategoryById(int id);
     public Task<ProjectCategory> UpdateCategory(ProjectCategory category);
-    public Task<bool> DeleteCategory(ProjectCategory projectCategory);
+    public Task<bool> DeleteCategory(int id);
     public Task<bool> DoesExist(int id);
 }

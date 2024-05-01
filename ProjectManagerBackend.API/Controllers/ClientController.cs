@@ -29,7 +29,7 @@ namespace ProjectManagerBackend.API.Controllers
                 {
                     return BadRequest("Invalid model state");
                 }
-                                
+
                 return Ok(await _repository.UpdateAsync(_mapping.Map<ClientDTO, Client>(client)));
             }
             catch (Exception ex)
