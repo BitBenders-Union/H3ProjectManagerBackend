@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ProjectManagerBackend.Repo.Migrations
 {
     /// <inheritdoc />
-    public partial class init : Migration
+    public partial class rebuild : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -166,12 +166,13 @@ namespace ProjectManagerBackend.Repo.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    StartDate = table.Column<DateOnly>(type: "date", nullable: false),
-                    EndDate = table.Column<DateOnly>(type: "date", nullable: false),
+                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ProjectStatusId = table.Column<int>(type: "int", nullable: true),
                     ProjectCategoryId = table.Column<int>(type: "int", nullable: true),
                     PriorityId = table.Column<int>(type: "int", nullable: true),
-                    ClientId = table.Column<int>(type: "int", nullable: true)
+                    ClientId = table.Column<int>(type: "int", nullable: true),
+                    Owner = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -204,11 +205,18 @@ namespace ProjectManagerBackend.Repo.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    Username = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PasswordHash = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
+                    PasswordSalt = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
                     FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Token = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    RefreshToken = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    RefreshTokenExpiryTime = table.Column<DateTime>(type: "datetime2", nullable: true),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    DepartmentId = table.Column<int>(type: "int", nullable: false),
-                    RoleId = table.Column<int>(type: "int", nullable: false)
+                    DepartmentId = table.Column<int>(type: "int", nullable: true),
+                    RoleId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -217,14 +225,12 @@ namespace ProjectManagerBackend.Repo.Migrations
                         name: "FK_UserDetails_Departments_DepartmentId",
                         column: x => x.DepartmentId,
                         principalTable: "Departments",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_UserDetails_Roles_RoleId",
                         column: x => x.RoleId,
                         principalTable: "Roles",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -294,23 +300,24 @@ namespace ProjectManagerBackend.Repo.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "UserLogins",
+                name: "ProjectUserDetail",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Username = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PasswordHash = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
-                    PasswordSalt = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false),
-                    UserDetailId = table.Column<int>(type: "int", nullable: false)
+                    ProjectsId = table.Column<int>(type: "int", nullable: false),
+                    UsersId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UserLogins", x => x.Id);
+                    table.PrimaryKey("PK_ProjectUserDetail", x => new { x.ProjectsId, x.UsersId });
                     table.ForeignKey(
-                        name: "FK_UserLogins_UserDetails_UserDetailId",
-                        column: x => x.UserDetailId,
+                        name: "FK_ProjectUserDetail_Projects_ProjectsId",
+                        column: x => x.ProjectsId,
+                        principalTable: "Projects",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ProjectUserDetail_UserDetails_UsersId",
+                        column: x => x.UsersId,
                         principalTable: "UserDetails",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -434,6 +441,11 @@ namespace ProjectManagerBackend.Repo.Migrations
                 column: "UserDetailsId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ProjectUserDetail_UsersId",
+                table: "ProjectUserDetail",
+                column: "UsersId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_UserDetails_DepartmentId",
                 table: "UserDetails",
                 column: "DepartmentId");
@@ -442,11 +454,6 @@ namespace ProjectManagerBackend.Repo.Migrations
                 name: "IX_UserDetails_RoleId",
                 table: "UserDetails",
                 column: "RoleId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_UserLogins_UserDetailId",
-                table: "UserLogins",
-                column: "UserDetailId");
         }
 
         /// <inheritdoc />
@@ -465,7 +472,7 @@ namespace ProjectManagerBackend.Repo.Migrations
                 name: "ProjectTaskUserDetail");
 
             migrationBuilder.DropTable(
-                name: "UserLogins");
+                name: "ProjectUserDetail");
 
             migrationBuilder.DropTable(
                 name: "Locations");

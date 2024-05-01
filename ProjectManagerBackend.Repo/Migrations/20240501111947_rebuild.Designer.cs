@@ -12,8 +12,8 @@ using ProjectManagerBackend.Repo.Data;
 namespace ProjectManagerBackend.Repo.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20240417074904_token")]
-    partial class token
+    [Migration("20240501111947_rebuild")]
+    partial class rebuild
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -184,10 +184,14 @@ namespace ProjectManagerBackend.Repo.Migrations
                     b.Property<int?>("ClientId")
                         .HasColumnType("int");
 
-                    b.Property<DateOnly>("EndDate")
-                        .HasColumnType("date");
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Owner")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -200,8 +204,8 @@ namespace ProjectManagerBackend.Repo.Migrations
                     b.Property<int?>("ProjectStatusId")
                         .HasColumnType("int");
 
-                    b.Property<DateOnly>("StartDate")
-                        .HasColumnType("date");
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -392,7 +396,6 @@ namespace ProjectManagerBackend.Repo.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Token")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Username")
@@ -421,6 +424,21 @@ namespace ProjectManagerBackend.Repo.Migrations
                     b.HasIndex("UserDetailsId");
 
                     b.ToTable("ProjectTaskUserDetail");
+                });
+
+            modelBuilder.Entity("ProjectUserDetail", b =>
+                {
+                    b.Property<int>("ProjectsId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UsersId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ProjectsId", "UsersId");
+
+                    b.HasIndex("UsersId");
+
+                    b.ToTable("ProjectUserDetail");
                 });
 
             modelBuilder.Entity("DepartmentLocation", b =>
@@ -560,6 +578,21 @@ namespace ProjectManagerBackend.Repo.Migrations
                     b.HasOne("ProjectManagerBackend.Repo.Models.UserDetail", null)
                         .WithMany()
                         .HasForeignKey("UserDetailsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("ProjectUserDetail", b =>
+                {
+                    b.HasOne("ProjectManagerBackend.Repo.Models.Project", null)
+                        .WithMany()
+                        .HasForeignKey("ProjectsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ProjectManagerBackend.Repo.Models.UserDetail", null)
+                        .WithMany()
+                        .HasForeignKey("UsersId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
