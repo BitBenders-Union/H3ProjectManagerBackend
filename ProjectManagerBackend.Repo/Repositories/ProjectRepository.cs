@@ -22,12 +22,19 @@ namespace ProjectManagerBackend.Repo.Repositories
 
         }
 
-        public async Task<UserDetail> GetAllProjectDashboards(int userId)
+        public async Task<List<Project>> GetAllProjectDashboards(int userId)
         {
-            return await _context.UserDetails.Where(u => u.Id == userId)
-                .Include(x => x.Projects)
-                .ThenInclude(x => x.ProjectCategory)
-                .FirstOrDefaultAsync();
+            var result = await _context.Projects
+                .Include(x => x.ProjectStatus)
+                .Include(x => x.ProjectCategory)
+                .Include(x => x.Priority)
+                .Include(x => x.Client)
+                .Include(x => x.Departments)
+                .Include(x => x.Users)
+                .Where(x => x.Users.Any(x => x.Id == userId))
+                .ToListAsync();
+
+            return result;
         }
 
         public async Task<string> GetOwnerName(int ownerId)

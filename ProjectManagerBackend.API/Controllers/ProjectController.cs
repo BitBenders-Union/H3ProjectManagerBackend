@@ -43,27 +43,28 @@ namespace ProjectManagerBackend.API.Controllers
         }
 
 
-        [HttpGet("GetAll/{userid}")]
+        [HttpGet("GetForUser/{userid}")]
         public async Task<ActionResult<ProjectDashboardDTO>> GetForUser(int userid)
         {
             try
             {
                 var result = await _projectRepository.GetAllProjectDashboards(userid);
-                List<ProjectDashboardDTO> pdDTO = new();
 
-                    foreach ( var project in result.Projects)
+                // map result to projectDashboardDTO
+
+                List<ProjectDashboardDTO> dtoResponses = new();
+                foreach (var response in result)
+                {
+                    dtoResponses.Add(new ProjectDashboardDTO
                     {
-                        ProjectDashboardDTO entity = new()
-                        {
-                            Id = project.Id,
-                            Name = project.Name,
-                            Category = project.ProjectCategory.Name,
-                            Owner = project.Owner
+                        Id = response.Id,
+                        Name = response.Name,
+                        Category = response.ProjectCategory.Name,
+                        Owner = response.Owner
+                    });
+                }
 
-                        }; 
-                        pdDTO.Add(entity);
-                    }
-                return Ok(pdDTO);
+                return Ok(dtoResponses);
             }
             catch (Exception ex)
             {
