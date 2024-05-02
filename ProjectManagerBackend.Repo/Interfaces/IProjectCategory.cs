@@ -7,7 +7,7 @@ public interface IProjectCategory
     public Task<ProjectCategory> CreateCategory(ProjectCategory category);
     public Task<ICollection<ProjectCategory>> GetAllCategories();
     public Task<ProjectCategory> GetCategoryById(int id);
-    public Task<ProjectCategory> UpdateCategory(ProjectCategory category);
+    public Task<bool> UpdateCategory(ProjectCategory category);
     public Task<bool> DeleteCategory(int id);
     public Task<bool> DoesExist(int id);
 }

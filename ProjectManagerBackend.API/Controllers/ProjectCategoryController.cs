@@ -37,7 +37,7 @@ public class ProjectCategoryController : ControllerBase
                 return BadRequest("Category could not be created");
             }
 
-            return Ok(projectCategory);
+            return Ok(createdCategory);
         }
         catch (Exception ex)
         {
@@ -93,11 +93,6 @@ public class ProjectCategoryController : ControllerBase
         if (!ModelState.IsValid)
         {
             return BadRequest("Invalid model state");
-        }
-
-        if (!await _projectCategory.DoesExist(projectCategory.Id))
-        {
-            return NotFound("Category not found");
         }
 
         return Ok(await _projectCategory.UpdateCategory(

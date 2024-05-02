@@ -33,11 +33,10 @@ public class ProjectCategoryRepository : IProjectCategory
         return await _context.ProjectCategories.FirstOrDefaultAsync(x => x.Id == id);
     } 
 
-    public async Task<ProjectCategory> UpdateCategory(ProjectCategory projectCategory)
+    public async Task<bool> UpdateCategory(ProjectCategory projectCategory)
     {
         _context.Update(projectCategory);
-        await _context.SaveChangesAsync();
-        return projectCategory;
+        return await _context.SaveChangesAsync() > 0;
     }
     public async Task<bool> DeleteCategory(int id)
     {
