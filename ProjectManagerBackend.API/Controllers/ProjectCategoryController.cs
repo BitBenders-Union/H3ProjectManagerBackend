@@ -28,7 +28,7 @@ public class ProjectCategoryController : ControllerBase
             if (!ModelState.IsValid)
             {
                 return BadRequest("Invalid model state");
-            }
+            }           
 
             var createdCategory = await _projectCategory.CreateCategory(_mappingService.Map<ProjectCategoryDTO, ProjectCategory>(projectCategory));
 
@@ -93,6 +93,11 @@ public class ProjectCategoryController : ControllerBase
         if (!ModelState.IsValid)
         {
             return BadRequest("Invalid model state");
+        }
+
+        if (!await _projectCategory.DoesExist(projectCategory.Id))
+        {
+            return BadRequest("Category does not exist");
         }
 
         return Ok(await _projectCategory.UpdateCategory(
