@@ -13,7 +13,6 @@ namespace ProjectManagerBackend.Repo.DTOs
         public string Name { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
-<<<<<<< Updated upstream
         public ProjectStatusDTO Status { get; set; }
         public ProjectCategoryDTO Category { get; set; }
         public PriorityDTO Priority { get; set; }
@@ -22,16 +21,5 @@ namespace ProjectManagerBackend.Repo.DTOs
         public List<DepartmentDTO>? Departmenets { get; set; }
         public List<UserDetailDTO>? Users { get; set; }
         public string Owner { get; set; }
-
-=======
-        public ProjectStatusDTO? ProjectStatus { get; set; }
-        public ProjectCategoryDTO? ProjectCategory { get; set; }
-        public PriorityDTO? Priority { get; set; }
-        public ClientDTO? Client { get; set; }
-        public List<ProjectTaskDTO>? ProjectTasks { get; set; }
-        public List<DepartmentDTO>? Departments { get; set; }
-        public List<UserDetailDTOResponse?> Users { get; set; }
-        public string Owner { get; set; }
->>>>>>> Stashed changes
     }
 }

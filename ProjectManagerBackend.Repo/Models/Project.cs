@@ -18,8 +18,8 @@ namespace ProjectManagerBackend.Repo.Models
         public ProjectCategory? ProjectCategory { get; set; }
         public Priority? Priority { get; set; }
         public Client? Client { get; set; }
-        public List<Department>? Departments { get; set; }
-        public List<UserDetail>? Users { get; set; }
+        public List<ProjectDepartment>? ProjectDepartment { get; set; }
+        public List<ProjectUserDetail>? ProjectUserDetail { get; set; }
         public string Owner { get; set; }
     }
 }

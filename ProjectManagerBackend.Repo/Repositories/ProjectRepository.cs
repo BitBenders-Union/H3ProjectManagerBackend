@@ -29,9 +29,11 @@ namespace ProjectManagerBackend.Repo.Repositories
                 .Include(x => x.ProjectCategory)
                 .Include(x => x.Priority)
                 .Include(x => x.Client)
-                .Include(x => x.Departments)
-                .Include(x => x.Users)
-                .Where(x => x.Users.Any(x => x.Id == userId))
+                .Include(x => x.ProjectDepartment)
+                    .ThenInclude(x => x.Department)
+                .Include(x => x.ProjectUserDetail)
+                    .ThenInclude(x => x.UserDetail)
+                .Where(x => x.ProjectUserDetail.Any(x => x.UserDetailId == userId))
                 .ToListAsync();
 
             return result;

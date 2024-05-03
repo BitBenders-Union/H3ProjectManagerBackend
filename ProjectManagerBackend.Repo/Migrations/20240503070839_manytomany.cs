@@ -6,11 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ProjectManagerBackend.Repo.Migrations
 {
     /// <inheritdoc />
-<<<<<<<< Updated upstream:ProjectManagerBackend.Repo/Migrations/20240501111947_rebuild.cs
-    public partial class rebuild : Migration
-========
-    public partial class remake : Migration
->>>>>>>> Stashed changes:ProjectManagerBackend.Repo/Migrations/20240501142140_remake.cs
+    public partial class manytomany : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -140,24 +136,24 @@ namespace ProjectManagerBackend.Repo.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "DepartmentLocation",
+                name: "DepartmentLocations",
                 columns: table => new
                 {
-                    DepartmentsId = table.Column<int>(type: "int", nullable: false),
-                    LocationsId = table.Column<int>(type: "int", nullable: false)
+                    DepartmentId = table.Column<int>(type: "int", nullable: false),
+                    LocationId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_DepartmentLocation", x => new { x.DepartmentsId, x.LocationsId });
+                    table.PrimaryKey("PK_DepartmentLocations", x => new { x.DepartmentId, x.LocationId });
                     table.ForeignKey(
-                        name: "FK_DepartmentLocation_Departments_DepartmentsId",
-                        column: x => x.DepartmentsId,
+                        name: "FK_DepartmentLocations_Departments_DepartmentId",
+                        column: x => x.DepartmentId,
                         principalTable: "Departments",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_DepartmentLocation_Locations_LocationsId",
-                        column: x => x.LocationsId,
+                        name: "FK_DepartmentLocations_Locations_LocationId",
+                        column: x => x.LocationId,
                         principalTable: "Locations",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -238,24 +234,24 @@ namespace ProjectManagerBackend.Repo.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "DepartmentProject",
+                name: "ProjectDepartments",
                 columns: table => new
                 {
-                    DepartmentsId = table.Column<int>(type: "int", nullable: false),
-                    ProjectsId = table.Column<int>(type: "int", nullable: false)
+                    ProjectId = table.Column<int>(type: "int", nullable: false),
+                    DepartmentId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_DepartmentProject", x => new { x.DepartmentsId, x.ProjectsId });
+                    table.PrimaryKey("PK_ProjectDepartments", x => new { x.ProjectId, x.DepartmentId });
                     table.ForeignKey(
-                        name: "FK_DepartmentProject_Departments_DepartmentsId",
-                        column: x => x.DepartmentsId,
+                        name: "FK_ProjectDepartments_Departments_DepartmentId",
+                        column: x => x.DepartmentId,
                         principalTable: "Departments",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_DepartmentProject_Projects_ProjectsId",
-                        column: x => x.ProjectsId,
+                        name: "FK_ProjectDepartments_Projects_ProjectId",
+                        column: x => x.ProjectId,
                         principalTable: "Projects",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -304,24 +300,24 @@ namespace ProjectManagerBackend.Repo.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ProjectUserDetail",
+                name: "ProjectUserDetails",
                 columns: table => new
                 {
-                    ProjectsId = table.Column<int>(type: "int", nullable: false),
-                    UsersId = table.Column<int>(type: "int", nullable: false)
+                    ProjectId = table.Column<int>(type: "int", nullable: false),
+                    UserDetailId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ProjectUserDetail", x => new { x.ProjectsId, x.UsersId });
+                    table.PrimaryKey("PK_ProjectUserDetails", x => new { x.ProjectId, x.UserDetailId });
                     table.ForeignKey(
-                        name: "FK_ProjectUserDetail_Projects_ProjectsId",
-                        column: x => x.ProjectsId,
+                        name: "FK_ProjectUserDetails_Projects_ProjectId",
+                        column: x => x.ProjectId,
                         principalTable: "Projects",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ProjectUserDetail_UserDetails_UsersId",
-                        column: x => x.UsersId,
+                        name: "FK_ProjectUserDetails_UserDetails_UserDetailId",
+                        column: x => x.UserDetailId,
                         principalTable: "UserDetails",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -356,24 +352,24 @@ namespace ProjectManagerBackend.Repo.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ProjectTaskUserDetail",
+                name: "ProjectTaskUserDetails",
                 columns: table => new
                 {
-                    ProjectTasksId = table.Column<int>(type: "int", nullable: false),
-                    UserDetailsId = table.Column<int>(type: "int", nullable: false)
+                    ProjectTaskId = table.Column<int>(type: "int", nullable: false),
+                    UserDetailId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ProjectTaskUserDetail", x => new { x.ProjectTasksId, x.UserDetailsId });
+                    table.PrimaryKey("PK_ProjectTaskUserDetails", x => new { x.ProjectTaskId, x.UserDetailId });
                     table.ForeignKey(
-                        name: "FK_ProjectTaskUserDetail_ProjectTasks_ProjectTasksId",
-                        column: x => x.ProjectTasksId,
+                        name: "FK_ProjectTaskUserDetails_ProjectTasks_ProjectTaskId",
+                        column: x => x.ProjectTaskId,
                         principalTable: "ProjectTasks",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ProjectTaskUserDetail_UserDetails_UserDetailsId",
-                        column: x => x.UserDetailsId,
+                        name: "FK_ProjectTaskUserDetails_UserDetails_UserDetailId",
+                        column: x => x.UserDetailId,
                         principalTable: "UserDetails",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -390,14 +386,14 @@ namespace ProjectManagerBackend.Repo.Migrations
                 column: "UserDetailId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_DepartmentLocation_LocationsId",
-                table: "DepartmentLocation",
-                column: "LocationsId");
+                name: "IX_DepartmentLocations_LocationId",
+                table: "DepartmentLocations",
+                column: "LocationId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_DepartmentProject_ProjectsId",
-                table: "DepartmentProject",
-                column: "ProjectsId");
+                name: "IX_ProjectDepartments_DepartmentId",
+                table: "ProjectDepartments",
+                column: "DepartmentId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Projects_ClientId",
@@ -440,14 +436,14 @@ namespace ProjectManagerBackend.Repo.Migrations
                 column: "StatusId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProjectTaskUserDetail_UserDetailsId",
-                table: "ProjectTaskUserDetail",
-                column: "UserDetailsId");
+                name: "IX_ProjectTaskUserDetails_UserDetailId",
+                table: "ProjectTaskUserDetails",
+                column: "UserDetailId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProjectUserDetail_UsersId",
-                table: "ProjectUserDetail",
-                column: "UsersId");
+                name: "IX_ProjectUserDetails_UserDetailId",
+                table: "ProjectUserDetails",
+                column: "UserDetailId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserDetails_DepartmentId",
@@ -467,16 +463,16 @@ namespace ProjectManagerBackend.Repo.Migrations
                 name: "Comments");
 
             migrationBuilder.DropTable(
-                name: "DepartmentLocation");
+                name: "DepartmentLocations");
 
             migrationBuilder.DropTable(
-                name: "DepartmentProject");
+                name: "ProjectDepartments");
 
             migrationBuilder.DropTable(
-                name: "ProjectTaskUserDetail");
+                name: "ProjectTaskUserDetails");
 
             migrationBuilder.DropTable(
-                name: "ProjectUserDetail");
+                name: "ProjectUserDetails");
 
             migrationBuilder.DropTable(
                 name: "Locations");
