@@ -22,6 +22,18 @@ namespace ProjectManagerBackend.Repo.Repositories
 
         }
 
+        public async Task CreateManyToMany(int projectId, int userId)
+        {
+            await _context.ProjectUserDetails.AddAsync(new ProjectUserDetail
+            {
+                ProjectId = projectId,
+                UserDetailId = userId
+            });
+            if (_context.SaveChanges() > 0)
+                return;
+            throw new Exception("Failed to create many to many relationship");
+        }
+
         public async Task<List<Project>> GetAllProjectDashboards(int userId)
         {
             var result = await _context.Projects

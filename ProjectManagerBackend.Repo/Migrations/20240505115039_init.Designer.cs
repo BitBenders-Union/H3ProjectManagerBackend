@@ -12,8 +12,8 @@ using ProjectManagerBackend.Repo.Data;
 namespace ProjectManagerBackend.Repo.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20240503070839_manytomany")]
-    partial class manytomany
+    [Migration("20240505115039_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

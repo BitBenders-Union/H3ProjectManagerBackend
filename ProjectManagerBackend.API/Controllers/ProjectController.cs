@@ -1,4 +1,6 @@
 ﻿
+using ProjectManagerBackend.Repo.DTOs;
+
 namespace ProjectManagerBackend.API.Controllers
 {
     [Route("api/[controller]")]
@@ -70,6 +72,56 @@ namespace ProjectManagerBackend.API.Controllers
             {
                 return BadRequest(ex.Message);
             }
+        }
+
+
+        [HttpPost]
+        public override async Task<ActionResult<ProjectDTO>> Create(ProjectDTO dto)
+        {
+
+
+            try
+            {
+                // validate
+
+                if (dto == null)
+                {
+                    return BadRequest("Project cannot be null");
+                }
+
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest("Invalid model state");
+                }
+
+                if(!_validationService.WhiteSpaceValidation(dto))
+                {
+                    return BadRequest("Invalid Model, Must not contain empty whitespace!");
+                }
+
+                // map
+
+                var model = await _mapping.ProjectCreateMapping(dto);
+
+                // then create
+
+                model = await _repository.CreateAsync(model);
+
+                // create many to many with newly created entity
+
+                _projectRepository.CreateManyToMany(model.Id, dto.Users.First().Id);
+
+                
+                // then return
+
+                return Ok();
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
         }
 
     }

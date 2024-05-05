@@ -16,5 +16,6 @@ namespace ProjectManagerBackend.Repo.Interfaces
         public UserDetail UserToken(TokenDTO tokenDTO);
         public UserDetail UserLogin(LoginDTO loginDTO);
         public TMapped? Map<T, TMapped>(T source);
+        public Task<Project> ProjectCreateMapping(ProjectDTO dto);
     }
 }

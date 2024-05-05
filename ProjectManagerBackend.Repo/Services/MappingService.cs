@@ -1,4 +1,6 @@
-﻿using ProjectManagerBackend.Repo.DTOs;
+﻿using Microsoft.EntityFrameworkCore;
+using ProjectManagerBackend.Repo.Data;
+using ProjectManagerBackend.Repo.DTOs;
 using ProjectManagerBackend.Repo.Interfaces;
 using ProjectManagerBackend.Repo.Models;
 using System.Collections;
@@ -9,10 +11,12 @@ namespace ProjectManagerBackend.Repo
     public class MappingService : IMappingService
     {
         private readonly IHashingService hashingService;
+        private readonly DataContext _context;
 
-        public MappingService(IHashingService hashingService)
+        public MappingService(IHashingService hashingService, DataContext context)
         {
             this.hashingService = hashingService;
+            _context = context;
         }
         public UserDetail AddUser(UserDetailDTO userDetailDTO)
         {
@@ -88,6 +92,24 @@ namespace ProjectManagerBackend.Repo
                 Username = loginDTO.Username,
             };
             return userDetail;
+        }
+
+
+        public async Task<Project> ProjectCreateMapping(ProjectDTO dto)
+        {
+            Project project = new()
+            {
+                Name = dto.Name,
+                StartDate = dto.StartDate,
+                EndDate = dto.EndDate,
+                Owner = dto.Owner,
+                ProjectStatus = await _context.ProjectStatus.FirstOrDefaultAsync(x => x.Name == dto.Status.Name),
+                ProjectCategory = await _context.ProjectCategories.FirstOrDefaultAsync(x => x.Name == dto.Category.Name),
+                Priority = await _context.Priorities.FirstOrDefaultAsync(x => x.Level == dto.Priority.Level),
+            };
+
+            return project;
+
         }
 
 
