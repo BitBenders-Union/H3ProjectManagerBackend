@@ -143,5 +143,34 @@ namespace ProjectManagerBackend.API.Controllers
                 RefreshToken = newRefreshToken
             });
         }
+
+        // get controller for user details
+        [HttpGet("User-Department/{id}")]
+        public async Task<ActionResult<UserDepartmentResponseDTO>> GetUserDepartment(int id)
+        {
+            try
+            {
+                var user = await _userRepository.GetUserDetail(id);
+
+                if(user == null)
+                    return NotFound("No User Found");
+
+                return new UserDepartmentResponseDTO 
+                {
+                    Id = user.Id,
+                    Username = user.Username,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    CreatedDate = user.CreatedDate,
+                    Department = _mappingService.Map<Department, DepartmentDTO>(user.Department),
+                    Role = _mappingService.Map<Role, RoleDTO>(user.Role)
+                };
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        } 
     }
 }

@@ -58,5 +58,10 @@ namespace ProjectManagerBackend.Repo.Repositories
            var saved = await _context.SaveChangesAsync();
             return saved > 0;
         }
+
+        public async Task<UserDetail> GetUserDetail(int id)
+        {
+            return await _context.UserDetails.Include(x => x.Department).Include(x => x.Role).FirstOrDefaultAsync(x => x.Id == id);
+        }
     }
 }
