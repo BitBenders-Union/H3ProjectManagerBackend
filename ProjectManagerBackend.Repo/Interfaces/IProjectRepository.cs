@@ -10,7 +10,9 @@ namespace ProjectManagerBackend.Repo.Interfaces
 {
     public interface IProjectRepository
     {
-        public Task<UserDetail> GetAllProjectDashboards(int userId);
+        public Task<List<Project>> GetAllProjectDashboards(int userId);
         public Task<string> GetOwnerName(int ownerId);
+
+        public Task CreateManyToMany(int projectId, int userId);
     }
 }

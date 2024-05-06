@@ -12,8 +12,8 @@ using ProjectManagerBackend.Repo.Data;
 namespace ProjectManagerBackend.Repo.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20240417074904_token")]
-    partial class token
+    [Migration("20240505115039_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,36 +24,6 @@ namespace ProjectManagerBackend.Repo.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("DepartmentLocation", b =>
-                {
-                    b.Property<int>("DepartmentsId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("LocationsId")
-                        .HasColumnType("int");
-
-                    b.HasKey("DepartmentsId", "LocationsId");
-
-                    b.HasIndex("LocationsId");
-
-                    b.ToTable("DepartmentLocation");
-                });
-
-            modelBuilder.Entity("DepartmentProject", b =>
-                {
-                    b.Property<int>("DepartmentsId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProjectsId")
-                        .HasColumnType("int");
-
-                    b.HasKey("DepartmentsId", "ProjectsId");
-
-                    b.HasIndex("ProjectsId");
-
-                    b.ToTable("DepartmentProject");
-                });
 
             modelBuilder.Entity("ProjectManagerBackend.Repo.Models.Client", b =>
                 {
@@ -132,6 +102,21 @@ namespace ProjectManagerBackend.Repo.Migrations
                     b.ToTable("Departments");
                 });
 
+            modelBuilder.Entity("ProjectManagerBackend.Repo.Models.DepartmentLocation", b =>
+                {
+                    b.Property<int>("DepartmentId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("LocationId")
+                        .HasColumnType("int");
+
+                    b.HasKey("DepartmentId", "LocationId");
+
+                    b.HasIndex("LocationId");
+
+                    b.ToTable("DepartmentLocations");
+                });
+
             modelBuilder.Entity("ProjectManagerBackend.Repo.Models.Location", b =>
                 {
                     b.Property<int>("Id")
@@ -184,10 +169,14 @@ namespace ProjectManagerBackend.Repo.Migrations
                     b.Property<int?>("ClientId")
                         .HasColumnType("int");
 
-                    b.Property<DateOnly>("EndDate")
-                        .HasColumnType("date");
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Owner")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -200,8 +189,8 @@ namespace ProjectManagerBackend.Repo.Migrations
                     b.Property<int?>("ProjectStatusId")
                         .HasColumnType("int");
 
-                    b.Property<DateOnly>("StartDate")
-                        .HasColumnType("date");
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -231,6 +220,21 @@ namespace ProjectManagerBackend.Repo.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ProjectCategories");
+                });
+
+            modelBuilder.Entity("ProjectManagerBackend.Repo.Models.ProjectDepartment", b =>
+                {
+                    b.Property<int>("ProjectId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DepartmentId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ProjectId", "DepartmentId");
+
+                    b.HasIndex("DepartmentId");
+
+                    b.ToTable("ProjectDepartments");
                 });
 
             modelBuilder.Entity("ProjectManagerBackend.Repo.Models.ProjectStatus", b =>
@@ -325,6 +329,36 @@ namespace ProjectManagerBackend.Repo.Migrations
                     b.ToTable("ProjectTaskStatus");
                 });
 
+            modelBuilder.Entity("ProjectManagerBackend.Repo.Models.ProjectTaskUserDetail", b =>
+                {
+                    b.Property<int>("ProjectTaskId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserDetailId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ProjectTaskId", "UserDetailId");
+
+                    b.HasIndex("UserDetailId");
+
+                    b.ToTable("ProjectTaskUserDetails");
+                });
+
+            modelBuilder.Entity("ProjectManagerBackend.Repo.Models.ProjectUserDetail", b =>
+                {
+                    b.Property<int>("ProjectId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserDetailId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ProjectId", "UserDetailId");
+
+                    b.HasIndex("UserDetailId");
+
+                    b.ToTable("ProjectUserDetails");
+                });
+
             modelBuilder.Entity("ProjectManagerBackend.Repo.Models.Role", b =>
                 {
                     b.Property<int>("Id")
@@ -392,7 +426,6 @@ namespace ProjectManagerBackend.Repo.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Token")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Username")
@@ -406,51 +439,6 @@ namespace ProjectManagerBackend.Repo.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("UserDetails");
-                });
-
-            modelBuilder.Entity("ProjectTaskUserDetail", b =>
-                {
-                    b.Property<int>("ProjectTasksId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserDetailsId")
-                        .HasColumnType("int");
-
-                    b.HasKey("ProjectTasksId", "UserDetailsId");
-
-                    b.HasIndex("UserDetailsId");
-
-                    b.ToTable("ProjectTaskUserDetail");
-                });
-
-            modelBuilder.Entity("DepartmentLocation", b =>
-                {
-                    b.HasOne("ProjectManagerBackend.Repo.Models.Department", null)
-                        .WithMany()
-                        .HasForeignKey("DepartmentsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ProjectManagerBackend.Repo.Models.Location", null)
-                        .WithMany()
-                        .HasForeignKey("LocationsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("DepartmentProject", b =>
-                {
-                    b.HasOne("ProjectManagerBackend.Repo.Models.Department", null)
-                        .WithMany()
-                        .HasForeignKey("DepartmentsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ProjectManagerBackend.Repo.Models.Project", null)
-                        .WithMany()
-                        .HasForeignKey("ProjectsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("ProjectManagerBackend.Repo.Models.Comment", b =>
@@ -470,6 +458,25 @@ namespace ProjectManagerBackend.Repo.Migrations
                     b.Navigation("ProjectTask");
 
                     b.Navigation("UserDetail");
+                });
+
+            modelBuilder.Entity("ProjectManagerBackend.Repo.Models.DepartmentLocation", b =>
+                {
+                    b.HasOne("ProjectManagerBackend.Repo.Models.Department", "Department")
+                        .WithMany("DepartmentLocation")
+                        .HasForeignKey("DepartmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ProjectManagerBackend.Repo.Models.Location", "Location")
+                        .WithMany("DepartmentLocation")
+                        .HasForeignKey("LocationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Department");
+
+                    b.Navigation("Location");
                 });
 
             modelBuilder.Entity("ProjectManagerBackend.Repo.Models.Project", b =>
@@ -497,6 +504,25 @@ namespace ProjectManagerBackend.Repo.Migrations
                     b.Navigation("ProjectCategory");
 
                     b.Navigation("ProjectStatus");
+                });
+
+            modelBuilder.Entity("ProjectManagerBackend.Repo.Models.ProjectDepartment", b =>
+                {
+                    b.HasOne("ProjectManagerBackend.Repo.Models.Department", "Department")
+                        .WithMany("ProjectDepartment")
+                        .HasForeignKey("DepartmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ProjectManagerBackend.Repo.Models.Project", "Project")
+                        .WithMany("ProjectDepartment")
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Department");
+
+                    b.Navigation("Project");
                 });
 
             modelBuilder.Entity("ProjectManagerBackend.Repo.Models.ProjectTask", b =>
@@ -534,6 +560,44 @@ namespace ProjectManagerBackend.Repo.Migrations
                     b.Navigation("Status");
                 });
 
+            modelBuilder.Entity("ProjectManagerBackend.Repo.Models.ProjectTaskUserDetail", b =>
+                {
+                    b.HasOne("ProjectManagerBackend.Repo.Models.ProjectTask", "ProjectTask")
+                        .WithMany("ProjectTaskUserDetail")
+                        .HasForeignKey("ProjectTaskId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ProjectManagerBackend.Repo.Models.UserDetail", "UserDetail")
+                        .WithMany("ProjectTaskUserDetail")
+                        .HasForeignKey("UserDetailId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ProjectTask");
+
+                    b.Navigation("UserDetail");
+                });
+
+            modelBuilder.Entity("ProjectManagerBackend.Repo.Models.ProjectUserDetail", b =>
+                {
+                    b.HasOne("ProjectManagerBackend.Repo.Models.Project", "Project")
+                        .WithMany("ProjectUserDetail")
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ProjectManagerBackend.Repo.Models.UserDetail", "UserDetail")
+                        .WithMany("ProjectUserDetail")
+                        .HasForeignKey("UserDetailId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Project");
+
+                    b.Navigation("UserDetail");
+                });
+
             modelBuilder.Entity("ProjectManagerBackend.Repo.Models.UserDetail", b =>
                 {
                     b.HasOne("ProjectManagerBackend.Repo.Models.Department", "Department")
@@ -549,21 +613,6 @@ namespace ProjectManagerBackend.Repo.Migrations
                     b.Navigation("Role");
                 });
 
-            modelBuilder.Entity("ProjectTaskUserDetail", b =>
-                {
-                    b.HasOne("ProjectManagerBackend.Repo.Models.ProjectTask", null)
-                        .WithMany()
-                        .HasForeignKey("ProjectTasksId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ProjectManagerBackend.Repo.Models.UserDetail", null)
-                        .WithMany()
-                        .HasForeignKey("UserDetailsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("ProjectManagerBackend.Repo.Models.Client", b =>
                 {
                     b.Navigation("Projects");
@@ -571,7 +620,16 @@ namespace ProjectManagerBackend.Repo.Migrations
 
             modelBuilder.Entity("ProjectManagerBackend.Repo.Models.Department", b =>
                 {
+                    b.Navigation("DepartmentLocation");
+
+                    b.Navigation("ProjectDepartment");
+
                     b.Navigation("UserDetails");
+                });
+
+            modelBuilder.Entity("ProjectManagerBackend.Repo.Models.Location", b =>
+                {
+                    b.Navigation("DepartmentLocation");
                 });
 
             modelBuilder.Entity("ProjectManagerBackend.Repo.Models.Priority", b =>
@@ -583,7 +641,11 @@ namespace ProjectManagerBackend.Repo.Migrations
 
             modelBuilder.Entity("ProjectManagerBackend.Repo.Models.Project", b =>
                 {
+                    b.Navigation("ProjectDepartment");
+
                     b.Navigation("ProjectTasks");
+
+                    b.Navigation("ProjectUserDetail");
                 });
 
             modelBuilder.Entity("ProjectManagerBackend.Repo.Models.ProjectCategory", b =>
@@ -599,6 +661,8 @@ namespace ProjectManagerBackend.Repo.Migrations
             modelBuilder.Entity("ProjectManagerBackend.Repo.Models.ProjectTask", b =>
                 {
                     b.Navigation("Comments");
+
+                    b.Navigation("ProjectTaskUserDetail");
                 });
 
             modelBuilder.Entity("ProjectManagerBackend.Repo.Models.ProjectTaskCategory", b =>
@@ -614,6 +678,13 @@ namespace ProjectManagerBackend.Repo.Migrations
             modelBuilder.Entity("ProjectManagerBackend.Repo.Models.Role", b =>
                 {
                     b.Navigation("UserDetails");
+                });
+
+            modelBuilder.Entity("ProjectManagerBackend.Repo.Models.UserDetail", b =>
+                {
+                    b.Navigation("ProjectTaskUserDetail");
+
+                    b.Navigation("ProjectUserDetail");
                 });
 #pragma warning restore 612, 618
         }

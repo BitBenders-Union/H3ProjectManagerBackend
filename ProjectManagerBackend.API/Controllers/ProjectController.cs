@@ -1,4 +1,6 @@
 ﻿
+using ProjectManagerBackend.Repo.DTOs;
+
 namespace ProjectManagerBackend.API.Controllers
 {
     [Route("api/[controller]")]
@@ -43,32 +45,83 @@ namespace ProjectManagerBackend.API.Controllers
         }
 
 
-        [HttpGet("GetAll/{userid}")]
+        [HttpGet("GetForUser/{userid}")]
         public async Task<ActionResult<ProjectDashboardDTO>> GetForUser(int userid)
         {
             try
             {
                 var result = await _projectRepository.GetAllProjectDashboards(userid);
-                List<ProjectDashboardDTO> pdDTO = new();
 
-                    foreach ( var project in result.Projects)
+                // map result to projectDashboardDTO
+
+                List<ProjectDashboardDTO> dtoResponses = new();
+                foreach (var response in result)
+                {
+                    dtoResponses.Add(new ProjectDashboardDTO
                     {
-                        ProjectDashboardDTO entity = new()
-                        {
-                            Id = project.Id,
-                            Name = project.Name,
-                            Category = project.ProjectCategory.Name,
-                            Owner = project.Owner
+                        Id = response.Id,
+                        Name = response.Name,
+                        Category = response.ProjectCategory.Name,
+                        Owner = response.Owner
+                    });
+                }
 
-                        }; 
-                        pdDTO.Add(entity);
-                    }
-                return Ok(pdDTO);
+                return Ok(dtoResponses);
             }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
+        }
+
+
+        [HttpPost]
+        public override async Task<ActionResult<ProjectDTO>> Create(ProjectDTO dto)
+        {
+
+
+            try
+            {
+                // validate
+
+                if (dto == null)
+                {
+                    return BadRequest("Project cannot be null");
+                }
+
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest("Invalid model state");
+                }
+
+                if(!_validationService.WhiteSpaceValidation(dto))
+                {
+                    return BadRequest("Invalid Model, Must not contain empty whitespace!");
+                }
+
+                // map
+
+                var model = await _mapping.ProjectCreateMapping(dto);
+
+                // then create
+
+                model = await _repository.CreateAsync(model);
+
+                // create many to many with newly created entity
+
+                _projectRepository.CreateManyToMany(model.Id, dto.Users.First().Id);
+
+                
+                // then return
+
+                return Ok();
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
         }
 
     }
