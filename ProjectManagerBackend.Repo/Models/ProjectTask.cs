@@ -10,6 +10,6 @@ public class ProjectTask
     public ProjectTaskStatus Status { get; set; }
     public ProjectTaskCategory ProjectTaskCategory { get; set; }
     public Project Project { get; set; }
-    public List<UserDetail> UserDetails { get; set; }
+    public List<ProjectTaskUserDetail> ProjectTaskUserDetail { get; set; }
     public List<Comment> Comments { get; set; }
 }
