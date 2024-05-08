@@ -28,8 +28,10 @@ namespace ProjectManagerBackend.Repo.Services
             this.configuration = configuration;
         }
 
+        //Create token
         public string CreateToken(UserDetail userDetail)
         {
+            //create list of info that's is included in the token
             List<Claim> claims = new List<Claim> {
                 new Claim(JwtRegisteredClaimNames.NameId, userDetail.Id.ToString()),
                 new Claim(JwtRegisteredClaimNames.Name, userDetail.Username),
@@ -37,17 +39,21 @@ namespace ProjectManagerBackend.Repo.Services
                 new Claim("lastname", userDetail.LastName),
             };
 
+            //define a secret key
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
                 configuration.GetSection("JwtSettings:SecretKey").Value!));
 
+            //create a encripted token with key and encryption method
             var cred = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
+           //include parameters in the token
             var token = new JwtSecurityToken(
                     claims: claims,
                     expires: DateTime.UtcNow.AddDays(1),
                     signingCredentials: cred
                 );
 
+            //Make the token
             var jwt = new JwtSecurityTokenHandler().WriteToken(token);
 
             return jwt;
