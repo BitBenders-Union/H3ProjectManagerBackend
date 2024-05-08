@@ -5,7 +5,7 @@
 namespace ProjectManagerBackend.Repo.Migrations
 {
     /// <inheritdoc />
-    public partial class ummm : Migration
+    public partial class DenDevMonday : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

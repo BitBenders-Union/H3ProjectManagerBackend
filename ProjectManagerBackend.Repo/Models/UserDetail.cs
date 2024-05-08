@@ -21,7 +21,7 @@ namespace ProjectManagerBackend.Repo.Models
         public DateTime CreatedDate { get; set; }
         public Department? Department { get; set; }
         public Role? Role { get; set; }
-        public List<ProjectTask>? ProjectTasks { get; set; }
-        public List<Project>? Projects { get; set; }
+        public List<ProjectTaskUserDetail>? ProjectTaskUserDetail { get; set; }
+        public List<ProjectUserDetail>? ProjectUserDetail { get; set; }
     }
 }
