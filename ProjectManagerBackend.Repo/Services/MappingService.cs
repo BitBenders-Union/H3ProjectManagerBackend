@@ -112,6 +112,17 @@ namespace ProjectManagerBackend.Repo
 
         }
 
+        public async Task<UserDetail> UserMap(UserDepartmentResponseDTO dto)
+        {
+            UserDetail user = await _context.UserDetails.FirstOrDefaultAsync(x => x.Id == dto.Id);
 
+            user.FirstName = dto.FirstName;
+            user.LastName = dto.LastName;
+            user.Department = Map<DepartmentDTO, Department>(dto.Department);
+            user.Role = Map<RoleDTO, Role>(dto.Role);
+
+            return user;
+
+        }
     }
 }

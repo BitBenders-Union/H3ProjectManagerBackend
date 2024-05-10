@@ -143,5 +143,7 @@ namespace ProjectManagerBackend.API.Controllers
                 RefreshToken = newRefreshToken
             });
         }
+
+        
     }
 }

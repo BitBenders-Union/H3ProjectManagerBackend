@@ -1,11 +1,13 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using ProjectManagerBackend.Repo;
 using ProjectManagerBackend.Repo.Data;
 using ProjectManagerBackend.Repo.Interfaces;
 using ProjectManagerBackend.Repo.Models;
 using ProjectManagerBackend.Repo.Repositories;
 using ProjectManagerBackend.Repo.Services;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,13 +36,32 @@ builder.Services.AddCors(options =>
     });
 });
 
+// JWT Bearer
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
+{
+    options.RequireHttpsMetadata = false;
+    options.SaveToken = true;
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetSection("JwtSettings:SecretKey").Value!)),
+        ValidateIssuer = false,
+        ValidateAudience = false,
+        ClockSkew = TimeSpan.Zero
+    };
+});
 
 // DI
 
 builder.Services.AddScoped<IProjectCategory, ProjectCategoryRepository>();
-builder.Services.AddScoped<IGenericRepository<Project>, GenericRepository<Project>>();
+builder.Services.AddScoped<IGenericRepository<Project>, GenericRepository<Project>>(); // i think this is unnecessary
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-builder.Services.AddScoped<IGenericRepository<UserDetail>, GenericRepository<UserDetail>>();
+builder.Services.AddScoped<IGenericRepository<UserDetail>, GenericRepository<UserDetail>>(); // i think this is unnecessary
 builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IValidationService, ValidationService>();
@@ -52,7 +73,7 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddAuthentication().AddJwtBearer();
+//builder.Services.AddAuthentication().AddJwtBearer();
 
 
 var app = builder.Build();

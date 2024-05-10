@@ -17,6 +17,8 @@ namespace ProjectManagerBackend.Repo.Interfaces
         public Task<bool> UpdateUser(UserDetail user);
         public Task<bool> Save();
 
+        public Task<UserDetail> GetUserDetail(int id);
+
 
     }
 }
