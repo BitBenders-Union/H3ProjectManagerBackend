@@ -12,8 +12,8 @@ using ProjectManagerBackend.Repo.Data;
 namespace ProjectManagerBackend.Repo.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20240506064536_DenDevMonday")]
-    partial class DenDevMonday
+    [Migration("20240511103242_InitWithSeeds")]
+    partial class InitWithSeeds
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -100,6 +100,33 @@ namespace ProjectManagerBackend.Repo.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Departments");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "IT"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "HR"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Finance"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Name = "Admin"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Name = "Sales"
+                        });
                 });
 
             modelBuilder.Entity("ProjectManagerBackend.Repo.Models.DepartmentLocation", b =>
@@ -136,6 +163,38 @@ namespace ProjectManagerBackend.Repo.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Locations");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Address = "Copenhagen",
+                            Name = "Cph"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Address = "Aarhus",
+                            Name = "Aarhus"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Address = "Odense",
+                            Name = "Odense"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Address = "Aalborg",
+                            Name = "Aalborg"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Address = "Roskilde",
+                            Name = "Roskilde"
+                        });
                 });
 
             modelBuilder.Entity("ProjectManagerBackend.Repo.Models.Priority", b =>
@@ -156,6 +215,44 @@ namespace ProjectManagerBackend.Repo.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Priorities");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Level = 0,
+                            Name = "Low"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Level = 1,
+                            Name = "Medium"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Level = 2,
+                            Name = "High"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Level = 3,
+                            Name = "Critical"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Level = 4,
+                            Name = "Critical+"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Level = 5,
+                            Name = "Critical++"
+                        });
                 });
 
             modelBuilder.Entity("ProjectManagerBackend.Repo.Models.Project", b =>
@@ -220,6 +317,33 @@ namespace ProjectManagerBackend.Repo.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ProjectCategories");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Web Development"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Mobile Development"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Desktop Development"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Name = "Game Development"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Name = "AI Development"
+                        });
                 });
 
             modelBuilder.Entity("ProjectManagerBackend.Repo.Models.ProjectDepartment", b =>
@@ -252,6 +376,33 @@ namespace ProjectManagerBackend.Repo.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ProjectStatus");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "New"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "In Progress"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Completed"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Name = "On Hold"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Name = "Cancelled"
+                        });
                 });
 
             modelBuilder.Entity("ProjectManagerBackend.Repo.Models.ProjectTask", b =>
@@ -310,6 +461,33 @@ namespace ProjectManagerBackend.Repo.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ProjectTaskCategories");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Development"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Testing"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Deployment"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Name = "Documentation"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Name = "Meeting"
+                        });
                 });
 
             modelBuilder.Entity("ProjectManagerBackend.Repo.Models.ProjectTaskStatus", b =>
@@ -327,6 +505,33 @@ namespace ProjectManagerBackend.Repo.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ProjectTaskStatus");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "New"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "In Progress"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Completed"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Name = "On Hold"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Name = "Cancelled"
+                        });
                 });
 
             modelBuilder.Entity("ProjectManagerBackend.Repo.Models.ProjectTaskUserDetail", b =>
@@ -381,6 +586,43 @@ namespace ProjectManagerBackend.Repo.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Roles");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Description = "Admin role",
+                            IsActive = true,
+                            Name = "Admin"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Description = "User role",
+                            IsActive = false,
+                            Name = "User"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Description = "Manager role",
+                            IsActive = true,
+                            Name = "Manager"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Description = "Developer role",
+                            IsActive = true,
+                            Name = "Developer"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Description = "Tester role",
+                            IsActive = true,
+                            Name = "Tester"
+                        });
                 });
 
             modelBuilder.Entity("ProjectManagerBackend.Repo.Models.UserDetail", b =>
