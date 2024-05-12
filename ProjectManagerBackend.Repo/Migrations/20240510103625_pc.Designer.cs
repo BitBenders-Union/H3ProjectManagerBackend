@@ -12,8 +12,8 @@ using ProjectManagerBackend.Repo.Data;
 namespace ProjectManagerBackend.Repo.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20240506064536_DenDevMonday")]
-    partial class DenDevMonday
+    [Migration("20240510103625_pc")]
+    partial class pc
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

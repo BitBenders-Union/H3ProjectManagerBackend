@@ -109,8 +109,25 @@ namespace ProjectManagerBackend.Repo
             };
 
             return project;
-
         }
+
+        public async Task<Project> ProjectMapping(ProjectDTO dto)
+        {
+            Project project = new Project
+            {
+                Name = dto.Name,
+                StartDate = dto.StartDate,
+                EndDate = dto.EndDate,
+                Owner = dto.Owner,
+                ProjectStatus = await _context.ProjectStatus.FirstOrDefaultAsync(x => x.Name == dto.Status.Name),
+                ProjectCategory = await _context.ProjectCategories.FirstOrDefaultAsync(x => x.Name == dto.Category.Name),
+                Priority = await _context.Priorities.FirstOrDefaultAsync(x => x.Level == dto.Priority.Level),
+                Client = await _context.Clients.FirstOrDefaultAsync(x => x.Name == dto.Client.Name)
+            };
+
+            return project;
+        }
+
 
         public async Task<UserDetail> UserMap(UserDepartmentResponseDTO dto)
         {

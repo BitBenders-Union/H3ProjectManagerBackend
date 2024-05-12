@@ -12,7 +12,7 @@ namespace ProjectManagerBackend.Repo.Interfaces
     {
         public Task<List<Project>> GetAllProjectDashboards(int userId);
         public Task<string> GetOwnerName(int ownerId);
-
+        public Task<Project> GetProject(int id);
         public Task CreateManyToMany(int projectId, int userId);
     }
 }

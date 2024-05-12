@@ -74,6 +74,27 @@ namespace ProjectManagerBackend.API.Controllers
             }
         }
 
+        [HttpGet("{id}")]
+        public async override Task<ActionResult<ProjectDTO>> GetById(int id)
+        {
+            try
+            {
+                var result = await _projectRepository.GetProject(id);
+                if (result == null)
+                {
+                    return NotFound();
+                }    
+
+                var mapping = await _mapping.ProjectMapping(result);
+
+                return Ok(mapping);
+            }
+            catch (Exception ex)
+            { 
+                return BadRequest(ex.Message); 
+            }
+        }
+
 
         [HttpPost]
         public override async Task<ActionResult<ProjectDTO>> Create(ProjectDTO dto)

@@ -85,7 +85,5 @@ namespace ProjectManagerBackend.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
-
     }
 }
