@@ -1,4 +1,6 @@
 ﻿
+using Microsoft.AspNetCore.Mvc;
+
 namespace ProjectManagerBackend.Test.Repositories
 {
     public class LocationRepositoryTest
@@ -69,6 +71,36 @@ namespace ProjectManagerBackend.Test.Repositories
             Assert.Equal(returnLocation, location);
         }
 
-      
+        [Fact]
+        public async Task DeleteLocation_ReturnTrue()
+        {
+            // Arrange
+            GenericRepository<Location> repository = new(_context);
+
+            // Act
+            bool result = await repository.DeleteAsync(1); // Assuming Id 1 does exist 
+            bool falseResult = await repository.DeleteAsync(99); // Assuming ID 99 doesn't exist
+            
+            // Assert
+            Assert.True(result); // Assert deletion of existing entity            
+            Assert.False(falseResult); // Assert deletion of non-existing entity            
+        }
+
+        [Fact]
+        public async Task UpdateLocation_ReturnOkResult()
+        {
+            // Arrange
+            GenericRepository<Location> repository = new(_context);
+
+            Location location = await repository.GetByIdAsync(1);
+            location.Name = "Test Location 1 updated";
+
+            // Act
+            var result = await repository.UpdateAsync(location);
+
+            //Assert
+            Assert.True(result);
+        }
+
     }
 }
