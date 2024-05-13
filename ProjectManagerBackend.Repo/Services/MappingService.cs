@@ -81,9 +81,40 @@ namespace ProjectManagerBackend.Repo
 
             // return mapped object
             return destination;
-
-
         }
+
+        //Generic list mapping
+        public List<TMapped>? MapList<T, TMapped>(List<T> source)
+        {
+            if (source == null)
+                return default;
+
+            var destination = new List<TMapped>();
+
+            var sourceType = typeof(T);
+            var destinationType = typeof(TMapped);
+
+            foreach (var item in source)
+            {
+                var mappedItem = Activator.CreateInstance<TMapped>();
+
+                foreach (var sourceProperty in sourceType.GetProperties())
+                {
+                    var destinationProperty = destinationType.GetProperty(sourceProperty.Name, sourceProperty.PropertyType);
+
+                    if (destinationProperty != null && destinationProperty.CanWrite)
+                    {
+                        destinationProperty.SetValue(mappedItem, sourceProperty.GetValue(item));
+                    }
+                }
+
+                destination.Add(mappedItem);
+            }
+
+            return destination;
+        }
+
+
 
         public UserDetail UserLogin(LoginDTO loginDTO)
         {
@@ -123,11 +154,8 @@ namespace ProjectManagerBackend.Repo
                 Category = Map<ProjectCategory, ProjectCategoryDTO>(dto.ProjectCategory),
                 Priority = Map<Priority, PriorityDTO>(dto.Priority),
                 Client = Map<Client, ClientDTO>(dto.Client),
-                Departments = await _context.Departments.Entry(dto.ProjectDepartment),
-
-                //ProjectCategory = await _context.ProjectCategories.FirstOrDefaultAsync(x => x.Name == dto.Category.Name),
-                //Priority = await _context.Priorities.FirstOrDefaultAsync(x => x.Level == dto.Priority.Level),
-                //Client = await _context.Clients.FirstOrDefaultAsync(x => x.Name == dto.Client.Name)
+                Departments = dto.ProjectDepartment.Select(x => Map<Department, DepartmentDTO>(x.Department)).ToList(),
+                Users = dto.ProjectUserDetail.Select(x => Map<UserDetail, UserDetailDTOResponse>(x.UserDetail)).ToList(),
             };
 
             return project;
