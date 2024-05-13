@@ -89,5 +89,18 @@ namespace ProjectManagerBackend.Test.Repositories
             // Assert
             Assert.True(result);
         }
+
+        [Fact]
+        public async Task DoesExist_ReturnTrue()
+        {
+            // Arrange
+            var projectCategoriRepository = new ProjectCategoryRepository(_context);
+
+            // Act
+            var result = await projectCategoriRepository.DoesExist(1);
+
+            // Assert
+            Assert.True(result);
+        }
     }
 }
