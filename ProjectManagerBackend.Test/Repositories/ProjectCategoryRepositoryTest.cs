@@ -1,10 +1,4 @@
 ﻿
-
-using Microsoft.EntityFrameworkCore;
-using ProjectManagerBackend.Repo.Data;
-using ProjectManagerBackend.Repo.Models;
-using ProjectManagerBackend.Repo.Repositories;
-
 namespace ProjectManagerBackend.Test.Repositories
 {
     public class ProjectCategoryRepositoryTest
