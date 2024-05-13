@@ -17,6 +17,7 @@ namespace ProjectManagerBackend.Test.Repositories
         DbContextOptions<DataContext> options;
         DataContext _context;
         ProjectRepository _repository;
+        GenericRepository<Project> _genericRepository;
         public ProjectRepositoryTest()
         {
             options = new DbContextOptionsBuilder<DataContext>().UseInMemoryDatabase(databaseName: "DummyDatabase").Options;
@@ -25,6 +26,7 @@ namespace ProjectManagerBackend.Test.Repositories
             
             _repository = new ProjectRepository(_context);
 
+            _genericRepository = new GenericRepository<Project>(_context);
 
             _context.Database.EnsureDeleted();
 
@@ -65,7 +67,7 @@ namespace ProjectManagerBackend.Test.Repositories
             _context.UserDetails.Add(usr);
 
 
-            _context.SaveChanges();
+            //_context.SaveChanges();
 
 
             Project project = new()
@@ -84,6 +86,7 @@ namespace ProjectManagerBackend.Test.Repositories
             _context.Projects.Add(project);
 
 
+            _context.SaveChanges();
 
 
             ProjectUserDetail pud = new()
@@ -93,13 +96,21 @@ namespace ProjectManagerBackend.Test.Repositories
             };
 
             _context.ProjectUserDetails.Add(pud);
-            var pudR = _context.ProjectUserDetails.First();
+
+            _context.SaveChanges();
+
+
+            var pudR = _context.ProjectUserDetails.FirstOrDefault();
             var projectR = _context.Projects.FirstOrDefault();
+
+
 
             List<ProjectUserDetail> projectUserDetails = [pudR];
             projectR.ProjectUserDetail = projectUserDetails;
             _context.Projects.Update(projectR);
+
             _context.SaveChanges();
+
 
         }
 
@@ -124,29 +135,76 @@ namespace ProjectManagerBackend.Test.Repositories
         public async void GetAll_ShouldReturnListOfProject_WhenProjectsAndUserExist()
         {
             // Arrange
-            var expected = 1;
-
+            var expectedCount = 1;
+            var usr = _context.UserDetails.FirstOrDefault();
 
             // Act
 
             
-            var result = await _repository.GetAllProjectDashboards(user.Id);
+            var result = await _repository.GetAllProjectDashboards(usr.Id);
 
             // Assert
 
-            Assert.Equal(expected, result.Count);
+            Assert.Equal(expectedCount, result.Count);
 
         }
 
         [Fact]
-        public void DeleteProject_ShouldReturnBoolean_WhenProjectExist()
+        public async void DeleteProject_ShouldReturnTrue_WhenProjectExist()
         {
             // Arrange
 
+            Project project = new()
+            {
+                Name = "Project To Delete",
+                StartDate = DateTime.Now,
+                EndDate = DateTime.Now,
+                Owner = "delete"
+            };
+            _context.Projects.Add(project);
+            _context.SaveChanges();
+
+            var projectToDelete = _context.Projects.FirstOrDefault(x => x.Name == project.Name);
+
             // Act
+            var isDeleted = await _genericRepository.DeleteAsync(projectToDelete.Id);
 
             // Assert
 
+            Assert.True(isDeleted);
+
+        }
+
+        [Fact]
+        public async void DeleteProject_ShouldReturnFalse_WhenProjectDoesNotExist()
+        {
+            // Arrange
+
+
+            var projectToDelete = -1;
+
+            // Act
+            var isDeleted = await _genericRepository.DeleteAsync(projectToDelete);
+
+            // Assert
+
+            Assert.False(isDeleted);
+
+        }
+
+        [Fact]
+
+        public async void GetOwnerName_ShouldReturnOwnerName_WhenOwnerExist()
+        {
+            // Arrange
+            var expectedOwner = "admin";
+            var usr = _context.UserDetails.FirstOrDefault();
+
+            // Act
+            var result = await _repository.GetOwnerName(usr.Id);
+
+            // Assert
+            Assert.Equal(expectedOwner, result);
         }
 
     }
