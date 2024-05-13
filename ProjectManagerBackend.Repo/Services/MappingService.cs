@@ -111,18 +111,23 @@ namespace ProjectManagerBackend.Repo
             return project;
         }
 
-        public async Task<Project> ProjectMapping(ProjectDTO dto)
+        public async Task<ProjectDTO> ProjectMapping(Project dto)
         {
-            Project project = new Project
+            ProjectDTO project = new ProjectDTO
             {
                 Name = dto.Name,
                 StartDate = dto.StartDate,
                 EndDate = dto.EndDate,
                 Owner = dto.Owner,
-                ProjectStatus = await _context.ProjectStatus.FirstOrDefaultAsync(x => x.Name == dto.Status.Name),
-                ProjectCategory = await _context.ProjectCategories.FirstOrDefaultAsync(x => x.Name == dto.Category.Name),
-                Priority = await _context.Priorities.FirstOrDefaultAsync(x => x.Level == dto.Priority.Level),
-                Client = await _context.Clients.FirstOrDefaultAsync(x => x.Name == dto.Client.Name)
+                Status = Map<ProjectStatus, ProjectStatusDTO>(dto.ProjectStatus),
+                Category = Map<ProjectCategory, ProjectCategoryDTO>(dto.ProjectCategory),
+                Priority = Map<Priority, PriorityDTO>(dto.Priority),
+                Client = Map<Client, ClientDTO>(dto.Client),
+                Departments = await _context.Departments.Entry(dto.ProjectDepartment),
+
+                //ProjectCategory = await _context.ProjectCategories.FirstOrDefaultAsync(x => x.Name == dto.Category.Name),
+                //Priority = await _context.Priorities.FirstOrDefaultAsync(x => x.Level == dto.Priority.Level),
+                //Client = await _context.Clients.FirstOrDefaultAsync(x => x.Name == dto.Client.Name)
             };
 
             return project;

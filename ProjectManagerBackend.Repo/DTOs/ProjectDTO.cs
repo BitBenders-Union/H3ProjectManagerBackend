@@ -18,6 +18,7 @@ namespace ProjectManagerBackend.Repo.DTOs
         public PriorityDTO Priority { get; set; }
         public ClientDTO? Client { get; set; }
         public List<ProjectTaskDTO>? ProjectTasks { get; set; }
+        public List<ProjectStatusDTO>? ProjectStatuses { get; set; }
         public List<DepartmentDTO>? Departments { get; set; }
         public List<UserDetailDTOResponse>? Users { get; set; }
         public string Owner { get; set; }

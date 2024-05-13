@@ -57,6 +57,7 @@ namespace ProjectManagerBackend.Repo.Repositories
                 .Include(x => x.ProjectCategory)
                 .Include(x => x.Priority)
                 .Include(x => x.Client)
+                .Include(x => x.ProjectStatus)
                 .Include(x => x.ProjectDepartment)
                     .ThenInclude(x => x.Department)
                 .Include(x => x.ProjectUserDetail)
