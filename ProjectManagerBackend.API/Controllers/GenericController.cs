@@ -1,4 +1,8 @@
-﻿namespace ProjectManagerBackend.API.Controllers
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using ProjectManagerBackend.Repo.Interfaces;
+
+namespace ProjectManagerBackend.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -22,7 +26,7 @@
             _validationService = validation;
         }
 
-        [HttpPost]        
+        [HttpPost]
         public async virtual Task<ActionResult<TEntityDTOResponse>> Create(TEntityDTO entity)
         {
             try
@@ -46,8 +50,8 @@
             {
                 return BadRequest(ex.Message);
             }
+
         }
-        
 
         [HttpGet]
         public async virtual Task<ActionResult<IEnumerable<TEntityDTOResponse>>> GetAll()
@@ -78,10 +82,11 @@
 
         [HttpGet("{id}")]
         public async virtual Task<ActionResult<TEntityDTOResponse>> GetById(int id)
-        {
+        {            
             var item = await _repository.GetByIdAsync(id);
             if (item == null)
                 return NotFound();
+
             return Ok(_mapping.Map<TEntity, TEntityDTOResponse>(item));
         }
 
