@@ -19,7 +19,7 @@ namespace ProjectManagerBackend.Repo.DTOs
         public ClientDTO? Client { get; set; }
         public List<ProjectTaskDTO>? ProjectTasks { get; set; }
         public List<DepartmentDTO>? Departments { get; set; }
-        public List<UserDetailDTOResponse>? Users { get; set; }
+        public List<UsersDTO>? Users { get; set; }
         public string? Owner { get; set; }
     }
 }

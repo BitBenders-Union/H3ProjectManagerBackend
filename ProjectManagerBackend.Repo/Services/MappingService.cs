@@ -156,7 +156,7 @@ namespace ProjectManagerBackend.Repo
                 Priority = Map<Priority, PriorityDTO>(dto.Priority),
                 Client = Map<Client, ClientDTO>(dto.Client),
                 Departments = dto.ProjectDepartment.Select(x => Map<Department, DepartmentDTO>(x.Department)).ToList(),
-                Users = dto.ProjectUserDetail.Select(x => Map<UserDetail, UserDetailDTOResponse>(x.UserDetail)).ToList(),
+                Users = dto.ProjectUserDetail.Select(x => Map<UserDetail, UsersDTO>(x.UserDetail)).ToList(),
             };
 
             return project;
@@ -175,7 +175,7 @@ namespace ProjectManagerBackend.Repo
                 Priority = Map<PriorityDTO, Priority>(dto.Priority),
                 Client = Map<ClientDTO, Client>(dto.Client),
                 ProjectDepartment = dto.Departments.Select(x => new ProjectDepartment { Department = Map<DepartmentDTO, Department>(x)}).ToList(),
-                ProjectUserDetail = dto.Users.Select(x => new ProjectUserDetail { UserDetail = Map<UserDetailDTOResponse, UserDetail>(x)}).ToList(),
+                ProjectUserDetail = dto.Users.Select(x => new ProjectUserDetail { UserDetail = Map<UsersDTO, UserDetail>(x)}).ToList(),
             };
             return project;
         }
