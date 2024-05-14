@@ -9,10 +9,8 @@
         private readonly List<Department> _departmentsList;
         
         private readonly Department _singleDepartment;
-        private readonly Department _singleDepartmentNoId;
         
         private readonly DepartmentDTO _singleDepartmentDTO;
-        private readonly DepartmentDTO _singleDepartmentNoIdDTO;
 
         public DepartmentControllerTest()
         {
