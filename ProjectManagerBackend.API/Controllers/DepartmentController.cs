@@ -7,6 +7,7 @@ namespace ProjectManagerBackend.API.Controllers
     [ApiController]
     public class DepartmentController : GenericController<Department, DepartmentDTO, DepartmentDTO>
     {
+      
 
         public DepartmentController(
             IGenericRepository<Department> repository,

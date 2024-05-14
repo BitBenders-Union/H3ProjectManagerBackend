@@ -4,6 +4,7 @@ using ProjectManagerBackend.Repo.Data;
 using ProjectManagerBackend.Repo.Interfaces;
 using ProjectManagerBackend.Repo.Models;
 
+
 namespace ProjectManagerBackend.Repo.Repositories;
 
 public class ProjectCategoryRepository : IProjectCategory
@@ -41,9 +42,14 @@ public class ProjectCategoryRepository : IProjectCategory
     public async Task<bool> DeleteCategory(int id)
     {
         var category = await _context.ProjectCategories.FindAsync(id);
-        _context.Remove(category);
-        int saved = await _context.SaveChangesAsync();
-        return saved > 0;
+        
+        if (category != null)
+        {
+            _context.Remove(category);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+        return false;        
     }
 
    

@@ -4,6 +4,7 @@ using ProjectManagerBackend.Repo.DTOs;
 using ProjectManagerBackend.Repo.Interfaces;
 using ProjectManagerBackend.Repo.Models;
 using System.Collections;
+using System.Xml;
 
 
 namespace ProjectManagerBackend.Repo
@@ -81,9 +82,40 @@ namespace ProjectManagerBackend.Repo
 
             // return mapped object
             return destination;
-
-
         }
+
+        //Generic list mapping
+        public List<TMapped>? MapList<T, TMapped>(List<T> source)
+        {
+            if (source == null)
+                return default;
+
+            var destination = new List<TMapped>();
+
+            var sourceType = typeof(T);
+            var destinationType = typeof(TMapped);
+
+            foreach (var item in source)
+            {
+                var mappedItem = Activator.CreateInstance<TMapped>();
+
+                foreach (var sourceProperty in sourceType.GetProperties())
+                {
+                    var destinationProperty = destinationType.GetProperty(sourceProperty.Name, sourceProperty.PropertyType);
+
+                    if (destinationProperty != null && destinationProperty.CanWrite)
+                    {
+                        destinationProperty.SetValue(mappedItem, sourceProperty.GetValue(item));
+                    }
+                }
+
+                destination.Add(mappedItem);
+            }
+
+            return destination;
+        }
+
+
 
         public UserDetail UserLogin(LoginDTO loginDTO)
         {
@@ -109,8 +141,45 @@ namespace ProjectManagerBackend.Repo
             };
 
             return project;
-
         }
+
+        public ProjectDTO ProjectMapping(Project dto)
+        {
+            ProjectDTO project = new ProjectDTO
+            {
+                Name = dto.Name,
+                StartDate = dto.StartDate,
+                EndDate = dto.EndDate,
+                Owner = dto.Owner,
+                Status = Map<ProjectStatus, ProjectStatusDTO>(dto.ProjectStatus),
+                Category = Map<ProjectCategory, ProjectCategoryDTO>(dto.ProjectCategory),
+                Priority = Map<Priority, PriorityDTO>(dto.Priority),
+                Client = Map<Client, ClientDTO>(dto.Client),
+                Departments = dto.ProjectDepartment.Select(x => Map<Department, DepartmentDTO>(x.Department)).ToList(),
+                Users = dto.ProjectUserDetail.Select(x => Map<UserDetail, UserDetailDTOResponse>(x.UserDetail)).ToList(),
+            };
+
+            return project;
+        }
+
+        public Project ProjectMapping(ProjectDTO dto)
+        {
+            Project project = new Project
+            {
+                Name = dto.Name,
+                StartDate = dto.StartDate,
+                EndDate = dto.EndDate,
+                Owner = dto.Owner,
+                ProjectStatus = Map<ProjectStatusDTO, ProjectStatus>(dto.Status),
+                ProjectCategory = Map<ProjectCategoryDTO, ProjectCategory>(dto.Category),
+                Priority = Map<PriorityDTO, Priority>(dto.Priority),
+                Client = Map<ClientDTO, Client>(dto.Client),
+                ProjectDepartment = dto.Departments.Select(x => new ProjectDepartment { Department = Map<DepartmentDTO, Department>(x)}).ToList(),
+                ProjectUserDetail = dto.Users.Select(x => new ProjectUserDetail { UserDetail = Map<UserDetailDTOResponse, UserDetail>(x)}).ToList(),
+            };
+            return project;
+        }
+
 
         public async Task<UserDetail> UserMap(UserDepartmentResponseDTO dto)
         {
