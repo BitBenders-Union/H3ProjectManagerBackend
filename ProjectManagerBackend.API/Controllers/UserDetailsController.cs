@@ -61,7 +61,7 @@ namespace ProjectManagerBackend.API.Controllers
         {
             try
             {
-                if(!ModelState.IsValid)
+                if (!ModelState.IsValid)
                     return BadRequest();
 
                 if (dto == null)
@@ -79,6 +79,33 @@ namespace ProjectManagerBackend.API.Controllers
 
 
                 return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<UserDetailDTOResponse>>> GetAll()
+        {
+            try
+            {
+                // get the userdetail
+                // map to dto
+                // return Ok
+
+                List<UserDetail> result = await _userRepository.GetAll();
+
+                List<UserDetailDTOResponse> resultList = new List<UserDetailDTOResponse>();
+
+                foreach (var item in result)
+                {
+                    resultList.Add(_mappingService.UserMap(item));
+                }
+
+                return Ok(resultList);
+
             }
             catch (Exception ex)
             {

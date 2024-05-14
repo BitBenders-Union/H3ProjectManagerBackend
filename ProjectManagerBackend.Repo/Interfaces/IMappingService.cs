@@ -18,5 +18,6 @@ namespace ProjectManagerBackend.Repo.Interfaces
         public TMapped? Map<T, TMapped>(T source);
         public Task<Project> ProjectCreateMapping(ProjectDTO dto);
         public Task<UserDetail> UserMap(UserDepartmentResponseDTO dto);
+        public UserDetailDTOResponse UserMap(UserDetail user);
     }
 }

@@ -19,6 +19,8 @@ namespace ProjectManagerBackend.Repo.Interfaces
 
         public Task<UserDetail> GetUserDetail(int id);
 
+        public Task<List<UserDetail>> GetAll();
+
 
     }
 }

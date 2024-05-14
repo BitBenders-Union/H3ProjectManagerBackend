@@ -124,5 +124,17 @@ namespace ProjectManagerBackend.Repo
             return user;
 
         }
+
+        public UserDetailDTOResponse UserMap(UserDetail user)
+        {
+            return new UserDetailDTOResponse
+            {
+                Id = user.Id,
+                Username = user.Username,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                CreatedDate = user.CreatedDate
+            };
+        }
     }
 }

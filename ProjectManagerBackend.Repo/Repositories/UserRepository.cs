@@ -63,5 +63,10 @@ namespace ProjectManagerBackend.Repo.Repositories
         {
             return await _context.UserDetails.Include(x => x.Department).Include(x => x.Role).FirstOrDefaultAsync(x => x.Id == id);
         }
+
+        public async Task<List<UserDetail>> GetAll()
+        {
+            return await _context.UserDetails.ToListAsync();
+        }
     }
 }
