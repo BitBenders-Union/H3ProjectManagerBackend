@@ -1,12 +1,12 @@
 ﻿
 namespace ProjectManagerBackend.Test.Repositories
 {
-    public class ProjectTaskCategoryTest
+    public class ProjectTaskCategoryRepositoryTest
     {
         DbContextOptions<DataContext> options;
 
         DataContext _context;
-        public ProjectTaskCategoryTest()
+        public ProjectTaskCategoryRepositoryTest()
         {
             options = new DbContextOptionsBuilder<DataContext>()
                 .UseInMemoryDatabase(databaseName: "MockTaskCategory").Options;

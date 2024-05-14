@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ProjectManagerBackend.Test.Repositories
 {
-    public class ProjectTaskStatusTest
+    public class ProjectTaskStatusRepositoryTest
     {
 
         DbContextOptions<DataContext> options;
@@ -14,7 +14,7 @@ namespace ProjectManagerBackend.Test.Repositories
         DataContext _context;
 
 
-        public ProjectTaskStatusTest()
+        public ProjectTaskStatusRepositoryTest()
         {
             options = new DbContextOptionsBuilder<DataContext>()
                 .UseInMemoryDatabase(databaseName: "MockTaskStatus").Options;

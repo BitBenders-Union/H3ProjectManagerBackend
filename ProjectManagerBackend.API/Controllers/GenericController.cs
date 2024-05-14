@@ -1,8 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using ProjectManagerBackend.Repo.Interfaces;
-
-namespace ProjectManagerBackend.API.Controllers
+﻿namespace ProjectManagerBackend.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -26,7 +22,7 @@ namespace ProjectManagerBackend.API.Controllers
             _validationService = validation;
         }
 
-        [HttpPost]
+        [HttpPost]        
         public async virtual Task<ActionResult<TEntityDTOResponse>> Create(TEntityDTO entity)
         {
             try
@@ -50,8 +46,8 @@ namespace ProjectManagerBackend.API.Controllers
             {
                 return BadRequest(ex.Message);
             }
-
         }
+        
 
         [HttpGet]
         public async virtual Task<ActionResult<IEnumerable<TEntityDTOResponse>>> GetAll()
@@ -78,7 +74,6 @@ namespace ProjectManagerBackend.API.Controllers
             {
                 return BadRequest(ex.Message);
             }
-
         }
 
         [HttpGet("{id}")]
