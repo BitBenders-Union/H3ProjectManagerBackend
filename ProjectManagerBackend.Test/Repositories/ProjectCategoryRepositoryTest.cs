@@ -33,7 +33,7 @@ namespace ProjectManagerBackend.Test.Repositories
         public async Task GetAllCategories_ReturnList()
         {
             // Arrange
-            var projectCategoryRepository = new ProjectCategoryRepository(_context);
+            ProjectCategoryRepository projectCategoryRepository = new ProjectCategoryRepository(_context);
 
             // Act
             var result = await projectCategoryRepository.GetAllCategories();
@@ -46,7 +46,7 @@ namespace ProjectManagerBackend.Test.Repositories
         public async Task GetCategoryById_ReturnCategory()
         {
             // Arrange
-            var projectCategoryRepository = new ProjectCategoryRepository(_context);
+            ProjectCategoryRepository projectCategoryRepository = new ProjectCategoryRepository(_context);
             // Act
             var result = await projectCategoryRepository.GetCategoryById(1);
             // Assert
@@ -56,19 +56,23 @@ namespace ProjectManagerBackend.Test.Repositories
         [Fact]
         public async Task CreateCategori_ReturnCategori()
         {
+            ProjectCategory newCategory = new ProjectCategory { Name = "Test Category 4" };
+
             // Arrange
-            var projectCategoryRepository = new ProjectCategoryRepository(_context);
+            ProjectCategoryRepository projectCategoryRepository = new ProjectCategoryRepository(_context);
             // Act
-            var result = await projectCategoryRepository.CreateCategory(new ProjectCategory { Name = "Test Category 4" });
+
+            ProjectCategory result = await projectCategoryRepository.CreateCategory(newCategory);
             // Assert
-            Assert.Equal("Test Category 4", result.Name);
+
+            Assert.Equal(newCategory, result);
         }
 
         [Fact]
         public async Task UpdateCategory_ReturnTrue()
         {
             // Arrange
-            var projectCategoryRepository = new ProjectCategoryRepository(_context);
+            ProjectCategoryRepository projectCategoryRepository = new ProjectCategoryRepository(_context);
 
             // Act
             var result = await projectCategoryRepository.UpdateCategory(new ProjectCategory { Name = "Test Category Updated" });
@@ -78,16 +82,31 @@ namespace ProjectManagerBackend.Test.Repositories
         }
 
         [Fact]
-        public async Task DeleteCategory_ReturnTrue()
+        public async Task DeleteCategory_ReturnTrueIfDeleted()
         {
             // Arrange
-            var projectCategoryRepository = new ProjectCategoryRepository(_context);
+            ProjectCategoryRepository projectCategoryRepository = new ProjectCategoryRepository(_context);
 
             // Act
             var result = await projectCategoryRepository.DeleteCategory(1);
+            var result2 = await projectCategoryRepository.DeleteCategory(21);
 
             // Assert
             Assert.True(result);
+            Assert.False(result2);
+        }
+
+        [Fact]
+        public async Task DeleteCategory_PassAsFalseIfReturnIsFalse()
+        {
+            // Arrange
+            ProjectCategoryRepository projectCategoryRepository = new ProjectCategoryRepository(_context);
+
+            // Act
+            var result = await projectCategoryRepository.DeleteCategory(21);
+
+            // Assert
+            Assert.False(result);
         }
 
         [Fact]
