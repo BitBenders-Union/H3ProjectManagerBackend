@@ -27,10 +27,8 @@
             };
 
             _singleDepartment = new Department { Id = 1, Name = "Department 1" };
-            _singleDepartmentNoId = new Department { Name = "Department 1" };
             
             _singleDepartmentDTO= new DepartmentDTO { Name = "Department 1" };
-            _singleDepartmentNoIdDTO = new DepartmentDTO { Name = "Department 1" };
         }
 
         [Fact]
