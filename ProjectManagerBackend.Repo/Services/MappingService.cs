@@ -4,6 +4,7 @@ using ProjectManagerBackend.Repo.DTOs;
 using ProjectManagerBackend.Repo.Interfaces;
 using ProjectManagerBackend.Repo.Models;
 using System.Collections;
+using System.Xml;
 
 
 namespace ProjectManagerBackend.Repo
@@ -142,7 +143,7 @@ namespace ProjectManagerBackend.Repo
             return project;
         }
 
-        public async Task<ProjectDTO> ProjectMapping(Project dto)
+        public ProjectDTO ProjectMapping(Project dto)
         {
             ProjectDTO project = new ProjectDTO
             {
@@ -158,6 +159,24 @@ namespace ProjectManagerBackend.Repo
                 Users = dto.ProjectUserDetail.Select(x => Map<UserDetail, UserDetailDTOResponse>(x.UserDetail)).ToList(),
             };
 
+            return project;
+        }
+
+        public Project ProjectMapping(ProjectDTO dto)
+        {
+            Project project = new Project
+            {
+                Name = dto.Name,
+                StartDate = dto.StartDate,
+                EndDate = dto.EndDate,
+                Owner = dto.Owner,
+                ProjectStatus = Map<ProjectStatusDTO, ProjectStatus>(dto.Status),
+                ProjectCategory = Map<ProjectCategoryDTO, ProjectCategory>(dto.Category),
+                Priority = Map<PriorityDTO, Priority>(dto.Priority),
+                Client = Map<ClientDTO, Client>(dto.Client),
+                ProjectDepartment = dto.Departments.Select(x => new ProjectDepartment { Department = Map<DepartmentDTO, Department>(x)}).ToList(),
+                ProjectUserDetail = dto.Users.Select(x => new ProjectUserDetail { UserDetail = Map<UserDetailDTOResponse, UserDetail>(x)}).ToList(),
+            };
             return project;
         }
 
