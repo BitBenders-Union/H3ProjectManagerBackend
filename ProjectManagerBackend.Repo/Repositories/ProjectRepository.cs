@@ -54,6 +54,22 @@ namespace ProjectManagerBackend.Repo.Repositories
             return result;
         }
 
+        public async Task<Project> GetProject(int id)
+        {
+            var result = await _context.Projects.Include(x => x.ProjectStatus)
+                .Include(x => x.ProjectCategory)
+                .Include(x => x.Priority)
+                .Include(x => x.Client)
+                .Include(x => x.ProjectStatus)
+                .Include(x => x.ProjectDepartment)
+                    .ThenInclude(x => x.Department)
+                .Include(x => x.ProjectUserDetail)
+                    .ThenInclude(x => x.UserDetail)
+                .FirstOrDefaultAsync(x => x.Id == id);
+
+            return result;
+        }
+
         public async Task<string> GetOwnerName(int ownerId)
         {
             var result = await _context.UserDetails.FirstOrDefaultAsync(x => x.Id == ownerId);

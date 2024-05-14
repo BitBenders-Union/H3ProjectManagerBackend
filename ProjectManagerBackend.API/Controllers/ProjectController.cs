@@ -35,7 +35,7 @@ namespace ProjectManagerBackend.API.Controllers
                     return BadRequest("Invalid model state");
                 }
 
-                return Ok(await _repository.UpdateAsync(_mapping.Map<ProjectDTO, Project>(projectDTO)));
+                return Ok(await _repository.UpdateAsync(_mapping.ProjectMapping(projectDTO)));
 
             }
             catch (Exception ex)
@@ -82,6 +82,27 @@ namespace ProjectManagerBackend.API.Controllers
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("{id}")]
+        public async override Task<ActionResult<ProjectDTO>> GetById(int id)
+        {
+            try
+            {
+                var result = await _projectRepository.GetProject(id);
+                if (result == null)
+                {
+                    return NotFound();
+                }    
+
+                var mapping = _mapping.ProjectMapping(result);
+
+                return Ok(mapping);
+            }
+            catch (Exception ex)
+            { 
+                return BadRequest(ex.Message); 
             }
         }
 

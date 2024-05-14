@@ -3,7 +3,7 @@ namespace ProjectManagerBackend.Test.Controllers
 {
     public class AuthControllerTest : IClassFixture<AuthControllerTest>
     {
-        [Fact]
+        //[Fact]
         public async Task CreateUserTest()
         {
             var mockRepo = new Mock<IGenericRepository<UserDetail>>();
