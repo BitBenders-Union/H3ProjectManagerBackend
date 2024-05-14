@@ -50,7 +50,18 @@ namespace ProjectManagerBackend.API.Controllers
         {
             try
             {
+
+                if(userid == 0)
+                {
+                    return BadRequest("Userid cannot be 0");
+                }
+
                 var result = await _projectRepository.GetAllProjectDashboards(userid);
+
+                if(result == null)
+                {
+                    return NotFound("No projects found for user");
+                }
 
                 // map result to projectDashboardDTO
 

@@ -40,8 +40,6 @@ namespace ProjectManagerBackend.API.Controllers
                 if (!_validationService.WhiteSpaceValidation(entity))
                     return BadRequest("Invalid Model, Must not contain empty whitespace!");
 
-
-
                 var result = await _repository.CreateAsync(_mapping.Map<TEntityDTO, TEntity>(entity));
 
                 return Ok(_mapping.Map<TEntity, TEntityDTOResponse>(result));
@@ -78,15 +76,15 @@ namespace ProjectManagerBackend.API.Controllers
             {
                 return BadRequest(ex.Message);
             }
-
         }
 
         [HttpGet("{id}")]
         public async virtual Task<ActionResult<TEntityDTOResponse>> GetById(int id)
-        {
+        {            
             var item = await _repository.GetByIdAsync(id);
             if (item == null)
                 return NotFound();
+
             return Ok(_mapping.Map<TEntity, TEntityDTOResponse>(item));
         }
 

@@ -11,5 +11,5 @@ public class ProjectTask
     public ProjectTaskCategory ProjectTaskCategory { get; set; }
     public Project Project { get; set; }
     public List<ProjectTaskUserDetail> ProjectTaskUserDetail { get; set; }
-    public List<Comment> Comments { get; set; }
+    public List<Comment>? Comments { get; set; }
 }
