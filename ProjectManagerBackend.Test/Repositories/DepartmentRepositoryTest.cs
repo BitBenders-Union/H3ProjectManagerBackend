@@ -11,7 +11,7 @@ namespace ProjectManagerBackend.Test.Repositories
         public DepartmentRepositoryTest()
         {        
             options = new DbContextOptionsBuilder<DataContext>()
-                .UseInMemoryDatabase(databaseName: "MockLocation").Options;
+                .UseInMemoryDatabase(databaseName: "MockDepartment").Options;
 
             _context = new DataContext(options);
 
@@ -22,19 +22,25 @@ namespace ProjectManagerBackend.Test.Repositories
             _context.Departments.Add(new Department { Id = 3, Name = "Test Department 3" });
 
             _context.SaveChanges();
+            
         }
 
         [Fact]
         public async Task GetAllDepartments_ReturnList()
-        {
+        {            
             // Arrange
             GenericRepository<Department> repository = new(_context);
 
-            // Act
-            ICollection<Department> departmentList = await repository.GetAllAsync();
+         
+            var departmentList = repository.GetAllAsync();
+            departmentList.Wait();
+
+            var list = departmentList.Result.ToList();
+
 
             // Assert
-            Assert.Equal(3, departmentList.Count);
+            Assert.Equal(3, list.Count);
+           
         }
 
         [Fact]
@@ -72,11 +78,15 @@ namespace ProjectManagerBackend.Test.Repositories
         [Fact]
         public async Task DeleteDepartment_ReturnTrue()
         {
+            Department department = new Department { Name = "Test Department 999" };
+            _context.Departments.Add(department);
+            _context.SaveChanges();
+
             // Arrange
             GenericRepository<Department> repository = new(_context);
 
             // Act
-            bool result = await repository.DeleteAsync(1); // Assuming Id 1 does exist 
+            bool result = await repository.DeleteAsync(department.Id);  
             bool falseResult = await repository.DeleteAsync(99); // Assuming ID 99 doesn't exist
 
             // Assert

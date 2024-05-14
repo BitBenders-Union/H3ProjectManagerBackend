@@ -10,7 +10,7 @@ namespace ProjectManagerBackend.Test.Repositories
         public PriorityRepositoryTest()
         {
             options = new DbContextOptionsBuilder<DataContext>()
-                .UseInMemoryDatabase(databaseName: "MockLocation").Options;
+                .UseInMemoryDatabase(databaseName: "MockPriority").Options;
 
             _context = new DataContext(options);
 
@@ -18,8 +18,7 @@ namespace ProjectManagerBackend.Test.Repositories
 
             _context.Priorities.Add(new Priority { Id = 1, Name = "Test Priority 1", Level = 0 });
             _context.Priorities.Add(new Priority { Id = 2, Name = "Test Priority 2", Level = 1 });
-            _context.Priorities.Add(new Priority { Id = 3, Name = "Test Priority 3", Level = 2 });
-           
+            _context.Priorities.Add(new Priority { Id = 3, Name = "Test Priority 3", Level = 2 });           
 
             _context.SaveChanges();
         }
@@ -72,11 +71,16 @@ namespace ProjectManagerBackend.Test.Repositories
         [Fact]
         public async Task DeletePriority_ReturnTrue()
         {
+            Priority priority = new Priority { Name = "Test Priority 999", Level = 999 };
+            _context.Priorities.Add(priority);
+            _context.SaveChanges();
+
             // Arrange
             GenericRepository<Priority> repository = new(_context);
 
             // Act
-            bool result = await repository.DeleteAsync(1); // Assuming Id 1 does exist 
+
+            bool result = await repository.DeleteAsync(priority.Id);  
             bool falseResult = await repository.DeleteAsync(99); // Assuming ID 99 doesn't exist
 
             // Assert

@@ -74,11 +74,15 @@ namespace ProjectManagerBackend.Test.Repositories
         [Fact]
         public async Task DeleteLocation_ReturnTrue()
         {
+            Location location = new() { Name = "Test Location 999", Address = "Test Address 999" };
+            _context.Locations.Add(location);
+            _context.SaveChanges();
+
             // Arrange
             GenericRepository<Location> repository = new(_context);
 
             // Act
-            bool result = await repository.DeleteAsync(1); // Assuming Id 1 does exist 
+            bool result = await repository.DeleteAsync(location.Id); 
             bool falseResult = await repository.DeleteAsync(99); // Assuming ID 99 doesn't exist
             
             // Assert

@@ -10,7 +10,7 @@ namespace ProjectManagerBackend.Test.Repositories
         public ProjectStatusRepositoryTest()
         {
             options = new DbContextOptionsBuilder<DataContext>()
-                .UseInMemoryDatabase(databaseName: "MockLocation").Options;
+                .UseInMemoryDatabase(databaseName: "MockStatus").Options;
 
             _context = new DataContext(options);
 
@@ -72,11 +72,15 @@ namespace ProjectManagerBackend.Test.Repositories
         [Fact]
         public async Task DeleteProjectStatus_ReturnTrue()
         {
+            ProjectStatus projectStatus = new ProjectStatus { Name = "Test ProjectStatus 999" };
+            _context.ProjectStatus.Add(projectStatus);
+            _context.SaveChanges();
+
             // Arrange
             GenericRepository<ProjectStatus> repository = new(_context);
 
             // Act
-            bool result = await repository.DeleteAsync(1); // Assuming Id 1 does exist 
+            bool result = await repository.DeleteAsync(projectStatus.Id); // Assuming Id 1 does exist 
             bool falseResult = await repository.DeleteAsync(99); // Assuming ID 99 doesn't exist
 
             // Assert
