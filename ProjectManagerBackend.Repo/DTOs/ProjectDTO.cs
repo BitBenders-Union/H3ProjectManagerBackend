@@ -20,6 +20,6 @@ namespace ProjectManagerBackend.Repo.DTOs
         public List<ProjectTaskDTO>? ProjectTasks { get; set; }
         public List<DepartmentDTO>? Departments { get; set; }
         public List<UserDetailDTOResponse>? Users { get; set; }
-        public string Owner { get; set; }
+        public string? Owner { get; set; }
     }
 }
