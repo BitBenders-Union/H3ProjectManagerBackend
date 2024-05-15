@@ -85,76 +85,26 @@ namespace ProjectManagerBackend.API.Controllers
             }
         }
 
-        [HttpGet("{id}")]
-        public async override Task<ActionResult<ProjectDTO>> GetById(int id)
-        {
-            try
-            {
-                var result = await _projectRepository.GetProject(id);
-                if (result == null)
-                {
-                    return NotFound();
-                }    
+        //[HttpGet("{id}")]
+        //public async override Task<ActionResult<ProjectDTO>> GetById(int id)
+        //{
+        //    try
+        //    {
+        //        var result = await _projectRepository.Get(id);
+        //        if (result == null)
+        //        {
+        //            return NotFound();
+        //        }    
 
-                var mapping = _mapping.ProjectMapping(result);
+        //        var mapping = _mapping.ProjectMapping(result);
 
-                return Ok(mapping);
-            }
-            catch (Exception ex)
-            { 
-                return BadRequest(ex.Message); 
-            }
-        }
-
-
-        [HttpPost]
-        public override async Task<ActionResult<ProjectDTO>> Create(ProjectDTO dto)
-        {
-
-
-            try
-            {
-                // validate
-
-                if (dto == null)
-                {
-                    return BadRequest("Project cannot be null");
-                }
-
-                if (!ModelState.IsValid)
-                {
-                    return BadRequest("Invalid model state");
-                }
-
-                if(!_validationService.WhiteSpaceValidation(dto))
-                {
-                    return BadRequest("Invalid Model, Must not contain empty whitespace!");
-                }
-
-                // map
-
-                var model = await _mapping.ProjectCreateMapping(dto);
-
-                // then create
-
-                model = await _repository.CreateAsync(model);
-
-                // create many to many with newly created entity
-
-                _projectRepository.CreateManyToMany(model.Id, dto.Users.First().Id);
-
-                
-                // then return
-
-                return Ok();
-
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-
-        }
+        //        return Ok(mapping);
+        //    }
+        //    catch (Exception ex)
+        //    { 
+        //        return BadRequest(ex.Message); 
+        //    }
+        //}
 
         [HttpGet("{id}")]
         public async override Task<ActionResult<ProjectDTO>> GetById(int id)
@@ -227,7 +177,7 @@ namespace ProjectManagerBackend.API.Controllers
                         taskDTO.ProjectTaskUserDetail.Add(userDTO);
                     }
 
-                    if(task.Comments != null)
+                    if (task.Comments != null)
                     {
                         foreach (var comment in task.Comments)
                         {
@@ -263,6 +213,58 @@ namespace ProjectManagerBackend.API.Controllers
             }
 
         }
+
+
+        [HttpPost]
+        public override async Task<ActionResult<ProjectDTO>> Create(ProjectDTO dto)
+        {
+
+
+            try
+            {
+                // validate
+
+                if (dto == null)
+                {
+                    return BadRequest("Project cannot be null");
+                }
+
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest("Invalid model state");
+                }
+
+                if(!_validationService.WhiteSpaceValidation(dto))
+                {
+                    return BadRequest("Invalid Model, Must not contain empty whitespace!");
+                }
+
+                // map
+
+                var model = await _mapping.ProjectCreateMapping(dto);
+
+                // then create
+
+                model = await _repository.CreateAsync(model);
+
+                // create many to many with newly created entity
+
+                _projectRepository.CreateManyToMany(model.Id, dto.Users.First().Id);
+
+                
+                // then return
+
+                return Ok();
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+        }
+
+
 
     }
 }

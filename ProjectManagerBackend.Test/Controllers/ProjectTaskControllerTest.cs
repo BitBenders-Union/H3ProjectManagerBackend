@@ -7,6 +7,7 @@ namespace ProjectManagerBackend.Test.Controllers
         private readonly IGenericRepository<ProjectTask> _repository;
         private readonly IMappingService _mapping;
         private readonly IValidationService _validationService;
+        private readonly IProjectTaskRepository _projectTaskRepository;
 
         private readonly GenericController<ProjectTask, ProjectTaskDTO, ProjectTaskDTO> _controller;
 
@@ -20,6 +21,7 @@ namespace ProjectManagerBackend.Test.Controllers
             _repository = new Mock<IGenericRepository<ProjectTask>>().Object;
             _mapping = new Mock<IMappingService>().Object;
             _validationService = new Mock<IValidationService>().Object;
+            _projectTaskRepository = new Mock<IProjectTaskRepository>().Object; 
 
             // Create instance of controller with mocked dependencies
             _controller = new GenericController<ProjectTask, ProjectTaskDTO, ProjectTaskDTO>(_repository, _mapping, _validationService);
@@ -115,7 +117,8 @@ namespace ProjectManagerBackend.Test.Controllers
             // Set up the mock repository to return the 'projectTask' when GetByIdAsync is called
             Mock.Get(_repository).Setup(repo => repo.GetByIdAsync(1)).ReturnsAsync(_singleProjectTask);
 
-            var controller = new ProjectTaskController(_repository, _mapping, _validationService); // Create instance of controller with mocked dependencies
+
+            var controller = new ProjectTaskController(_repository, _mapping, _validationService, _projectTaskRepository); // Create instance of controller with mocked dependencies
 
             // Act
             var result = await controller.Update(_singleProjectTaskDTO); // Call
