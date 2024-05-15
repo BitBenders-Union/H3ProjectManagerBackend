@@ -135,5 +135,47 @@ namespace ProjectManagerBackend.API.Controllers
 
         }
 
+        [HttpGet("{id}")]
+        public async override Task<ActionResult<ProjectDTO>> GetById(int id)
+        {
+            try
+            {
+                if (id == 0)
+                {
+                    return BadRequest("Id cannot be 0");
+                }
+
+                // change to project repo
+                var result = await _projectRepository.Get(id);
+
+                if (result == null)
+                {
+                    return NotFound("No project found");
+                }
+
+                ProjectDTO dto = new()
+                {
+                    Id = result.Id,
+                    Name = result.Name,
+                    StartDate = result.StartDate,
+                    EndDate = result.EndDate,
+                    Status = _mapping.Map<ProjectStatus, ProjectStatusDTO>(result.ProjectStatus),
+                    Category = _mapping.Map<ProjectCategory, ProjectCategoryDTO>(result.ProjectCategory),
+                    Priority = _mapping.Map<Priority, PriorityDTO>(result.Priority),
+                    Client = _mapping.Map<Client, ClientDTO>(result.Client),
+
+
+
+                };
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+        }
+
     }
 }
