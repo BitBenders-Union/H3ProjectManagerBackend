@@ -205,5 +205,24 @@ namespace ProjectManagerBackend.Repo
                 CreatedDate = user.CreatedDate
             };
         }
+
+        public async Task<ProjectTask> ProjectTaskCreateMapping(ProjectTaskDTO dto)
+        {
+            ProjectTask projectTask = new()
+            {
+                Name = dto.Name,
+                Description = dto.Description,
+                Priority = await _context.Priorities.FirstOrDefaultAsync(x => x.Id == dto.Priority.Id),
+                Status = await _context.ProjectTaskStatus.FirstOrDefaultAsync(x => x.Id == dto.Status.Id),
+                ProjectTaskCategory = await _context.ProjectTaskCategories.FirstOrDefaultAsync(x => x.Id == dto.ProjectTaskCategory.Id),
+                Project = await _context.Projects.FirstOrDefaultAsync(x => x.Id == dto.ProjectId),
+                Comments = new List<Comment>(),
+                ProjectTaskUserDetail = new List<ProjectTaskUserDetail>()
+            };
+
+
+
+            return projectTask;
+        }
     }
 }
