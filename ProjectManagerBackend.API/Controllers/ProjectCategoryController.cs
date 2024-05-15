@@ -12,7 +12,6 @@ public class ProjectCategoryController : ControllerBase
     {
         _projectCategory = projectCategory;
         _mappingService = mappingService;
-
     }
 
     [HttpPost]
@@ -36,7 +35,6 @@ public class ProjectCategoryController : ControllerBase
             {
                 return BadRequest("Category could not be created");
             }
-
             return Ok(createdCategory);
         }
         catch (Exception ex)
@@ -44,8 +42,6 @@ public class ProjectCategoryController : ControllerBase
 
             return BadRequest(ex.Message);
         }
-
-
     }
 
     [HttpGet]
