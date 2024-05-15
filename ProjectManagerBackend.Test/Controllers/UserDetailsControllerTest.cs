@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace ProjectManagerBackend.Test.Controllers
 {
-    internal class UserDetailsControllerTest
+    public class UserDetailsControllerTest
     {
+
     }
 }
