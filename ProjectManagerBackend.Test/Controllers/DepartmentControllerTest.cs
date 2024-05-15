@@ -113,7 +113,7 @@
         public async Task DeleteDepartment_ReturnOkResult()
         {
             // Arrange
-            Mock.Get(_repository).Setup(repo => repo.DeleteAsync(1)).ReturnsAsync(true);
+                Mock.Get(_repository).Setup(repo => repo.DeleteAsync(1)).ReturnsAsync(true);
 
             // Create instance of controller with mocked dependencies
             var controller = new GenericController<Department, DepartmentDTO, DepartmentDTO>(_repository, _mapping, _validationService);
