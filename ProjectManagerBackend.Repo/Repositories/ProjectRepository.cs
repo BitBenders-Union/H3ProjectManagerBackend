@@ -45,6 +45,17 @@ namespace ProjectManagerBackend.Repo.Repositories
                     .ThenInclude(x => x.Department)
                 .Include(x => x.ProjectUserDetail)
                     .ThenInclude(x => x.UserDetail)
+                .Include(x => x.ProjectTasks)
+                    .ThenInclude(x => x.Priority)
+                .Include(x => x.ProjectTasks)
+                    .ThenInclude(x => x.ProjectTaskCategory)
+                .Include(x => x.ProjectTasks)
+                    .ThenInclude(x => x.Status)
+                .Include(x => x.ProjectTasks)
+                    .ThenInclude(x => x.ProjectTaskUserDetail)
+                        .ThenInclude(x => x.UserDetail)
+                .Include(x => x.ProjectTasks)
+                    .ThenInclude(x => x.Comments)
                 .FirstOrDefaultAsync(x => x.Id == id) ?? null;
 
             return result;

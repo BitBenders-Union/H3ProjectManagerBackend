@@ -153,6 +153,12 @@ namespace ProjectManagerBackend.API.Controllers
                     return NotFound("No project found");
                 }
 
+                // create a list of project tasksDTO
+                // create a list of departmentsDTO
+                // create a list of usersDTO
+
+
+
                 ProjectDTO dto = new()
                 {
                     Id = result.Id,
@@ -163,12 +169,72 @@ namespace ProjectManagerBackend.API.Controllers
                     Category = _mapping.Map<ProjectCategory, ProjectCategoryDTO>(result.ProjectCategory),
                     Priority = _mapping.Map<Priority, PriorityDTO>(result.Priority),
                     Client = _mapping.Map<Client, ClientDTO>(result.Client),
-
-
-
+                    ProjectTasks = new List<ProjectTaskDTO>(),
+                    Departments = new List<DepartmentDTO>(),
+                    Users = new List<UserDetailDTOResponse>(),
+                    Owner = result.Owner
                 };
 
-                return Ok();
+                foreach (var task in result.ProjectTasks)
+                {
+
+
+
+                    ProjectTaskDTO taskDTO = new()
+                    {
+                        Id = task.Id,
+                        Name = task.Name,
+                        Description = task.Description,
+                        ProjectId = task.Project.Id,
+                        Priority = _mapping.Map<Priority, PriorityDTO>(task.Priority),
+                        Status = _mapping.Map<ProjectTaskStatus, ProjectTaskStatusDTO>(task.Status),
+                        ProjectTaskCategory = _mapping.Map<ProjectTaskCategory, ProjectTaskCategoryDTO>(task.ProjectTaskCategory),
+                        ProjectTaskUserDetail = new List<UserDetailDTOResponse>(),
+                        Comments = new List<CommentDTO>()
+                    };
+
+                    foreach (var user in task.ProjectTaskUserDetail)
+                    {
+                        UserDetailDTOResponse userDTO = new()
+                        {
+                            Id = user.UserDetail.Id,
+                            Username = user.UserDetail.Username,
+                            FirstName = user.UserDetail.FirstName,
+                            LastName = user.UserDetail.LastName,
+                            CreatedDate = user.UserDetail.CreatedDate
+                        };
+                        taskDTO.ProjectTaskUserDetail.Add(userDTO);
+                    }
+
+                    if(task.Comments != null)
+                    {
+                        foreach (var comment in task.Comments)
+                        {
+                            CommentDTO commentDTO = new()
+                            {
+                                Id = comment.Id,
+                                Title = comment.Title,
+                                Description = comment.Description
+                            };
+                            taskDTO.Comments.Add(commentDTO);
+                        }
+                    }
+
+
+                    dto.ProjectTasks.Add(taskDTO);
+                }
+
+                foreach (var department in result.ProjectDepartment)
+                {
+                    dto.Departments.Add(_mapping.Map<Department, DepartmentDTO>(department.Department));
+                }
+
+                foreach (var user in result.ProjectUserDetail)
+                {
+                    dto.Users.Add(_mapping.Map<UserDetail, UserDetailDTOResponse>(user.UserDetail));
+                }
+
+                return Ok(dto);
             }
             catch (Exception ex)
             {
