@@ -9,18 +9,24 @@ namespace ProjectManagerBackend.Test.Controllers
         private readonly IProjectRepository _pRepo;
         private readonly IValidationService _validationService;
 
+        private readonly GenericController<Project, ProjectDTO, ProjectDTO> _controller;
+
         private readonly List<Project> _projectsList;
         private readonly Project _singleProject;
         private readonly ProjectDTO _singleProjectDTO;
 
         public ProjectControllerTest()
         {
-            // Setup mocks
+            // Mocking the dependencies
             _repository = new Mock<IGenericRepository<Project>>().Object;
             _mapping = new Mock<IMappingService>().Object;
             _pRepo = new Mock<IProjectRepository>().Object;
             _validationService = new Mock<IValidationService>().Object;
 
+            // Create instance of controller with mocked dependencies
+            _controller = new GenericController<Project, ProjectDTO, ProjectDTO>(_repository, _mapping, _validationService);
+
+            // Set up the data
             _projectsList = new List<Project>
             {
                 new Project
@@ -95,13 +101,10 @@ namespace ProjectManagerBackend.Test.Controllers
         {
             // Arrange
             // Set up the mock repository to return the 'projects' list when GetAllAsync is called
-            Mock.Get(_repository).Setup(repo => repo.GetAllAsync()).ReturnsAsync(_projectsList);
-
-            // Create instance of controller with mocked dependencies
-            var controller = new GenericController<Project, ProjectDTO, ProjectDTO>(_repository, _mapping, _validationService);
+            Mock.Get(_repository).Setup(repo => repo.GetAllAsync()).ReturnsAsync(_projectsList);            
 
             // Act
-            var result = await controller.GetAll(); // Call the GetAll method
+            var result = await _controller.GetAll(); // Call the GetAll method
 
             // Assert
             var OkResult = Assert.IsType<OkObjectResult>(result.Result); // Check if the result is of type OkObjectResult, saves "instance" of OkObjectResult in okResult
@@ -115,12 +118,9 @@ namespace ProjectManagerBackend.Test.Controllers
             // Arrange
             // Set up the mock repository to return the 'project' object when GetByIdAsync is called with 1 as parameter
             Mock.Get(_repository).Setup(repo => repo.GetByIdAsync(1)).ReturnsAsync(_singleProject);
-
-            // Create instance of controller with mocked dependencies
-            var controller = new GenericController<Project, ProjectDTO, ProjectDTO>(_repository, _mapping, _validationService);
-
+                        
             // Act
-            var result = await controller.GetById(1); // Call
+            var result = await _controller.GetById(1); // Call
 
             // Assert
             var OkResult = Assert.IsType<OkObjectResult>(result.Result); // Verify OkObjectResult
@@ -133,12 +133,9 @@ namespace ProjectManagerBackend.Test.Controllers
             // Because the actual validation service (_validationService) might be failing even with a valid DTO object due to potential whitespace checks or other validation logic,**
             // we temporarily bypass the validation for this specific test. This allows us to focus on testing the controller's logic for successful creation.
             Mock.Get(_validationService).Setup(service => service.WhiteSpaceValidation(_singleProjectDTO)).Returns(true);
-
-            // Create instance of controller with mocked dependencies
-            var controller = new GenericController<Project, ProjectDTO, ProjectDTO>(_repository, _mapping, _validationService);
-
+                        
             // Act
-            var result = await controller.Create(_singleProjectDTO); // Call Create method with _singleProjectDTO as parameter
+            var result = await _controller.Create(_singleProjectDTO); // Call Create method with _singleProjectDTO as parameter
 
             // Assert
             var OkResult = Assert.IsType<OkObjectResult>(result.Result); // Verify OkObjectResult
@@ -152,11 +149,8 @@ namespace ProjectManagerBackend.Test.Controllers
             // we temporarily bypass the validation for this specific test. This allows us to focus on testing the controller's logic for successful creation.
             Mock.Get(_validationService).Setup(service => service.WhiteSpaceValidation(_singleProjectDTO)).Returns(true);
 
-            // Create instance of controller with mocked dependencies
-            var controller = new GenericController<Project, ProjectDTO, ProjectDTO>(_repository, _mapping, _validationService);
-
             // Act
-            var result = await controller.Delete(1); // Call Update method with 1 as parameters
+            var result = await _controller.Delete(1); // Call Update method with 1 as parameters
 
             // Assert
             var OkResult = Assert.IsType<OkObjectResult>(result); // Verify OkObjectResult

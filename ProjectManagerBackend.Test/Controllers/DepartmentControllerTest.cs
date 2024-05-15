@@ -6,17 +6,23 @@
         private readonly IMappingService _mapping;
         private readonly IValidationService _validationService;
 
+        private readonly GenericController<Department, DepartmentDTO, DepartmentDTO> _controller;
+
         private readonly List<Department> _departmentsList;        
         private readonly Department _singleDepartment;        
         private readonly DepartmentDTO _singleDepartmentDTO;
 
         public DepartmentControllerTest()
         {
-            // Setup mocks
+            // Mocking the dependencies
             _repository = new Mock<IGenericRepository<Department>>().Object;
             _mapping = new Mock<IMappingService>().Object;
             _validationService = new Mock<IValidationService>().Object;
 
+            // Create instance of controller with mocked dependencies
+            _controller = new GenericController<Department, DepartmentDTO, DepartmentDTO>(_repository, _mapping, _validationService);
+
+            // Set up the data
             _departmentsList = new List<Department>
             {
                 new Department { Id = 1, Name = "Department 1" },
@@ -35,12 +41,9 @@
             // Arrange            
             // Set up the mock repository to return the 'departments' list when GetAllAsync is called
             Mock.Get(_repository).Setup(repo => repo.GetAllAsync()).ReturnsAsync(_departmentsList);
-
-            // Create instance of controller with mocked dependencies
-            var controller = new GenericController<Department, DepartmentDTO, DepartmentDTO>(_repository, _mapping, _validationService);
-
+                        
             // Act
-            var result = await controller.GetAll();
+            var result = await _controller.GetAll();
 
             // Assert
             // Check if the result is of type OkObjectResult, saves "instance" of OkObjectResult in okResult
@@ -86,11 +89,8 @@
                 .WhiteSpaceValidation(It.IsAny<DepartmentDTO>()))
                 .Returns(true);
 
-            // Controller instance
-            var controller = new GenericController<Department, DepartmentDTO, DepartmentDTO>(_repository, _mapping, _validationService);
-
             // Act
-            var result = await controller.Create(_singleDepartmentDTO);
+            var result = await _controller.Create(_singleDepartmentDTO);
 
             // Assert
 
@@ -114,12 +114,9 @@
         {
             // Arrange
                 Mock.Get(_repository).Setup(repo => repo.DeleteAsync(1)).ReturnsAsync(true);
-
-            // Create instance of controller with mocked dependencies
-            var controller = new GenericController<Department, DepartmentDTO, DepartmentDTO>(_repository, _mapping, _validationService);
-
+                        
             // Act
-            var result = await controller.Delete(1);
+            var result = await _controller.Delete(1);
 
             // Assert
             // Check if the result is of type OkObjectResult and has a status code of 200, no need to check the value

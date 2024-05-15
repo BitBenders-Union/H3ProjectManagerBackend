@@ -7,17 +7,23 @@ namespace ProjectManagerBackend.Test.Controllers
         private readonly IMappingService _mapping;
         private readonly IValidationService _validationService;
 
+        private readonly GenericController<Priority, PriorityDTO, PriorityDTO> _controller;
+
         private readonly List<Priority> _prioritiesList;
         private readonly Priority _singlePriority;
         private readonly PriorityDTO _singlePriorityDTO;
 
         public PriotityControllerTest()
         {
-            // Setup mocks
+            // Mocking the dependencies
             _repository = new Mock<IGenericRepository<Priority>>().Object;
             _mapping = new Mock<IMappingService>().Object;
             _validationService = new Mock<IValidationService>().Object;
 
+            // Create instance of controller with mocked dependencies
+            _controller = new GenericController<Priority, PriorityDTO, PriorityDTO>(_repository, _mapping, _validationService);
+
+            // Set up the data
             _prioritiesList = new List<Priority>
             {
                 new Priority { Id = 1, Name = "Priority 1", Level = 0 },
@@ -38,11 +44,8 @@ namespace ProjectManagerBackend.Test.Controllers
             // Set up the mock repository to return the 'priorities' list when GetAllAsync is called
             Mock.Get(_repository).Setup(repo => repo.GetAllAsync()).ReturnsAsync(_prioritiesList);
 
-            // Create instance of controller with mocked dependencies
-            var controller = new GenericController<Priority, PriorityDTO, PriorityDTO>(_repository, _mapping, _validationService);
-
             // Act
-            var result = await controller.GetAll(); // Call the GetAll method of the controller
+            var result = await _controller.GetAll(); // Call the GetAll method of the controller
 
             // Assert
             // Check if the result is of type OkObjectResult, saves "instance" of OkObjectResult in okResult
@@ -61,12 +64,9 @@ namespace ProjectManagerBackend.Test.Controllers
             // Arrange
             // Set up the mock repository to return the 'singlePriority' when GetByIdAsync is called with Id = 1
             Mock.Get(_repository).Setup(repo => repo.GetByIdAsync(1)).ReturnsAsync(_singlePriority);
-
-            // Create instance of controller with mocked dependencies
-            var controller = new GenericController<Priority, PriorityDTO, PriorityDTO>(_repository, _mapping, _validationService);
-
+                        
             // Act
-            var result = await controller.GetById(1); // Call the GetById method of the controller with Id = 1
+            var result = await _controller.GetById(1); // Call the GetById method of the controller with Id = 1
 
             // Assert
             // Check if the result is of type OkObjectResult, saves "instance" of OkObjectResult in okResult
@@ -84,11 +84,8 @@ namespace ProjectManagerBackend.Test.Controllers
             // we temporarily bypass the validation for this specific test. This allows us to focus on testing the controller's logic for successful creation.
             Mock.Get(_validationService).Setup(validation => validation.WhiteSpaceValidation(_singlePriorityDTO)).Returns(true);
 
-            // Controller instance
-            var controller = new GenericController<Priority, PriorityDTO, PriorityDTO>(_repository, _mapping, _validationService);
-
             // Act
-            var result = await controller.Create(_singlePriorityDTO); // Call the Create method of the controller with _singlePriorityDTO
+            var result = await _controller.Create(_singlePriorityDTO); // Call the Create method of the controller with _singlePriorityDTO
 
             // Assert
             //skipping assert on returnedModel as it fails due to mapping issues
@@ -104,11 +101,11 @@ namespace ProjectManagerBackend.Test.Controllers
         public async Task DeletePriority_ReturnsOkResult()
         {
             // Arrange
-            // Create instance of controller with mocked dependencies
-            var controller = new GenericController<Priority, PriorityDTO, PriorityDTO>(_repository, _mapping, _validationService);
+            // Set up the mock repository to return true when DeleteAsync is called with Id = 1
+            Mock.Get(_repository).Setup(repo => repo.DeleteAsync(1)).ReturnsAsync(true);
 
             // Act
-            var result = await controller.Delete(1); // Call the Delete method of the controller with Id = 1
+            var result = await _controller.Delete(1); // Call the Delete method of the controller with Id = 1
 
             // Assert
             // Check if the result is of type OkObjectResult, saves "instance" of OkObjectResult in okResult
