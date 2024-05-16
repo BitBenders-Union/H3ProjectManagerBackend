@@ -35,7 +35,7 @@ namespace ProjectManagerBackend.API.Controllers
                     return BadRequest("Invalid model state");
                 }
 
-                var mapped = _mapping.ProjectUpdateMap(projectDTO);
+                var mapped = await _mapping.ProjectUpdateMap(projectDTO);
 
                 var updateReturn = await _repository.UpdateAsync(mapped);
 
