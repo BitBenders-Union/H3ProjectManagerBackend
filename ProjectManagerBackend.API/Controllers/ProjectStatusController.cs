@@ -26,11 +26,7 @@
                 {
                     return BadRequest("Invalid model state");
                 }
-                if(!_validationService.WhiteSpaceValidation(projectStatusDTO))
-                {
-                    return BadRequest("Project Status cannot be empty");
-                }
-
+                
                 return Ok(await _repository.UpdateAsync(_mapping.Map< ProjectStatusDTO, ProjectStatus>(projectStatusDTO)));
 
 

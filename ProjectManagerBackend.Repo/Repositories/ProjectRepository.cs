@@ -34,6 +34,33 @@ namespace ProjectManagerBackend.Repo.Repositories
             throw new Exception("Failed to create many to many relationship");
         }
 
+        public async Task<Project> Get(int id)
+        {
+            var result = await _context.Projects
+                .Include(x => x.ProjectStatus)
+                .Include(x => x.ProjectCategory)
+                .Include(x => x.Priority)
+                .Include(x => x.Client)
+                .Include(x => x.ProjectDepartment)
+                    .ThenInclude(x => x.Department)
+                .Include(x => x.ProjectUserDetail)
+                    .ThenInclude(x => x.UserDetail)
+                .Include(x => x.ProjectTasks)
+                    .ThenInclude(x => x.Priority)
+                .Include(x => x.ProjectTasks)
+                    .ThenInclude(x => x.ProjectTaskCategory)
+                .Include(x => x.ProjectTasks)
+                    .ThenInclude(x => x.Status)
+                .Include(x => x.ProjectTasks)
+                    .ThenInclude(x => x.ProjectTaskUserDetail)
+                        .ThenInclude(x => x.UserDetail)
+                .Include(x => x.ProjectTasks)
+                    .ThenInclude(x => x.Comments)
+                .FirstOrDefaultAsync(x => x.Id == id) ?? null;
+
+            return result;
+        }
+
         /// <summary>
         /// Returns a list of projects to be displayed in the project-dashbord, for a given user
         /// </summary>

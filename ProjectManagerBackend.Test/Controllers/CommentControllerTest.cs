@@ -7,17 +7,23 @@ namespace ProjectManagerBackend.Test.Controllers
         private readonly IMappingService _mapping;
         private readonly IValidationService _validationService;
 
+        private readonly GenericController<Comment, CommentDTO, CommentDTO> _controller;
+
         private readonly List<Comment> _commentsList;
         private readonly Comment _singleComment;
         private readonly CommentDTO _singleCommentDTO;
 
         public CommentControllerTest()
         {
-            // Setup mocks
+            // Mocking the dependencies
             _repository = new Mock<IGenericRepository<Comment>>().Object;
             _mapping = new Mock<IMappingService>().Object;
             _validationService = new Mock<IValidationService>().Object;
 
+            // Create instance of controller with mocked dependencies
+            _controller = new GenericController<Comment, CommentDTO, CommentDTO>(_repository, _mapping, _validationService);
+
+            // Set up the data
             _commentsList = new List<Comment>
             {
                new Comment { Id = 1, Title = "Comment 1" , Description = "Description 1"},
@@ -36,12 +42,9 @@ namespace ProjectManagerBackend.Test.Controllers
             // Arrange            
             // Set up the mock repository to return the 'comments' list when GetAllAsync is called
             Mock.Get(_repository).Setup(repo => repo.GetAllAsync()).ReturnsAsync(_commentsList);
-
-            // Create instance of controller with mocked dependencies
-            var controller = new GenericController<Comment, CommentDTO, CommentDTO>(_repository, _mapping, _validationService);
-
+                       
             // Act
-            var result = await controller.GetAll(); // Call the GetAll method of the controller
+            var result = await _controller.GetAll(); // Call the GetAll method of the controller
 
             // Assert
             // Check if the result is of type OkObjectResult, saves "instance" of OkObjectResult in okResult
@@ -59,13 +62,10 @@ namespace ProjectManagerBackend.Test.Controllers
         {
             // Arrange
             // Set up the mock repository to return the 'comment' when GetByIdAsync is called
-            Mock.Get(_repository).Setup(repo => repo.GetByIdAsync(1)).ReturnsAsync(_singleComment);
-
-            // Create instance of controller with mocked dependencies
-            var controller = new GenericController<Comment, CommentDTO, CommentDTO>(_repository, _mapping, _validationService);
+            Mock.Get(_repository).Setup(repo => repo.GetByIdAsync(1)).ReturnsAsync(_singleComment);                        
 
             // Act
-            var result = await controller.GetById(1); // Call the GetById method of the controller
+            var result = await _controller.GetById(1); // Call the GetById method of the controller
 
             // Assert
             // Check if the result is of type OkObjectResult, saves "instance" of OkObjectResult in okResult
@@ -83,11 +83,8 @@ namespace ProjectManagerBackend.Test.Controllers
             // we temporarily bypass the validation for this specific test. This allows us to focus on testing the controller's logic for successful creation.
             Mock.Get(_validationService).Setup(service => service.WhiteSpaceValidation(_singleCommentDTO)).Returns(true);
 
-            // Create instance of controller with mocked dependencies
-            var controller = new GenericController<Comment, CommentDTO, CommentDTO>(_repository, _mapping, _validationService);
-
             // Act
-            var result = await controller.Create(_singleCommentDTO); // Call the Create method of the controller
+            var result = await _controller.Create(_singleCommentDTO); // Call the Create method of the controller
 
             // Assert
             var okResult = Assert.IsType<OkObjectResult>(result.Result); // Verify OkObjectResult            
@@ -101,11 +98,8 @@ namespace ProjectManagerBackend.Test.Controllers
             // Set up the mock repository to return the 'comment' when GetByIdAsync is called
             Mock.Get(_repository).Setup(repo => repo.GetByIdAsync(1)).ReturnsAsync(_singleComment);
 
-            // Create instance of controller with mocked dependencies
-            var controller = new GenericController<Comment, CommentDTO, CommentDTO>(_repository, _mapping, _validationService);
-
             // Act
-            var result = await controller.Delete(1); // Call the Delete method of the controller
+            var result = await _controller.Delete(1); // Call the Delete method of the controller
 
             // Assert
             var okResult = Assert.IsType<OkObjectResult>(result); // Verify OkObjectResult

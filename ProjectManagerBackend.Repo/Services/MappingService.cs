@@ -166,6 +166,7 @@ namespace ProjectManagerBackend.Repo
         {
             Project project = new Project
             {
+                Id = dto.Id,
                 Name = dto.Name,
                 StartDate = dto.StartDate,
                 EndDate = dto.EndDate,
@@ -173,10 +174,26 @@ namespace ProjectManagerBackend.Repo
                 ProjectStatus = Map<ProjectStatusDTO, ProjectStatus>(dto.Status),
                 ProjectCategory = Map<ProjectCategoryDTO, ProjectCategory>(dto.Category),
                 Priority = Map<PriorityDTO, Priority>(dto.Priority),
-                Client = Map<ClientDTO, Client>(dto.Client),
+                Client = Map<ClientDTO, Client>(dto.Client),    
                 ProjectDepartment = dto.Departments.Select(x => new ProjectDepartment { Department = Map<DepartmentDTO, Department>(x)}).ToList(),
-                ProjectUserDetail = dto.Users.Select(x => new ProjectUserDetail { UserDetail = Map<UsersDTO, UserDetail>(x)}).ToList(),
+                ProjectUserDetail = dto.Users.Select(x => new ProjectUserDetail { UserDetail = Map<UserDetailDTOResponse, UserDetail>(x) }).ToList(),
+
             };
+            return project;
+        }
+
+        public async Task<Project> ProjectUpdateMap(ProjectDTO dto)
+        {
+            var project = await _context.Projects.FirstOrDefaultAsync(x => x.Id == dto.Id);
+
+            project.Name = dto.Name;
+            project.StartDate = dto.StartDate;
+            project.EndDate = dto.EndDate;
+            project.Owner = dto.Owner;
+            project.Priority = await _context.Priorities.FirstOrDefaultAsync(x => x.Id == dto.Priority.Id);
+            project.ProjectStatus = await _context.ProjectStatus.FirstOrDefaultAsync(x => x.Id == dto.Status.Id);
+            project.ProjectCategory = await _context.ProjectCategories.FirstOrDefaultAsync(x => x.Id == dto.Category.Id);
+
             return project;
         }
 
@@ -204,6 +221,46 @@ namespace ProjectManagerBackend.Repo
                 LastName = user.LastName,
                 CreatedDate = user.CreatedDate
             };
+        }
+
+        public async Task<ProjectTask> ProjectTaskCreateMapping(ProjectTaskDTO dto)
+        {
+            ProjectTask projectTask = new()
+            {
+                Name = dto.Name,
+                Description = dto.Description,
+                Priority = await _context.Priorities.FirstOrDefaultAsync(x => x.Id == dto.Priority.Id),
+                Status = await _context.ProjectTaskStatus.FirstOrDefaultAsync(x => x.Id == dto.Status.Id),
+                ProjectTaskCategory = await _context.ProjectTaskCategories.FirstOrDefaultAsync(x => x.Id == dto.ProjectTaskCategory.Id),
+                Project = await _context.Projects.FirstOrDefaultAsync(x => x.Id == dto.ProjectId),
+                Comments = new List<Comment>(),
+                ProjectTaskUserDetail = new List<ProjectTaskUserDetail>()
+            };
+
+
+
+            return projectTask;
+        }
+
+        public async Task<ProjectTask> ProjectTaskUpdateMapping(ProjectTaskDTO dto)
+        {
+
+
+            ProjectTask model = new()
+            {
+                Id = dto.Id,
+                Name = dto.Name,
+                Description = dto.Description,
+                Priority = await _context.Priorities.FirstOrDefaultAsync(x => x.Id == dto.Priority.Id),
+                Status = await _context.ProjectTaskStatus.FirstOrDefaultAsync(x => x.Id == dto.Status.Id),
+                ProjectTaskCategory = await _context.ProjectTaskCategories.FirstOrDefaultAsync(x => x.Id == dto.ProjectTaskCategory.Id),
+                Project = await _context.Projects.FirstOrDefaultAsync(x => x.Id == dto.ProjectId),
+                Comments = new List<Comment>(),
+                ProjectTaskUserDetail = new List<ProjectTaskUserDetail>()
+
+            };
+
+            return model;
         }
     }
 }

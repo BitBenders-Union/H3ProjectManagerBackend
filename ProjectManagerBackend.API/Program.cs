@@ -60,9 +60,10 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddScoped<IProjectCategory, ProjectCategoryRepository>();
 builder.Services.AddScoped<IGenericRepository<Project>, GenericRepository<Project>>(); // i think this is unnecessary
-builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<IGenericRepository<UserDetail>, GenericRepository<UserDetail>>(); // i think this is unnecessary
+builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
+builder.Services.AddScoped<IProjectTaskRepository, ProjectTaskRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IValidationService, ValidationService>();
 builder.Services.AddScoped<IMappingService, MappingService>();

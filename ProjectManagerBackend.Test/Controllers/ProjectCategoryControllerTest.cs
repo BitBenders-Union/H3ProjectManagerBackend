@@ -6,16 +6,23 @@ namespace ProjectManagerBackend.Test.Controllers
         private readonly IProjectCategory _categoryRepository;
         private readonly IMappingService _mapping;
 
+
+        private readonly ProjectCategoryController _controller; 
+
         private readonly List<ProjectCategory> _projectCategoriesList;
         private readonly ProjectCategory _singleProjectCategory;
         private readonly ProjectCategoryDTO _singleProjectCategoryDTO;
 
         public ProjectCategoryControllerTest()
         {
-            // Setup mocks
+            // Mocking the dependencies
             _categoryRepository = new Mock<IProjectCategory>().Object;
             _mapping = new Mock<IMappingService>().Object;
 
+            // Create instance of controller with mocked dependencies
+            _controller = new ProjectCategoryController(_categoryRepository, _mapping);
+
+            // Set up the data
             _projectCategoriesList = new List<ProjectCategory>
             {
                 new ProjectCategory { Id = 1, Name = "ProjectCategory 1" },
@@ -35,11 +42,9 @@ namespace ProjectManagerBackend.Test.Controllers
             // Set up the mock repository to return the 'projectCategories' list when GetAllAsync is called
             Mock.Get(_categoryRepository).Setup(repo => repo.GetAllCategories()).ReturnsAsync(_projectCategoriesList);
 
-            // Create instance of controller with mocked dependencies
-            var controller = new ProjectCategoryController(_categoryRepository, _mapping);
-
+            
             // Act
-            var result = await controller.GetAll();
+            var result = await _controller.GetAll();
 
             // Assert
             // Check if the result is of type OkObjectResult, saves "instance" of OkObjectResult in okResult
@@ -67,12 +72,8 @@ namespace ProjectManagerBackend.Test.Controllers
                 .Setup(repo => repo.DoesExist(1)) // Setup for DoesExist
                 .ReturnsAsync(true); // Return true to simulate existence
 
-
-            // Create instance of controller with mocked dependencies
-            var controller = new ProjectCategoryController(_categoryRepository, _mapping);
-
             // Act
-            var result = await controller.GetById(1); // Call GetById method with 1 as parameter
+            var result = await _controller.GetById(1); // Call GetById method with 1 as parameter
 
             // Assert
             var okResult = Assert.IsType<OkObjectResult>(result); // Check if the result is of type OkObjectResult
@@ -87,12 +88,8 @@ namespace ProjectManagerBackend.Test.Controllers
                 .Setup(repo => repo.CreateCategory(It.IsAny<ProjectCategory>())) // Mock CreateCategory with any argument
                 .ReturnsAsync(_singleProjectCategory); // Mocks async behavior, returns expected category
 
-
-            // Create instance of controller with mocked dependencies
-            var controller = new ProjectCategoryController(_categoryRepository, _mapping);
-
             // Act
-            var result = await controller.Create(_singleProjectCategoryDTO); // Call Create method with _singleProjectCategoryDTO as parameter
+            var result = await _controller.Create(_singleProjectCategoryDTO); // Call Create method with _singleProjectCategoryDTO as parameter
 
             // Assert
             var okResult = Assert.IsType<OkObjectResult>(result); // Check if the result is of type OkObjectResult
@@ -109,11 +106,8 @@ namespace ProjectManagerBackend.Test.Controllers
             // Setup the mock repository to return true when DeleteCategory is called with 1 as parameter
             Mock.Get(_categoryRepository).Setup(repo => repo.DeleteCategory(1)).ReturnsAsync(true);
 
-            // Create instance of controller with mocked dependencies
-            var controller = new ProjectCategoryController(_categoryRepository, _mapping);
-
             // Act
-            var result = await controller.Delete(1); // Call Delete method with 1 as parameter
+            var result = await _controller.Delete(1); // Call Delete method with 1 as parameter
 
             // Assert
             var okResult = Assert.IsType<OkObjectResult>(result); // Check if the result is of type OkObjectResult
@@ -129,12 +123,10 @@ namespace ProjectManagerBackend.Test.Controllers
 
             // Setup the mock repository to return true when UpdateCategory is called with _singleProjectCategory as parameter
             Mock.Get(_categoryRepository).Setup(repo => repo.UpdateCategory(_singleProjectCategory)).ReturnsAsync(true);
-
-            // Create instance of controller with mocked dependencies
-            var controller = new ProjectCategoryController(_categoryRepository, _mapping);
+            Mock.Get(_categoryRepository).Setup(repo => repo.UpdateCategory(_singleProjectCategory)).ReturnsAsync(true);
 
             // Act
-            var result = await controller.Update(_singleProjectCategoryDTO); // Call Update method with _singleProjectCategoryDTO as parameter
+            var result = await _controller.Update(_singleProjectCategoryDTO); // Call Update method with _singleProjectCategoryDTO as parameter
 
             // Assert
             var okResult = Assert.IsType<OkObjectResult>(result); // Check if the result is of type OkObjectResult
