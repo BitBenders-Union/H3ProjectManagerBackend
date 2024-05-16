@@ -4,90 +4,62 @@ namespace ProjectManagerBackend.Test.Controllers
     public class AuthControllerTest : IClassFixture<AuthControllerTest>
     {
         private readonly AuthController _controller;
-        private readonly Mock<IUserRepository> _userRepositoryMock = new Mock<IUserRepository>();
-        private readonly Mock<IValidationService> _validationServiceMock = new Mock<IValidationService>();
-        private readonly Mock<IGenericRepository<UserDetail>> _repositoryMock = new Mock<IGenericRepository<UserDetail>>();
-        private readonly Mock<IMappingService> _mappingServiceMock = new Mock<IMappingService>();
-        private readonly Mock<IHashingService> _hashingServiceMock = new Mock<IHashingService>();
-        private readonly Mock<IJwtService> _jwtServiceMock = new Mock<IJwtService>();
-
+        private readonly IUserRepository _userRepositoryMock;
+        private readonly IValidationService _validationServiceMock;
+        private readonly IGenericRepository<UserDetail> _genRepositoryMock;
+        private readonly IMappingService _mappingServiceMock;
+        private readonly IHashingService _hashingServiceMock;
+        private readonly IJwtService _jwtServiceMock;
+        private readonly IUserRepository _usersRepositoryMock;
         public AuthControllerTest()
         {
+            _userRepositoryMock = new Mock<IUserRepository>().Object;
+            _validationServiceMock = new Mock<IValidationService>().Object;
+            _genRepositoryMock = new Mock<IGenericRepository<UserDetail>>().Object;
+            _mappingServiceMock = new Mock<IMappingService>().Object;
+            _hashingServiceMock = new Mock<IHashingService>().Object;
+            _jwtServiceMock = new Mock<IJwtService>().Object;
+            _userRepositoryMock = new Mock<IUserRepository>().Object;
+
+
             _controller = new AuthController(
-                _repositoryMock.Object,
-                _mappingServiceMock.Object,
-                _validationServiceMock.Object,
-                _hashingServiceMock.Object,
-                _userRepositoryMock.Object,
-                _jwtServiceMock.Object
-            // Initialize other mocked dependencies here
+                _genRepositoryMock,
+                _mappingServiceMock,
+                _validationServiceMock,
+                _hashingServiceMock,
+                _userRepositoryMock,
+                _jwtServiceMock,
+                _usersRepositoryMock,
             );
         }
 
         [Fact]
-        public async Task Create_ValidUser_ReturnsOk()
+        public async Task CreateUserTest_Return200()
         {
-            // Arrange
-            var userDTO = new UserDetailDTO { FirstName = "validFirstName", LastName = "validLastName", Username = "validUsername", Password = "validPassword" };
-            _userRepositoryMock.Setup(repo => repo.CheckUser(userDTO.Username)).ReturnsAsync(false);
-            _validationServiceMock.Setup(vs => vs.WhiteSpaceValidation(userDTO)).Returns(true);
 
-            // Act
-            var result = await _controller.Create(userDTO);
+            var userDetail = new UserDetailDTO
+            {
+                Username = "UseTHis",
+                Password = "TestWord",
+                FirstName = "TestFN",
+                LastName = "TestLast"
+            };
 
-            // Assert
-            var okResult = Assert.IsType<ActionResult<UserDetailDTOResponse>>(result);
-            var model = Assert.IsType<UserDetailDTOResponse>(okResult.Value);
-            Assert.NotNull(model);
-            // Add more assertions as needed
+            Mock.Get(_validationServiceMock).Setup(service => service.WhiteSpaceValidation(It.IsAny<UserDetailDTO>())).Returns(true);
+
+            var result = await _controller.Create(userDetail);
+            var okResult = Assert.IsType<OkObjectResult>(result.Result);
+
+            //NOTE IF TESTING ASYNC SHIT MAKE TEST ASYNC
+            Assert.Equal(200, okResult.StatusCode);
         }
-    
-        //private readonly IGenericRepository<UserDetail> _repository;
-        //private readonly IMappingService _mapping;
-        //private readonly IValidationService _validationService;
-        //private readonly IHashingService _hashingService;
-        //private readonly IUserRepository _userRepo;
-        //private readonly IJwtService _jwtService;
-        //private readonly AuthController _controller;
 
+        [Fact]
+        public async Task UpdateUser_ReturnOk()
+        {
+            Mock.Get(_repositoryMock).Setups(repo => repo.Update())
+        }
+    }
 
-        //public AuthControllerTest() 
-        //{
-        //    _controller = new AuthController()
-        //}
-        //[Fact]
-        //public async Task CreateUserTest()
-        //{
-        //    var mockRepo = new Mock<IGenericRepository<UserDetail>>();
-        //    var mockMapping = new Mock<IMappingService>();
-        //    var mockValidationService = new Mock<IValidationService>(); 
-        //    var mockHashingService = new Mock<IHashingService>();
-        //    var mockJwtService = new Mock<IJwtService>();
-        //    var mockUserRepo = new Mock<IUserRepository>();
-
-        //    var controller = new AuthController(mockRepo.Object, mockMapping.Object, mockValidationService.Object, mockHashingService.Object, mockUserRepo.Object, mockJwtService.Object);
-
-        //    var userDetail = new UserDetailDTO
-        //    {
-        //        Username = "UseTHis",
-        //        Password = "TestWord",
-        //        FirstName = "TestFN",
-        //        LastName = "TestLast"
-        //    };
-
-        //    var expectResponse = new UserDetailDTOResponse
-        //    {
-        //        Username = userDetail.Username,
-        //        FirstName = userDetail.FirstName,
-        //        LastName = userDetail.LastName,
-        //    };
-
-        //    var result = await controller.Create(userDetail);
-        //    var okResult = Assert.IsType<OkObjectResult>(result.Result);
-
-        //    //NOTE IF TESTING ASYNC SHIT MAKE TEST ASYNC
-
-        //    Assert.Equal(200, okResult.StatusCode);            
-        //}
     }
 }
