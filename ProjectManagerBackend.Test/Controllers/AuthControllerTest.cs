@@ -10,7 +10,6 @@ namespace ProjectManagerBackend.Test.Controllers
         private readonly IMappingService _mappingServiceMock;
         private readonly IHashingService _hashingServiceMock;
         private readonly IJwtService _jwtServiceMock;
-        private readonly IUserRepository _usersRepositoryMock;
         public AuthControllerTest()
         {
             _userRepositoryMock = new Mock<IUserRepository>().Object;
@@ -28,8 +27,8 @@ namespace ProjectManagerBackend.Test.Controllers
                 _validationServiceMock,
                 _hashingServiceMock,
                 _userRepositoryMock,
-                _jwtServiceMock,
-                _usersRepositoryMock,
+                _jwtServiceMock
+                
             );
         }
 
@@ -57,9 +56,28 @@ namespace ProjectManagerBackend.Test.Controllers
         [Fact]
         public async Task UpdateUser_ReturnOk()
         {
-            Mock.Get(_repositoryMock).Setups(repo => repo.Update())
+            var userDTO = new UserDetailDTO
+            {
+                Id = 1,
+                Username = "UseTHis",
+                Password = "TestWord",
+                FirstName = "TestFN",
+                LastName = "TestLast"
+            };
+
+            Mock.Get(_userRepositoryMock).Setup(repo => repo.CheckUser(It.IsAny<string>())).ReturnsAsync(false);
+
+            Mock.Get(_mappingServiceMock).Setup(mapping => mapping.AddUser(It.IsAny<UserDetailDTO>())).Returns(new UserDetail());
+
+            Mock.Get(_userRepositoryMock).Setup(repo => repo.UpdateUser (It.IsAny<UserDetail>())).ReturnsAsync(true);
+
+
+            var result = await _controller.Update(userDTO);
+
+            var okResult = Assert.IsType<OkResult>(result);
+            Assert.Equal(200, okResult.StatusCode);
+
         }
-    }
 
     }
 }
