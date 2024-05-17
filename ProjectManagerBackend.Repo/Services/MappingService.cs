@@ -184,7 +184,11 @@ namespace ProjectManagerBackend.Repo
 
         public async Task<Project> ProjectUpdateMap(ProjectDTO dto)
         {
-            var project = await _context.Projects.FirstOrDefaultAsync(x => x.Id == dto.Id);
+            var project = await _context.Projects.Include(p => p.ProjectDepartment)
+                .ThenInclude(pd => pd.Department)
+                .Include(p => p.ProjectUserDetail)
+                .ThenInclude(pu => pu.UserDetail)
+                .FirstOrDefaultAsync(x => x.Id == dto.Id);
 
             project.Name = dto.Name;
             project.StartDate = dto.StartDate;
@@ -193,6 +197,8 @@ namespace ProjectManagerBackend.Repo
             project.Priority = await _context.Priorities.FirstOrDefaultAsync(x => x.Id == dto.Priority.Id);
             project.ProjectStatus = await _context.ProjectStatus.FirstOrDefaultAsync(x => x.Id == dto.Status.Id);
             project.ProjectCategory = await _context.ProjectCategories.FirstOrDefaultAsync(x => x.Id == dto.Category.Id);
+            project.ProjectDepartment = dto.Departments.Select(x => new ProjectDepartment { Department = Map<DepartmentDTO, Department>(x) }).ToList();
+            project.ProjectUserDetail = dto.Users.Select(x => new ProjectUserDetail { UserDetail = Map<UserDetailDTOResponse, UserDetail>(x) }).ToList();
 
             return project;
         }
