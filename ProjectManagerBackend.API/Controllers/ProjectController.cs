@@ -37,7 +37,7 @@ namespace ProjectManagerBackend.API.Controllers
 
                 var mapped = _mapping.ProjectUpdateMap(projectDTO);
 
-                var updateReturn = await _repository.UpdateAsync(mapped);
+                var updateReturn = await _repository.UpdateAsync(await mapped);
 
                 return Ok(updateReturn);
 
