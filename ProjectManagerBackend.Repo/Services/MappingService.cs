@@ -197,8 +197,43 @@ namespace ProjectManagerBackend.Repo
             project.Priority = await _context.Priorities.FirstOrDefaultAsync(x => x.Id == dto.Priority.Id);
             project.ProjectStatus = await _context.ProjectStatus.FirstOrDefaultAsync(x => x.Id == dto.Status.Id);
             project.ProjectCategory = await _context.ProjectCategories.FirstOrDefaultAsync(x => x.Id == dto.Category.Id);
-            project.ProjectDepartment = dto.Departments.Select(x => new ProjectDepartment { Department = Map<DepartmentDTO, Department>(x) }).ToList();
-            project.ProjectUserDetail = dto.Users.Select(x => new ProjectUserDetail { UserDetail = Map<UserDetailDTOResponse, UserDetail>(x) }).ToList();
+
+            
+            _context.ProjectDepartments.RemoveRange(project.ProjectDepartment);
+            foreach (var departmentDto in dto.Departments)
+            {
+                var department = await _context.Departments.FirstOrDefaultAsync(d => d.Id == departmentDto.Id);
+
+                var existingProjectDepartment = project.ProjectDepartment.FirstOrDefault(pd => pd.DepartmentId == department.Id);
+
+                if (existingProjectDepartment != null)
+                {
+                    existingProjectDepartment.Department = department;
+                }
+                else
+                {
+                    project.ProjectDepartment.Add(new ProjectDepartment { Department = department });
+                }
+            }
+
+            _context.ProjectUserDetails.RemoveRange(project.ProjectUserDetail);
+            foreach (var userDto in dto.Users)
+            {
+                var userDetail = await _context.UserDetails.FirstOrDefaultAsync(ud => ud.Id == userDto.Id);
+
+                var existingProjectUserDetail = project.ProjectUserDetail.FirstOrDefault(pu => pu.UserDetailId == userDetail.Id);
+
+                if (existingProjectUserDetail != null)
+                {
+                    // Update existing entry in the junction table
+                    existingProjectUserDetail.UserDetail = userDetail;
+                }
+                else
+                {
+                    // Add new entry to the junction table
+                    project.ProjectUserDetail.Add(new ProjectUserDetail { UserDetail = userDetail });
+                }
+            }
 
             return project;
         }
