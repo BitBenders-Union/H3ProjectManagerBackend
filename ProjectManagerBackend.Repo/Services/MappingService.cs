@@ -285,6 +285,8 @@ namespace ProjectManagerBackend.Repo
 
         public async Task<ProjectTask> ProjectTaskUpdateMapping(ProjectTaskDTO dto)
         {
+            // Fetch a single project task from the database that matches the specified ID.
+            // This query includes related entities to avoid multiple database trips (eager loading).
             var projectTask = await _context.ProjectTasks.Include(pt => pt.ProjectTaskUserDetail)
                 .ThenInclude(ptud => ptud.UserDetail)
                 .Include(pt => pt.Priority)
@@ -292,12 +294,7 @@ namespace ProjectManagerBackend.Repo
                 .Include(pt => pt.ProjectTaskCategory)
                 .FirstOrDefaultAsync(x => x.Id == dto.Id);
 
-            if (projectTask == null)
-            {
-                // Handle not found case, maybe throw an exception or return null
-                return null;
-            }
-
+            // Update the project task properties with the new values from the DTO
             projectTask.Name = dto.Name;
             projectTask.Description = dto.Description;
             projectTask.Priority.Name = dto.Priority.Name;
@@ -309,6 +306,7 @@ namespace ProjectManagerBackend.Repo
             _context.ProjectTaskUserDetails.RemoveRange(projectTask.ProjectTaskUserDetail); // Remove old user details and add new ones
             projectTask.ProjectTaskUserDetail.Clear(); // Clear the existing collection to avoid duplicate entries
 
+            //For each user in the DTO, add a new ProjectTaskUserDetail to the project task, if the user is not null, and save changes to the database
             foreach (var userDto in dto.ProjectTaskUserDetail)
             {
                 var userDetail = await _context.UserDetails.FirstOrDefaultAsync(ud => ud.Id == userDto.Id);
