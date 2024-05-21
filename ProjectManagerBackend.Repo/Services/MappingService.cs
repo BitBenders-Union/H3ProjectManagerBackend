@@ -297,23 +297,41 @@ namespace ProjectManagerBackend.Repo
 
         public async Task<ProjectTask> ProjectTaskUpdateMapping(ProjectTaskDTO dto)
         {
+            // Fetch a single project task from the database that matches the specified ID.
+            // This query includes related entities to avoid multiple database trips (eager loading).
+            var projectTask = await _context.ProjectTasks.Include(pt => pt.ProjectTaskUserDetail)
+                .ThenInclude(ptud => ptud.UserDetail)
+                .Include(pt => pt.Priority)
+                .Include(pt => pt.Status)
+                .Include(pt => pt.ProjectTaskCategory)
+                .FirstOrDefaultAsync(x => x.Id == dto.Id);
+
+            // Update the project task properties with the new values from the DTO
+            projectTask.Name = dto.Name;
+            projectTask.Description = dto.Description;
+            projectTask.Priority.Name = dto.Priority.Name;
+            projectTask.Priority.Level = dto.Priority.Level;
+            projectTask.Status.Name = dto.Status.Name;
+            projectTask.ProjectTaskCategory.Name = dto.ProjectTaskCategory.Name;
 
 
-            ProjectTask model = new()
+            _context.ProjectTaskUserDetails.RemoveRange(projectTask.ProjectTaskUserDetail); // Remove old user details and add new ones
+            projectTask.ProjectTaskUserDetail.Clear(); // Clear the existing collection to avoid duplicate entries
+
+            //For each user in the DTO, add a new ProjectTaskUserDetail to the project task, if the user is not null, and save changes to the database
+            foreach (var userDto in dto.ProjectTaskUserDetail)
             {
-                Id = dto.Id,
-                Name = dto.Name,
-                Description = dto.Description,
-                Priority = await _context.Priorities.FirstOrDefaultAsync(x => x.Id == dto.Priority.Id),
-                Status = await _context.ProjectTaskStatus.FirstOrDefaultAsync(x => x.Id == dto.Status.Id),
-                ProjectTaskCategory = await _context.ProjectTaskCategories.FirstOrDefaultAsync(x => x.Id == dto.ProjectTaskCategory.Id),
-                Project = await _context.Projects.FirstOrDefaultAsync(x => x.Id == dto.ProjectId),
-                Comments = new List<Comment>(),
-                ProjectTaskUserDetail = new List<ProjectTaskUserDetail>()
+                var userDetail = await _context.UserDetails.FirstOrDefaultAsync(ud => ud.Id == userDto.Id);
+                if (userDetail != null)
+                {
+                    projectTask.ProjectTaskUserDetail.Add(new ProjectTaskUserDetail { UserDetail = userDetail });
+                }
+            }
 
-            };
+            await _context.SaveChangesAsync(); // Save changes to the database
 
-            return model;
+            return projectTask;
         }
+
     }
 }
