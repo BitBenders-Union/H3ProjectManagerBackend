@@ -25,6 +25,8 @@ namespace ProjectManagerBackend.Repo.Interfaces
         public Task<ProjectTask> ProjectTaskCreateMapping(ProjectTaskDTO dto);
         public Task<ProjectTask> ProjectTaskUpdateMapping(ProjectTaskDTO dto);
         public Task<Project> ProjectUpdateMap(ProjectDTO dto);
+        public Task<Project> ProjectMappingFromDto(ProjectDTO dto);
+
 
     }
 }

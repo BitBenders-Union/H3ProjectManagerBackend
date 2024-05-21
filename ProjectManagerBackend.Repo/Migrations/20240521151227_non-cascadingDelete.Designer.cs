@@ -12,8 +12,8 @@ using ProjectManagerBackend.Repo.Data;
 namespace ProjectManagerBackend.Repo.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20240513060224_InitSeedings")]
-    partial class InitSeedings
+    [Migration("20240521151227_non-cascadingDelete")]
+    partial class noncascadingDelete
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -707,13 +707,13 @@ namespace ProjectManagerBackend.Repo.Migrations
                     b.HasOne("ProjectManagerBackend.Repo.Models.Department", "Department")
                         .WithMany("DepartmentLocation")
                         .HasForeignKey("DepartmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("ProjectManagerBackend.Repo.Models.Location", "Location")
                         .WithMany("DepartmentLocation")
                         .HasForeignKey("LocationId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Department");
@@ -753,13 +753,13 @@ namespace ProjectManagerBackend.Repo.Migrations
                     b.HasOne("ProjectManagerBackend.Repo.Models.Department", "Department")
                         .WithMany("ProjectDepartment")
                         .HasForeignKey("DepartmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("ProjectManagerBackend.Repo.Models.Project", "Project")
                         .WithMany("ProjectDepartment")
                         .HasForeignKey("ProjectId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Department");

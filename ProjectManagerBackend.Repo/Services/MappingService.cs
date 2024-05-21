@@ -182,6 +182,7 @@ namespace ProjectManagerBackend.Repo
             return project;
         }
 
+
         public async Task<Project> ProjectUpdateMap(ProjectDTO dto)
         {
             var project = await _context.Projects
@@ -202,6 +203,7 @@ namespace ProjectManagerBackend.Repo
 
             // no reason to remove the existing departments and users, since we are updating the project
             // if we do this we can't update the project, since the data we are updating on is removed
+            // and if we are to do it later, it should not be inside the mapping service
             
             //_context.ProjectDepartments.RemoveRange(project.ProjectDepartment);
             foreach (var departmentDto in dto.Departments)
@@ -220,9 +222,7 @@ namespace ProjectManagerBackend.Repo
                 {
                     ProjectDepartment projectDepartment = new ProjectDepartment
                     {
-                        Department = department,
                         DepartmentId = department.Id,
-                        Project = project,
                         ProjectId = project.Id
                     };
                     project.ProjectDepartment.Add(projectDepartment);
@@ -244,7 +244,10 @@ namespace ProjectManagerBackend.Repo
                 else
                 {
                     // Add new entry to the junction table
-                    project.ProjectUserDetail.Add(new ProjectUserDetail { UserDetail = userDetail });
+                    project.ProjectUserDetail.Add(new ProjectUserDetail {
+                        UserDetailId = userDetail.Id,
+                        ProjectId = project.Id
+                    });
                 }
             }
 
@@ -315,6 +318,54 @@ namespace ProjectManagerBackend.Repo
             };
 
             return model;
+        }
+
+        public async Task<Project> ProjectMappingFromDto(ProjectDTO dto)
+        {
+            var projectStatus = await _context.ProjectStatus.FirstOrDefaultAsync(x => x.Name == dto.Status.Name);
+            var projectCategory = await _context.ProjectCategories.FirstOrDefaultAsync(x => x.Name == dto.Category.Name);
+            var priority = await _context.Priorities.FirstOrDefaultAsync(x => x.Level == dto.Priority.Level);
+
+            var projectDepartment = new List<ProjectDepartment>();
+
+            foreach(var item in dto.Departments)
+            {
+                var department = await _context.Departments.FirstOrDefaultAsync(x => x.Name == item.Name);
+                projectDepartment.Add(new ProjectDepartment {
+                    DepartmentId = department.Id,
+                    ProjectId = dto.Id
+                });
+            }
+
+            var projectUserDetail = new List<ProjectUserDetail>();
+
+            foreach (var item in dto.Users)
+            {
+                var userDetail = await _context.UserDetails.FirstOrDefaultAsync(x => x.Username == item.Username);
+                projectUserDetail.Add(new ProjectUserDetail
+                {
+                    UserDetailId = userDetail.Id,
+                    ProjectId = dto.Id
+                });
+            }
+
+            var project = new Project
+            {
+                Id = dto.Id,
+                Name = dto.Name,
+                StartDate = dto.StartDate,
+                EndDate = dto.EndDate,
+                Owner = dto.Owner,
+                ProjectStatus = projectStatus,
+                ProjectCategory = projectCategory,
+                Priority = priority,
+                Client = null,
+                ProjectDepartment = projectDepartment,
+                ProjectUserDetail = projectUserDetail
+
+            };
+
+            return project;
         }
     }
 }

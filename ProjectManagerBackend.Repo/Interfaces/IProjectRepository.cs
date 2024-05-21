@@ -15,5 +15,10 @@ namespace ProjectManagerBackend.Repo.Interfaces
         //public Task<Project> GetProject(int id);
         public Task<Project> Get(int id);
         public Task CreateManyToMany(int projectId, int userId);
+        public bool UpdateProject(Project updatedProject);
+        public bool DeletePD(List<ProjectDepartment> pd);
+        public bool UpdatePD(List<ProjectDepartment> pd);
+        public bool DeletePUD(List<ProjectUserDetail> pud);
+        public bool UpdatePUD(List<ProjectUserDetail> pud);
     }
 }

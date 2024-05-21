@@ -34,10 +34,37 @@ namespace ProjectManagerBackend.API.Controllers
                 {
                     return BadRequest("Invalid model state");
                 }
+                
+                var project = await _mapping.ProjectMappingFromDto(projectDTO);
 
-                var mapped = await _mapping.ProjectUpdateMap(projectDTO);
+                var updateReturn = _projectRepository.UpdateProject(project);
 
-                var updateReturn = await _repository.UpdateAsync(mapped);
+                //var mapped = await _mapping.ProjectUpdateMap(projectDTO);
+
+                //if (!_projectRepository.DeletePD(mapped.ProjectDepartment))
+                //{
+                //    return BadRequest("Failed to update project");
+                //}
+
+                //if (!_projectRepository.DeletePUD(mapped.ProjectUserDetail))
+                //{
+                //    return BadRequest("Failed to update project");
+                //}
+
+                //if (!_projectRepository.UpdatePD(mapped.ProjectDepartment))
+                //{
+                //    return BadRequest("Failed to update project");
+                //}
+
+                //if (!_projectRepository.UpdatePUD(mapped.ProjectUserDetail))
+                //{
+                //    return BadRequest("Failed to update project");
+                //}
+
+                //var updateReturn = await _repository.UpdateAsync(mapped);
+
+
+                //var updateReturn = _projectRepository.UpdateProject(mapped);
 
                 return Ok(updateReturn);
 

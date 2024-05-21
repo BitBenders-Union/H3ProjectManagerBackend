@@ -43,6 +43,8 @@ namespace ProjectManagerBackend.Repo.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
             modelBuilder.Entity<ProjectUserDetail>()
                 .HasKey(pd => new { pd.ProjectId, pd.UserDetailId });
 
@@ -77,12 +79,15 @@ namespace ProjectManagerBackend.Repo.Data
             modelBuilder.Entity<ProjectDepartment>()
                 .HasOne(pd => pd.Project)
                 .WithMany(p => p.ProjectDepartment)
-                .HasForeignKey(pd => pd.ProjectId);
+                .HasForeignKey(pd => pd.ProjectId)
+                .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<ProjectDepartment>()
                 .HasOne(pd => pd.Department)
                 .WithMany(d => d.ProjectDepartment)
-                .HasForeignKey(pd => pd.DepartmentId);
+                .HasForeignKey(pd => pd.DepartmentId)
+                .OnDelete(DeleteBehavior.NoAction);
+
 
 
             modelBuilder.Entity<DepartmentLocation>()
@@ -91,12 +96,16 @@ namespace ProjectManagerBackend.Repo.Data
             modelBuilder.Entity<DepartmentLocation>()
                 .HasOne(dl => dl.Department)
                 .WithMany(d => d.DepartmentLocation)
-                .HasForeignKey(dl => dl.DepartmentId);
+                .HasForeignKey(dl => dl.DepartmentId)
+                .OnDelete(DeleteBehavior.NoAction);
+
 
             modelBuilder.Entity<DepartmentLocation>()
                 .HasOne(dl => dl.Location)
                 .WithMany(l => l.DepartmentLocation)
-                .HasForeignKey(dl => dl.LocationId);
+                .HasForeignKey(dl => dl.LocationId)
+                .OnDelete(DeleteBehavior.NoAction);
+
 
             // seed data
 
