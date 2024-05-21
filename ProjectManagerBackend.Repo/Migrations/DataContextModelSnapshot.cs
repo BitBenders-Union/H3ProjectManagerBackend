@@ -704,13 +704,13 @@ namespace ProjectManagerBackend.Repo.Migrations
                     b.HasOne("ProjectManagerBackend.Repo.Models.Department", "Department")
                         .WithMany("DepartmentLocation")
                         .HasForeignKey("DepartmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("ProjectManagerBackend.Repo.Models.Location", "Location")
                         .WithMany("DepartmentLocation")
                         .HasForeignKey("LocationId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Department");
@@ -750,13 +750,13 @@ namespace ProjectManagerBackend.Repo.Migrations
                     b.HasOne("ProjectManagerBackend.Repo.Models.Department", "Department")
                         .WithMany("ProjectDepartment")
                         .HasForeignKey("DepartmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("ProjectManagerBackend.Repo.Models.Project", "Project")
                         .WithMany("ProjectDepartment")
                         .HasForeignKey("ProjectId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Department");

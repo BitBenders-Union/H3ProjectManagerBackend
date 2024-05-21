@@ -102,5 +102,152 @@ namespace ProjectManagerBackend.Repo.Repositories
             var result = await _context.UserDetails.FirstOrDefaultAsync(x => x.Id == ownerId);
             return result.Username;
         }
+
+        public bool UpdateProject(Project updatedProject)
+        {
+            //var existingProject =  _context.Projects
+            //    .Include(p => p.ProjectTasks)
+            //    .Include(p => p.ProjectDepartment)
+            //    .Include(p => p.ProjectUserDetail)
+            //    .FirstOrDefault(p => p.Id == updatedProject.Id);
+
+            //if (existingProject == null)
+            //{
+            //    throw new KeyNotFoundException("Project not found");
+            //}
+
+            //// Update scalar properties
+            //existingProject.Name = updatedProject.Name;
+            //existingProject.StartDate = updatedProject.StartDate;
+            //existingProject.EndDate = updatedProject.EndDate;
+            //existingProject.ProjectStatus = updatedProject.ProjectStatus;
+            //existingProject.ProjectCategory = updatedProject.ProjectCategory;
+            //existingProject.Priority = updatedProject.Priority;
+            //existingProject.Client = updatedProject.Client;
+            //existingProject.Owner = updatedProject.Owner;
+
+            //// Update ProjectTasks
+            //_context.Entry(existingProject).Collection(p => p.ProjectTasks).Load();
+            //existingProject.ProjectTasks.Clear();
+            //existingProject.ProjectTasks.AddRange(updatedProject.ProjectTasks);
+
+            //// Update ProjectDepartment
+            //_context.Entry(existingProject).Collection(p => p.ProjectDepartment).Load();
+            //existingProject.ProjectDepartment.Clear();
+            //existingProject.ProjectDepartment.AddRange(updatedProject.ProjectDepartment);
+
+            //// Update ProjectUserDetail
+            //_context.Entry(existingProject).Collection(p => p.ProjectUserDetail).Load();
+            //existingProject.ProjectUserDetail.Clear();
+            //existingProject.ProjectUserDetail.AddRange(updatedProject.ProjectUserDetail);
+
+            // Check if the project already exists
+            var existingProject = _context.Projects
+                .Include(p => p.ProjectDepartment)
+                .Include(p => p.ProjectUserDetail)
+                .FirstOrDefault(p => p.Id == updatedProject.Id);
+
+            if (existingProject != null)
+            {
+                // Update existing project
+                existingProject.Name = updatedProject.Name;
+                existingProject.StartDate = updatedProject.StartDate;
+                existingProject.EndDate = updatedProject.EndDate;
+                existingProject.Owner = updatedProject.Owner;
+                existingProject.ProjectStatus = updatedProject.ProjectStatus;
+                existingProject.ProjectCategory = updatedProject.ProjectCategory;
+                existingProject.Priority = updatedProject.Priority;
+                existingProject.Client = updatedProject.Client;
+
+                // Update ProjectDepartments
+                existingProject.ProjectDepartment.Clear();
+                foreach (var department in updatedProject.ProjectDepartment)
+                {
+                    existingProject.ProjectDepartment.Add(department);
+                }
+
+                // Update ProjectUserDetails
+                existingProject.ProjectUserDetail.Clear();
+                foreach (var userDetail in updatedProject.ProjectUserDetail)
+                {
+                    existingProject.ProjectUserDetail.Add(userDetail);
+                }
+
+                _context.Projects.Update(existingProject);
+            }
+            else
+            {
+                // Insert new project
+                _context.Projects.Add(updatedProject);
+            }
+
+            // Save changes
+            return  _context.SaveChanges() > 0;
+        }
+
+        public bool UpdatePD(List<ProjectDepartment> pd)
+        {
+            if(pd.Count == 0)
+            {
+                return true;
+            }
+
+            foreach (var item in pd)
+            {
+                _context.ProjectDepartments.Add(item);
+            }
+            return _context.SaveChanges() > 0;
+
+        }
+
+
+        public bool DeletePD(List<ProjectDepartment> pd)
+        {
+            var id = pd[0].ProjectId;
+            var projectDepartments = _context.ProjectDepartments.Where(x => x.ProjectId == id).ToList();
+            foreach (var item in projectDepartments)
+            {
+                _context.ProjectDepartments.Entry(item).State = EntityState.Deleted;
+                _context.ProjectDepartments.Remove(item);
+            }
+            _context.SaveChanges();
+            
+            var result = _context.ProjectDepartments.Where(x => x.ProjectId == id).Any();
+            return !result;
+        }
+
+
+        public bool UpdatePUD(List<ProjectUserDetail> pud)
+        {
+            if (pud.Count == 0)
+            {
+                return true;
+            }
+
+            foreach (var item in pud)
+            {
+                _context.ProjectUserDetails.Add(item);
+            }
+            return _context.SaveChanges() > 0;
+
+        }
+
+
+        public bool DeletePUD(List<ProjectUserDetail> pud)
+        {
+            var id = pud[0].ProjectId;
+            var projectUserDetails = _context.ProjectUserDetails.Where(x => x.ProjectId == id).ToList();
+            foreach (var item in projectUserDetails)
+            {
+                _context.ProjectUserDetails.Entry(item).State = EntityState.Deleted;
+                _context.ProjectUserDetails.Remove(item);
+            }
+             _context.SaveChanges();
+
+            var result = _context.ProjectUserDetails.Where(x => x.ProjectId == id).Any();
+            return !result;
+        }
     }
 }
+
+
