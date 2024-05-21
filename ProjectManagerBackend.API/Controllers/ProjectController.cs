@@ -153,8 +153,6 @@ namespace ProjectManagerBackend.API.Controllers
                 foreach (var task in result.ProjectTasks)
                 {
 
-
-
                     ProjectTaskDTO taskDTO = new()
                     {
                         Id = task.Id,

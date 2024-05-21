@@ -184,10 +184,11 @@ namespace ProjectManagerBackend.Repo
 
         public async Task<Project> ProjectUpdateMap(ProjectDTO dto)
         {
-            var project = await _context.Projects.Include(p => p.ProjectDepartment)
-                .ThenInclude(pd => pd.Department)
+            var project = await _context.Projects
+                .Include(p => p.ProjectDepartment)
+                    .ThenInclude(pd => pd.Department)
                 .Include(p => p.ProjectUserDetail)
-                .ThenInclude(pu => pu.UserDetail)
+                    .ThenInclude(pu => pu.UserDetail)
                 .FirstOrDefaultAsync(x => x.Id == dto.Id);
 
             project.Name = dto.Name;
@@ -198,12 +199,16 @@ namespace ProjectManagerBackend.Repo
             project.ProjectStatus = await _context.ProjectStatus.FirstOrDefaultAsync(x => x.Id == dto.Status.Id);
             project.ProjectCategory = await _context.ProjectCategories.FirstOrDefaultAsync(x => x.Id == dto.Category.Id);
 
+
+            // remove all existing entries in the junction table for the project
             
-            _context.ProjectDepartments.RemoveRange(project.ProjectDepartment);
+            //_context.ProjectDepartments.RemoveRange(project.ProjectDepartment);
             foreach (var departmentDto in dto.Departments)
             {
+                // finds first department that matches the id
                 var department = await _context.Departments.FirstOrDefaultAsync(d => d.Id == departmentDto.Id);
 
+                // used to see if the department already exist in the return object 'project'
                 var existingProjectDepartment = project.ProjectDepartment.FirstOrDefault(pd => pd.DepartmentId == department.Id);
 
                 if (existingProjectDepartment != null)
@@ -212,7 +217,14 @@ namespace ProjectManagerBackend.Repo
                 }
                 else
                 {
-                    project.ProjectDepartment.Add(new ProjectDepartment { Department = department });
+                    ProjectDepartment projectDepartment = new ProjectDepartment
+                    {
+                        Department = department,
+                        DepartmentId = department.Id,
+                        Project = project,
+                        ProjectId = project.Id
+                    };
+                    project.ProjectDepartment.Add(projectDepartment);
                 }
             }
 
