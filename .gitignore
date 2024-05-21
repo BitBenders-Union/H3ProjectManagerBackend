@@ -363,3 +363,5 @@ MigrationBackup/
 FodyWeavers.xsd
 /ProjectManagerBackend.API/appsettings.json
 /ProjectManagerBackend.API/appsettings.Development.json
+/ProjectManagerBackend.Repo/Migrations
+/ProjectManagerBackend.Repo/Migrations
