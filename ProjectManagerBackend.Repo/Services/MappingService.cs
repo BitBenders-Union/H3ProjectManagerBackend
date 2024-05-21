@@ -200,7 +200,8 @@ namespace ProjectManagerBackend.Repo
             project.ProjectCategory = await _context.ProjectCategories.FirstOrDefaultAsync(x => x.Id == dto.Category.Id);
 
 
-            // remove all existing entries in the junction table for the project
+            // no reason to remove the existing departments and users, since we are updating the project
+            // if we do this we can't update the project, since the data we are updating on is removed
             
             //_context.ProjectDepartments.RemoveRange(project.ProjectDepartment);
             foreach (var departmentDto in dto.Departments)
