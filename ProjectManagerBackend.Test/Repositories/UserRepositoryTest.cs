@@ -1,23 +1,19 @@
-﻿using Microsoft.EntityFrameworkCore;
-using ProjectManagerBackend.Repo.Data;
-using ProjectManagerBackend.Repo.Models;
-using ProjectManagerBackend.Repo.Repositories;
-using ProjectManagerBackend.Repo.Services;
+﻿using ProjectManagerBackend.Repo.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ProjectManagerBackend.Test.RepoTest
+namespace ProjectManagerBackend.Test.Repositories
 {
-    public class UserRepoTest
+    public class UserRepositoryTest
     {
         DbContextOptions<DataContext> options;
         DataContext context;
         HashingService hashingService;
 
-        public UserRepoTest()
+        public UserRepositoryTest()
         {
             options = new DbContextOptionsBuilder<DataContext>().UseInMemoryDatabase(databaseName: "ThisBase").Options;
             context = new DataContext(options);
@@ -25,7 +21,8 @@ namespace ProjectManagerBackend.Test.RepoTest
             hashingService = new HashingService();
             byte[] salt = hashingService.GenerateSalt();
 
-            UserDetail u1 = new UserDetail() { 
+            UserDetail u1 = new UserDetail()
+            {
                 Id = 1,
                 Username = "Test1",
                 PasswordSalt = salt,
@@ -35,7 +32,8 @@ namespace ProjectManagerBackend.Test.RepoTest
                 LastName = "TestLN",
                 CreatedDate = DateTime.Now
             };
-            UserDetail u2 = new UserDetail() { 
+            UserDetail u2 = new UserDetail()
+            {
                 Id = 2,
                 Username = "Test2",
                 PasswordSalt = salt,
@@ -45,7 +43,8 @@ namespace ProjectManagerBackend.Test.RepoTest
                 LastName = "Test2LN",
                 CreatedDate = DateTime.Now
             };
-            UserDetail u3 = new UserDetail() { 
+            UserDetail u3 = new UserDetail()
+            {
                 Id = 3,
                 Username = "Test3",
                 PasswordSalt = salt,
@@ -81,18 +80,54 @@ namespace ProjectManagerBackend.Test.RepoTest
             Assert.NotNull(result);
         }
 
-        //[Fact]
-        //public async void GetNotExistUserId_ReturnNull()
-        //{
-        //    GenericRepository<UserDetail> repo = new GenericRepository<UserDetail>(context);
-        //    var result = await repo.GetByIdAsync(199);
-        //    var ex = Assert.Throws(() =>
-        //    {
-        //        throw new Exception(new Exception());
-        //    });
+        [Fact]
+        public async void GetNotExistUserId_ThrowsException()
+        {
+            GenericRepository<UserDetail> repo = new GenericRepository<UserDetail>(context);
+            await Assert.ThrowsAsync<Exception>(async () => await repo.GetByIdAsync(99));
+        }
 
-        //    Assert.Equal("No Entity witn Id Found", Exception);
-        //}
+        [Fact]
+        public async void CreateUser_UserDetails()
+        {
+            byte[] salt = hashingService.GenerateSalt();
+            UserDetail u4 = new UserDetail()
+            {
+                Username = "Test4",
+                PasswordSalt = salt,
+                PasswordHash = hashingService.PasswordHashing("FUCK", salt),
+                IsActive = true,
+                FirstName = "Test4FN",
+                LastName = "Test4LN",
+                CreatedDate = DateTime.Now
+            };
 
+            UserRepository userRepository = new UserRepository(context);
+            var result = await userRepository.CreateUserAsync(u4);
+            Assert.NotNull(result);
+            Assert.Equal(result, u4);
+        }
+
+        [Fact]
+        public async void UpdateUser_ReturnTrue()
+        {
+            GenericRepository<UserDetail> repo = new GenericRepository<UserDetail>(context);
+            UserDetail u1 = await repo.GetByIdAsync(2);
+            u1.FirstName = "TestUpdatedFN";
+
+            var result = await repo.UpdateAsync(u1);
+            Assert.True(result);
+        }
+
+        [Fact]
+        public async void DeleteUser_ReturnTrue()
+        {
+            GenericRepository<UserDetail> repo = new GenericRepository<UserDetail>(context);
+            bool result = await repo.DeleteAsync(2);
+            bool falseResult = await repo.DeleteAsync(99);
+
+            Assert.True(result);
+            Assert.False(falseResult);
+        }
     }
 }
