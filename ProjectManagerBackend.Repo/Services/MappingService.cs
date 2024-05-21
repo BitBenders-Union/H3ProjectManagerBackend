@@ -228,7 +228,7 @@ namespace ProjectManagerBackend.Repo
                 }
             }
 
-            _context.ProjectUserDetails.RemoveRange(project.ProjectUserDetail);
+            //_context.ProjectUserDetails.RemoveRange(project.ProjectUserDetail);
             foreach (var userDto in dto.Users)
             {
                 var userDetail = await _context.UserDetails.FirstOrDefaultAsync(ud => ud.Id == userDto.Id);
