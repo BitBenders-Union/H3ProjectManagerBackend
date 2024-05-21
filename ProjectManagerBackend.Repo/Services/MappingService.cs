@@ -182,6 +182,7 @@ namespace ProjectManagerBackend.Repo
             return project;
         }
 
+
         public async Task<Project> ProjectUpdateMap(ProjectDTO dto)
         {
             var project = await _context.Projects
@@ -200,7 +201,9 @@ namespace ProjectManagerBackend.Repo
             project.ProjectCategory = await _context.ProjectCategories.FirstOrDefaultAsync(x => x.Id == dto.Category.Id);
 
 
-            // remove all existing entries in the junction table for the project
+            // no reason to remove the existing departments and users, since we are updating the project
+            // if we do this we can't update the project, since the data we are updating on is removed
+            // and if we are to do it later, it should not be inside the mapping service
             
             //_context.ProjectDepartments.RemoveRange(project.ProjectDepartment);
             foreach (var departmentDto in dto.Departments)
@@ -219,9 +222,7 @@ namespace ProjectManagerBackend.Repo
                 {
                     ProjectDepartment projectDepartment = new ProjectDepartment
                     {
-                        Department = department,
                         DepartmentId = department.Id,
-                        Project = project,
                         ProjectId = project.Id
                     };
                     project.ProjectDepartment.Add(projectDepartment);
@@ -243,7 +244,10 @@ namespace ProjectManagerBackend.Repo
                 else
                 {
                     // Add new entry to the junction table
-                    project.ProjectUserDetail.Add(new ProjectUserDetail { UserDetail = userDetail });
+                    project.ProjectUserDetail.Add(new ProjectUserDetail {
+                        UserDetailId = userDetail.Id,
+                        ProjectId = project.Id
+                    });
                 }
             }
 
@@ -297,23 +301,88 @@ namespace ProjectManagerBackend.Repo
 
         public async Task<ProjectTask> ProjectTaskUpdateMapping(ProjectTaskDTO dto)
         {
+            // Fetch a single project task from the database that matches the specified ID.
+            // This query includes related entities to avoid multiple database trips (eager loading).
+            var projectTask = await _context.ProjectTasks.Include(pt => pt.ProjectTaskUserDetail)
+                .ThenInclude(ptud => ptud.UserDetail)
+                .Include(pt => pt.Priority)
+                .Include(pt => pt.Status)
+                .Include(pt => pt.ProjectTaskCategory)
+                .FirstOrDefaultAsync(x => x.Id == dto.Id);
+
+            // Update the project task properties with the new values from the DTO
+            projectTask.Name = dto.Name;
+            projectTask.Description = dto.Description;
+            projectTask.Priority.Name = dto.Priority.Name;
+            projectTask.Priority.Level = dto.Priority.Level;
+            projectTask.Status.Name = dto.Status.Name;
+            projectTask.ProjectTaskCategory.Name = dto.ProjectTaskCategory.Name;
 
 
-            ProjectTask model = new()
+            _context.ProjectTaskUserDetails.RemoveRange(projectTask.ProjectTaskUserDetail); // Remove old user details and add new ones
+            projectTask.ProjectTaskUserDetail.Clear(); // Clear the existing collection to avoid duplicate entries
+
+            //For each user in the DTO, add a new ProjectTaskUserDetail to the project task, if the user is not null, and save changes to the database
+            foreach (var userDto in dto.ProjectTaskUserDetail)
+            {
+                var userDetail = await _context.UserDetails.FirstOrDefaultAsync(ud => ud.Id == userDto.Id);
+                if (userDetail != null)
+                {
+                    projectTask.ProjectTaskUserDetail.Add(new ProjectTaskUserDetail { UserDetail = userDetail });
+                }
+            }
+
+            await _context.SaveChangesAsync(); // Save changes to the database
+
+            return projectTask;
+        }
+
+        public async Task<Project> ProjectMappingFromDto(ProjectDTO dto)
+        {
+            var projectStatus = await _context.ProjectStatus.FirstOrDefaultAsync(x => x.Name == dto.Status.Name);
+            var projectCategory = await _context.ProjectCategories.FirstOrDefaultAsync(x => x.Name == dto.Category.Name);
+            var priority = await _context.Priorities.FirstOrDefaultAsync(x => x.Level == dto.Priority.Level);
+
+            var projectDepartment = new List<ProjectDepartment>();
+
+            foreach(var item in dto.Departments)
+            {
+                var department = await _context.Departments.FirstOrDefaultAsync(x => x.Name == item.Name);
+                projectDepartment.Add(new ProjectDepartment {
+                    DepartmentId = department.Id,
+                    ProjectId = dto.Id
+                });
+            }
+
+            var projectUserDetail = new List<ProjectUserDetail>();
+
+            foreach (var item in dto.Users)
+            {
+                var userDetail = await _context.UserDetails.FirstOrDefaultAsync(x => x.Username == item.Username);
+                projectUserDetail.Add(new ProjectUserDetail
+                {
+                    UserDetailId = userDetail.Id,
+                    ProjectId = dto.Id
+                });
+            }
+
+            var project = new Project
             {
                 Id = dto.Id,
                 Name = dto.Name,
-                Description = dto.Description,
-                Priority = await _context.Priorities.FirstOrDefaultAsync(x => x.Id == dto.Priority.Id),
-                Status = await _context.ProjectTaskStatus.FirstOrDefaultAsync(x => x.Id == dto.Status.Id),
-                ProjectTaskCategory = await _context.ProjectTaskCategories.FirstOrDefaultAsync(x => x.Id == dto.ProjectTaskCategory.Id),
-                Project = await _context.Projects.FirstOrDefaultAsync(x => x.Id == dto.ProjectId),
-                Comments = new List<Comment>(),
-                ProjectTaskUserDetail = new List<ProjectTaskUserDetail>()
+                StartDate = dto.StartDate,
+                EndDate = dto.EndDate,
+                Owner = dto.Owner,
+                ProjectStatus = projectStatus,
+                ProjectCategory = projectCategory,
+                Priority = priority,
+                Client = null,
+                ProjectDepartment = projectDepartment,
+                ProjectUserDetail = projectUserDetail
 
             };
 
-            return model;
+            return project;
         }
     }
 }

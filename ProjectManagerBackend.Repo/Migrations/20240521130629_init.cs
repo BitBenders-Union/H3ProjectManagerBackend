@@ -3,10 +3,12 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace ProjectManagerBackend.Repo.Migrations
 {
     /// <inheritdoc />
-    public partial class pc : Migration
+    public partial class init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -373,6 +375,103 @@ namespace ProjectManagerBackend.Repo.Migrations
                         principalTable: "UserDetails",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.InsertData(
+                table: "Departments",
+                columns: new[] { "Id", "Name" },
+                values: new object[,]
+                {
+                    { 1, "IT" },
+                    { 2, "HR" },
+                    { 3, "Finance" },
+                    { 4, "Admin" },
+                    { 5, "Sales" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Locations",
+                columns: new[] { "Id", "Address", "Name" },
+                values: new object[,]
+                {
+                    { 1, "Copenhagen", "Cph" },
+                    { 2, "Aarhus", "Aarhus" },
+                    { 3, "Odense", "Odense" },
+                    { 4, "Aalborg", "Aalborg" },
+                    { 5, "Roskilde", "Roskilde" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Priorities",
+                columns: new[] { "Id", "Level", "Name" },
+                values: new object[,]
+                {
+                    { 1, 0, "Low" },
+                    { 2, 1, "Medium" },
+                    { 3, 2, "High" },
+                    { 4, 3, "Critical" },
+                    { 5, 4, "Critical+" },
+                    { 6, 5, "Critical++" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "ProjectCategories",
+                columns: new[] { "Id", "Name" },
+                values: new object[,]
+                {
+                    { 1, "Web Development" },
+                    { 2, "Mobile Development" },
+                    { 3, "Desktop Development" },
+                    { 4, "Game Development" },
+                    { 5, "AI Development" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "ProjectStatus",
+                columns: new[] { "Id", "Name" },
+                values: new object[,]
+                {
+                    { 1, "New" },
+                    { 2, "In Progress" },
+                    { 3, "Completed" },
+                    { 4, "On Hold" },
+                    { 5, "Cancelled" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "ProjectTaskCategories",
+                columns: new[] { "Id", "Name" },
+                values: new object[,]
+                {
+                    { 1, "Development" },
+                    { 2, "Testing" },
+                    { 3, "Deployment" },
+                    { 4, "Documentation" },
+                    { 5, "Meeting" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "ProjectTaskStatus",
+                columns: new[] { "Id", "Name" },
+                values: new object[,]
+                {
+                    { 1, "New" },
+                    { 2, "In Progress" },
+                    { 3, "Completed" },
+                    { 4, "On Hold" },
+                    { 5, "Cancelled" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Roles",
+                columns: new[] { "Id", "Description", "IsActive", "Name" },
+                values: new object[,]
+                {
+                    { 1, "Admin role", true, "Admin" },
+                    { 2, "User role", false, "User" },
+                    { 3, "Manager role", true, "Manager" },
+                    { 4, "Developer role", true, "Developer" },
+                    { 5, "Tester role", true, "Tester" }
                 });
 
             migrationBuilder.CreateIndex(
